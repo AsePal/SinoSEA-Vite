@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
+
 
 .btn-primary {
   @apply flex items-center gap-2 px-4 py-2 rounded-full
@@ -8,4 +11,8 @@
 .btn-warn {
   @apply flex items-center gap-2 px-4 py-2 rounded-full
          bg-orange-500 hover:bg-orange-600 transition;
+}
+
+body {
+    font-family: "MiSans VF", "Noto Color Emoji";
 }

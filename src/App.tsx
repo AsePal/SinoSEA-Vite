@@ -1,6 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Chat from './pages/Chat';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from "./TermsofUse/TermsOfUse";
+
+
 
 export default function App() {
   return (
@@ -13,6 +17,10 @@ export default function App() {
 
       {/* 访问 /chat 显示聊天页 */}
       <Route path="/chat" element={<Chat />} />
+      {/*跳转到隐私页*/}
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      {/* 跳转到使用条款页*/}
+      <Route path="/terms" element={<TermsOfUse />} />
     </Routes>
   );
 }

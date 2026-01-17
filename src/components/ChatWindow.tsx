@@ -1,17 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
 
 const CHAT_API = 'http://api.sionsea-ai.cn:3000/chat';
 
-export default function ChatWindow() {
+export default function ChatWindow({
+  userAvatar
+}: {
+  userAvatar?: string;
+}) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
   const bottomRef = useRef<HTMLDivElement>(null);
+
 
   /** 自动滚动到底部 */
   useEffect(() => {
@@ -19,14 +23,30 @@ export default function ChatWindow() {
   }, [messages, loading]);
 
   /** 首次欢迎语 */
-  useEffect(() => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: '你好！我是 **星洲智能助手** 🌟\n\n可以直接向我提问。'
-      }
-    ]);
-  }, []);
+function getWelcomeMessage(): ChatMessage[] {
+  return [
+    {
+      role: 'assistant',
+      content: '你好呀！我是**星洲智能助手** 🌟有问题，请尽管问我！😎'
+    }
+  ];
+}
+useEffect(() => {
+  setMessages(getWelcomeMessage());
+}, []);
+function resetChat() {
+  setMessages(getWelcomeMessage());
+  setSessionId(null);
+}
+{messages.map((msg, i) => (
+  <MessageBubble
+    key={i}
+    message={msg}
+    userAvatar={userAvatar}
+  />
+))}
+
+
 
   async function sendMessage() {
     const content = input.trim();
@@ -74,7 +94,7 @@ export default function ChatWindow() {
         ...prev,
         {
           role: 'assistant',
-          content: '❌ **请求失败**，请稍后再试。'
+          content: '❌ **出了点错误😢**，请稍后再试。'
         }
       ]);
     } finally {
@@ -90,7 +110,7 @@ export default function ChatWindow() {
     >
       {/* Header */}
       <div className="p-4 border-b border-white/10 text-orange-300 font-semibold">
-        星洲智能助手
+        SionSEA-AI
         {sessionId && (
           <span className="ml-2 text-xs text-gray-400">会话 {sessionId.slice(0, 8)}…</span>
         )}
@@ -99,7 +119,7 @@ export default function ChatWindow() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, i) => (
-          <MessageBubble key={i} message={msg} />
+          <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
         ))}
 
         {loading && <div className="text-sm text-gray-400 italic">星洲正在思考中…</div>}
@@ -119,7 +139,7 @@ export default function ChatWindow() {
             }
           }}
           rows={1}
-          placeholder="输入你的问题…（Enter 发送，Shift+Enter 换行）"
+          placeholder="有什么能帮到你的呢？（Enter 发送，Shift+Enter 换行）"
           className="flex-1 resize-none rounded-lg
                      bg-white/10 p-3 outline-none
                      focus:ring-2 focus:ring-blue-500"
@@ -136,3 +156,5 @@ export default function ChatWindow() {
     </div>
   );
 }
+
+
