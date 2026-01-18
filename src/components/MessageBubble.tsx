@@ -22,14 +22,14 @@ export default function MessageBubble({
       )}
 
       <div
-        className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed
+        className={`max-w-[80%] rounded-xl px-4 py-3 leading-relaxed
           ${
             isUser
               ? 'bg-blue-500/20 border border-blue-500/30'
               : 'bg-orange-500/20 border border-orange-500/30'
           }`}
       >
-        <div className="prose prose-invert prose-sm max-w-none">
+        <div className="prose prose-invert max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {message.content}
           </ReactMarkdown>

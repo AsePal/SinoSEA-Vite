@@ -104,9 +104,10 @@ function resetChat() {
 
   return (
     <div
-      className="max-w-4xl mx-auto h-[calc(100vh-140px)]
-                    bg-black/50 backdrop-blur rounded-xl
-                    border border-white/10 flex flex-col"
+      className="w-full h-full
+                bg-black/50 backdrop-blur
+                rounded-xl border border-white/10
+                flex flex-col"
     >
       {/* Header */}
       <div className="p-4 border-b border-white/10 text-orange-300 font-semibold">

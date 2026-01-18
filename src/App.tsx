@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import Chat from './pages/Chat';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from "./TermsofUse/TermsOfUse";
+import ComplaintPage from './pages/ComplaintPage';
+
 
 
 
@@ -21,6 +23,8 @@ export default function App() {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       {/* 跳转到使用条款页*/}
       <Route path="/terms" element={<TermsOfUse />} />
+      {/*跳转到投诉反馈页 */}
+      <Route path="/complaint" element={<ComplaintPage />} />
     </Routes>
   );
 }

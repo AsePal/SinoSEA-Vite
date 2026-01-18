@@ -25,7 +25,7 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center px-4 bg-cover bg-center"
       style={{
         backgroundImage:
-          'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url("/images/login-bg.webp")'
+          'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("/images/login-bg.avif")'
       }}
     >
       {/* 主卡片 */}

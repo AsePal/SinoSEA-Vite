@@ -17,10 +17,10 @@ export default function PrivacyPolicy() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-fixed relative"
-      style={{ backgroundImage: "url('/public/images/login-bg.webp')" }}
+      style={{ backgroundImage: "url('/public/images/login-bg.avif')" }}
     >
       {/* 背景遮罩（等价于原 HTML 的 linear-gradient） */}
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* 页面内容 */}
       <div className="relative z-10">

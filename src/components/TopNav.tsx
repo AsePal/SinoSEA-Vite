@@ -1,4 +1,3 @@
-
 type UserInfo = {
   nickname: string;
   figureurl: string;
@@ -16,36 +15,63 @@ export default function TopNav({
   onLogout,
 }: TopNavProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-17.5
-                       bg-black/70 backdrop-blur border-b border-white/10
-                       flex items-center justify-between px-6 z-50">
+    <header
+      className="
+        h-[70px]
+        shrink-0
+        bg-black/60 backdrop-blur
+        border-b border-white/10
+        px-6
+        flex items-center
+      "
+    >
       {/* 左侧用户 */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-[220px]">
         {user?.figureurl ? (
           <img
             src={user.figureurl}
-            className="w-10 h-10 rounded-full object-cover"
+            alt="avatar"
+            className="w-9 h-9 rounded-full"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-white/10" />
+          <div className="w-9 h-9 rounded-full bg-white/10" />
         )}
+
         <span className="font-semibold text-orange-300">
           {user?.nickname || '加载中...'}
         </span>
       </div>
 
-      <h1 className="text-2xl font-bold bg-linear-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
-        欢迎！
-      </h1>
+      {/* 中间欢迎语（真正居中） */}
+      <div className="flex-1 text-center pointer-events-none">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
+          欢迎！
+        </h1>
+      </div>
 
-      <div className="flex gap-3">
-        <button  type="button"  className="btn-primary" onClick={onNewChat}>
+      {/* 右侧按钮 */}
+      <div className="flex items-center gap-3 min-w-[220px] justify-end">
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={onNewChat}
+        >
           新对话
         </button>
-        <button type="button" className=" rounded-full px-4 px-3 py-1.5 text-base font-semibold bg-red-500/90 text-white hover:bg-red-500 shadow-red-500/30 transition" onClick={onLogout}>
+
+        <button
+          type="button"
+          className="
+            rounded-full px-4 py-1.5
+            text-base font-semibold
+            bg-red-500/90 text-white
+            hover:bg-red-500
+            shadow-red-500/30 transition
+          "
+          onClick={onLogout}
+        >
           退出
         </button>
-
       </div>
     </header>
   );

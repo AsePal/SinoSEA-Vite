@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import LoginErrorModal from '../components/LoginErrorModal';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
+import HomeBackground from '../Background/HomeBackground';
 
 type UserInfo = {
   nickname: string;
@@ -44,8 +45,7 @@ export default function Chat({ onLogout }: { onLogout: () => void }) {
         setHasRetried(true);
       }
     });
-}
-useEffect(() => {
+}useEffect(() => {
   fetchUser();
 }, [hasRetried]);
 
@@ -56,20 +56,28 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen text-white bg-[linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('/images/chat-bg.webp')] bg-cover bg-center bg-fixed">
-      <TopNav
+    <HomeBackground>
+      <div className="h-screen flex flex-col">
+        <TopNav
         user={user}
         onNewChat={handleNewChat}
         onLogout={() => setShowLogoutModal(true)}
       />
-      <div className="flex pt-17.5">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 p-4">
-          <ChatWindow
+        <main className="flex-1 flex justify-center overflow-hidden">
+          <div className="w-full max-w-[1100px] h-full px-6 py-8">
+            <ChatWindow
             key={resetKey}
             userAvatar={user?.figureurl}
             />
+
+          </div>
+          
         </main>
+
+      </div>
+      
          {/* 🚨 登录异常弹窗（全局） */}
         <LoginErrorModal
           open={loginError}
@@ -99,6 +107,6 @@ useEffect(() => {
               window.location.href ='/login'
             }}/>
       </div>
-    </div>
+    </HomeBackground>
   );
 }

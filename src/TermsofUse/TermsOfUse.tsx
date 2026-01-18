@@ -17,11 +17,11 @@ const TermsOfUse = () => {
       {/* 背景图层 */}
       <div
       className="absolute inset-0 bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: "url('/public/images/login-bg.webp')" }}
+      style={{ backgroundImage: "url('/public/images/login-bg.avif')" }}
       />
       {/* 2️⃣ 只作用在背景上的遮罩 */}
       <div
-      className="absolute inset-0 bg-black/20 pointer-events-none"
+      className="absolute inset-0 bg-black/30 pointer-events-none"
       />
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Header */}      
