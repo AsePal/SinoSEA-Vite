@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
@@ -13,80 +13,149 @@ export default function ChatWindow({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const thinkingTimerRef = useRef<number | null>(null);
+
+  // ⚠️ 只用于按钮 / 输入框，不参与消息逻辑
   const [loading, setLoading] = useState(false);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-
+  /* ---------------- 输入框高度 ---------------- */
 
   function autoResizeTextarea() {
-  const el = textareaRef.current;
-  if (!el) return;
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
 
-  el.style.height = 'auto';              // 关键：先重置
-  el.style.height = el.scrollHeight + 'px';
-}
   function resetTextareaHeight() {
-  const el = textareaRef.current;
-  if (!el) return;
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+  }
 
-  el.style.height = 'auto';
+  /* ---------------- assistant 打字 ---------------- */
+
+  function startThinkingAnimation() {
+  let dots = 0;
+
+  // 如果之前有动画，先停掉
+  stopThinkingAnimation(); // 防止重复
+
+  thinkingTimerRef.current = window.setInterval(() => {
+    dots = (dots + 1) % 4;
+
+    setMessages((prev) => {
+      const updated = [...prev];
+      const last = updated[updated.length - 1];
+
+      if (last && last.role === 'assistant') {
+        last.content = `星洲正在思考🤔${'.'.repeat(dots)}`;
+      }
+
+      return updated;
+    });
+  }, 300);
+}
+function stopThinkingAnimation() {
+  if (thinkingTimerRef.current !== null) {
+    clearInterval(thinkingTimerRef.current);
+    thinkingTimerRef.current = null;
+  }
+}
+function typeAssistantReply(fullText: string) {
+  let index = 0;
+
+  // ⭐ 关键：先“立刻覆盖”思考文本
+  setMessages((prev) => {
+    const updated = [...prev];
+    const last = updated[updated.length - 1];
+    if (last && last.role === 'assistant') {
+      last.content = '';
+      last.typing = true;
+    }
+    return updated;
+  });
+
+  const timer = setInterval(() => {
+    index++;
+
+    setMessages((prev) => {
+      const updated = [...prev];
+      const last = updated[updated.length - 1];
+      if (last && last.role === 'assistant') {
+        last.content = fullText.slice(0, index);
+      }
+      return updated;
+    });
+
+    if (index >= fullText.length) {
+      clearInterval(timer);
+      setMessages((prev) => {
+        const updated = [...prev];
+        const last = updated[updated.length - 1];
+        if (last && last.role === 'assistant') {
+          last.typing = false;
+        }
+        return updated;
+      });
+    }
+  }, 18);
 }
 
 
 
+  /* ---------------- 滚动 ---------------- */
 
-  /** 自动滚动到底部 */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading]);
+  }, [messages]);
 
-  /** 首次欢迎语 */
-function getWelcomeMessage(): ChatMessage[] {
-  return [
-    {
-      role: 'assistant',
-      content: '你好呀！我是**星洲智能助手** 🌟有问题，请尽管问我！😎'
-    }
-  ];
-}
-useEffect(() => {
-  setMessages(getWelcomeMessage());
-}, []);
-function resetChat() {
-  setMessages(getWelcomeMessage());
-  setSessionId(null);
-}
-{messages.map((msg, i) => (
-  <MessageBubble
-    key={i}
-    message={msg}
-    userAvatar={userAvatar}
-  />
-))}
+  /* ---------------- 初始欢迎 ---------------- */
 
+  useEffect(() => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我～'
+      }
+    ]);
+  }, []);
 
+  /* ---------------- 发送消息 ---------------- */
 
   async function sendMessage() {
+    
     const content = input.trim();
     if (!content || loading) return;
 
-    // 1️⃣ 先把用户消息压入 UI
-    const userMessage: ChatMessage = { role: 'user', content };
-    setMessages((prev) => [...prev, userMessage]);
+    // 1️⃣ 用户消息
+    setMessages((prev) => [...prev, { role: 'user', content }]);
     setInput('');
+    requestAnimationFrame(resetTextareaHeight);
 
-    requestAnimationFrame(() => {
-      resetTextareaHeight();
-    });
-
-
+    // 2️⃣ UI loading（按钮）
     setLoading(true);
 
+    // 3️⃣ 插入 assistant loading 气泡（三个点）
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'assistant',
+        content: '星洲正在思考🤔',
+        
+      }
+    ]);
+    startThinkingAnimation();
+    
+
     try {
-      // 2️⃣ 请求体
-      const body: any = { message: content };
-      if (sessionId) body.sessionId = sessionId;
+      const body = {
+        message: content,
+        sessionId
+      };
 
       const res = await fetch(CHAT_API, {
         method: 'POST',
@@ -101,44 +170,36 @@ function resetChat() {
         sessionId: string;
       } = await res.json();
 
-      // 3️⃣ 保存 sessionId
       if (data.sessionId) {
         setSessionId(data.sessionId);
       }
 
-      // 4️⃣ 添加助手回复
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: data.reply
-        }
-      ]);
+      // 4️⃣ 复用这条气泡打字
+      stopThinkingAnimation();
+      typeAssistantReply(data.reply);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: '❌ **出了点错误😢**，请稍后再试。'
-        }
-      ]);
+      // ⏳ 模拟真实等待后再失败
+      const delay = 1500 + Math.random() * 500;
+      setTimeout(() => {
+        stopThinkingAnimation();
+        typeAssistantReply('❌ **出了点错误😢**，请稍后再试。');
+      }, delay);
     } finally {
       setLoading(false);
     }
   }
 
+  /* ---------------- UI ---------------- */
+
   return (
-    <div
-      className="w-full h-full
-                bg-black/50 backdrop-blur
-                rounded-xl border border-white/10
-                flex flex-col"
-    >
+    <div className="w-full h-full bg-black/50 backdrop-blur rounded-xl border border-white/10 flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-white/10 text-orange-300 font-semibold">
         SionSEA-AI
         {sessionId && (
-          <span className="ml-2 text-xs text-gray-400">会话 {sessionId.slice(0, 8)}…</span>
+          <span className="ml-2 text-xs text-gray-400">
+            会话 {sessionId.slice(0, 8)}…
+          </span>
         )}
       </div>
 
@@ -147,50 +208,45 @@ function resetChat() {
         {messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
         ))}
-
-        {loading && <div className="text-sm text-gray-400 italic">
-          星洲正在思考中…
-          </div>}
-
         <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-white/10 flex gap-2 chat-scroll">
+      <div className="p-4 border-t border-white/10 flex gap-2">
         <textarea
-        ref={textareaRef}
-        value={input}
-        onChange={(e) => {
-          setInput(e.target.value);
-          autoResizeTextarea();
-        }}
-        onInput={autoResizeTextarea}
-        onPaste={() => {
-          requestAnimationFrame(autoResizeTextarea);
-        }}
-        rows={1}
-        placeholder="有什么能帮到你的呢？（Enter 发送，Shift+Enter 换行）"
-        className="flex-1 resize-none rounded-lg bg-white/10 p-3 outline-none
-          min-h-[44px] max-h-40 overflow-y-auto transition-[height,box-shadow] duration-200 ease-out
-          focus:shadow-[0_0_0_2px_rgba(59,130,246,0.4)]"
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+            autoResizeTextarea();
+          }}
+          onPaste={() => requestAnimationFrame(autoResizeTextarea)}
+          rows={1}
+          placeholder="有什么能帮到你的呢？（Enter 发送，Shift+Enter 换行）"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+            }
+          }}
+          className="flex-1 resize-none rounded-lg bg-white/10 p-3 outline-none
+                     min-h-[44px] max-h-40 overflow-y-auto
+                     transition-[height,box-shadow] duration-200
+                     focus:shadow-[0_0_0_2px_rgba(59,130,246,0.4)]"
         />
 
         <button
           onClick={sendMessage}
           disabled={loading || !input.trim()}
-          className="btn-primary transition-transform duration-100 active:scale-90
-         disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
-          <PaperAirplaneIcon className="w-5 h-5 animate-spin" />
-        ) : (
-          <PaperAirplaneIcon className="w-5 h-5" />
-        )}
-
+            <PaperAirplaneIcon className="w-5 h-5 animate-spin" />
+          ) : (
+            <PaperAirplaneIcon className="w-5 h-5" />
+          )}
         </button>
       </div>
     </div>
   );
 }
-
-

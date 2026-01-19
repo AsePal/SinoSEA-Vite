@@ -13,26 +13,32 @@ export default function MessageBubble({
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}>
-      
+
       {!isUser && (
         <img
-        src='/public/sionsealogo.ico'
-        alt='AI'
-        className='w-8 h-8 rounded-full shrink-0 mt-1'/>
+          src='/public/sionsealogo.ico'
+          alt='AI'
+          className='w-8 h-8 rounded-full shrink-0 mt-1' />
       )}
 
       <div
         className={`max-w-[80%] rounded-xl px-4 py-3 leading-relaxed
-          ${
-            isUser
-              ? 'bg-blue-500/20 border border-blue-500/30'
-              : 'bg-orange-500/20 border border-orange-500/30'
+          ${isUser
+            ? 'bg-blue-500/20 border border-blue-500/30'
+            : 'bg-orange-500/20 border border-orange-500/30'
           }`}
       >
         <div className="prose prose-invert max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {message.content}
           </ReactMarkdown>
+          {message.role === 'assistant' && message.typing && (
+            <span
+              className="inline-block w-2 h-4 ml-1
+               bg-gray-400 animate-pulse rounded-sm"
+            />
+          )}
+
         </div>
       </div>
 
@@ -40,7 +46,7 @@ export default function MessageBubble({
       {isUser && userAvatar && (
         <img
           src={userAvatar}
-          
+
           alt="avatar"
           className="w-8 h-8 rounded-full object-cover shrink-0"
         />
