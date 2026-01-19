@@ -15,6 +15,25 @@ export default function ChatWindow({
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+
+
+  function autoResizeTextarea() {
+  const el = textareaRef.current;
+  if (!el) return;
+
+  el.style.height = 'auto';              // 关键：先重置
+  el.style.height = el.scrollHeight + 'px';
+}
+  function resetTextareaHeight() {
+  const el = textareaRef.current;
+  if (!el) return;
+
+  el.style.height = 'auto';
+}
+
+
 
 
   /** 自动滚动到底部 */
@@ -56,6 +75,12 @@ function resetChat() {
     const userMessage: ChatMessage = { role: 'user', content };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+
+    requestAnimationFrame(() => {
+      resetTextareaHeight();
+    });
+
+
     setLoading(true);
 
     try {
@@ -118,40 +143,50 @@ function resetChat() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
         {messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
         ))}
 
-        {loading && <div className="text-sm text-gray-400 italic">星洲正在思考中…</div>}
+        {loading && <div className="text-sm text-gray-400 italic">
+          星洲正在思考中…
+          </div>}
 
         <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-white/10 flex gap-2">
+      <div className="p-4 border-t border-white/10 flex gap-2 chat-scroll">
         <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          rows={1}
-          placeholder="有什么能帮到你的呢？（Enter 发送，Shift+Enter 换行）"
-          className="flex-1 resize-none rounded-lg
-                     bg-white/10 p-3 outline-none
-                     focus:ring-2 focus:ring-blue-500"
+        ref={textareaRef}
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value);
+          autoResizeTextarea();
+        }}
+        onInput={autoResizeTextarea}
+        onPaste={() => {
+          requestAnimationFrame(autoResizeTextarea);
+        }}
+        rows={1}
+        placeholder="有什么能帮到你的呢？（Enter 发送，Shift+Enter 换行）"
+        className="flex-1 resize-none rounded-lg bg-white/10 p-3 outline-none
+          min-h-[44px] max-h-40 overflow-y-auto transition-[height,box-shadow] duration-200 ease-out
+          focus:shadow-[0_0_0_2px_rgba(59,130,246,0.4)]"
         />
 
         <button
           onClick={sendMessage}
           disabled={loading || !input.trim()}
-          className="btn-primary disabled:opacity-50"
+          className="btn-primary transition-transform duration-100 active:scale-90
+         disabled:opacity-50 disabled:cursor-not-allowed"
         >
+          {loading ? (
+          <PaperAirplaneIcon className="w-5 h-5 animate-spin" />
+        ) : (
           <PaperAirplaneIcon className="w-5 h-5" />
+        )}
+
         </button>
       </div>
     </div>
