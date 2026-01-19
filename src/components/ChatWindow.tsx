@@ -3,7 +3,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
 
-const CHAT_API = 'http://api.sionsea-ai.cn:3000/chat';
+const CHAT_API = 'https://www.sionsea-ai.cn/chat';
 
 export default function ChatWindow({
   userAvatar
