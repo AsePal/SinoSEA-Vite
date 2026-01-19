@@ -41,3 +41,13 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.chat-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.45);
+}
+

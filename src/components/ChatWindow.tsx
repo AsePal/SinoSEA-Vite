@@ -3,7 +3,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
 
-const CHAT_API = 'https://www.sionsea-ai.cn/chat';
+const CHAT_API = 'https://www.sionsea-ai.cn/chat1';
 
 export default function ChatWindow({
   userAvatar
@@ -20,6 +20,37 @@ export default function ChatWindow({
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [sendingAnim, setSendingAnim] = useState(false);
+  
+  const [sendPhase, setSendPhase] =
+  useState<'idle' | 'out' | 'return'>('idle');
+
+
+  /*------------小飞机✈️图标触发逻辑------------ */
+  function handleSend() {
+    if (loading || !input.trim()) return;
+
+    // 触发动画
+    triggerSendAnimation();
+
+    // 真正发消息
+    sendMessage();
+  }
+  //触发动画
+  function triggerSendAnimation() {
+  if (sendPhase !== 'idle') return;
+
+  setSendPhase('out');
+
+  setTimeout(() => {
+    setSendPhase('return');
+  }, 600);
+
+  setTimeout(() => {
+    setSendPhase('idle');
+  }, 1100);
+}
 
   /* ---------------- 输入框高度 ---------------- */
 
@@ -39,71 +70,71 @@ export default function ChatWindow({
   /* ---------------- assistant 打字 ---------------- */
 
   function startThinkingAnimation() {
-  let dots = 0;
+    let dots = 0;
 
-  // 如果之前有动画，先停掉
-  stopThinkingAnimation(); // 防止重复
+    // 如果之前有动画，先停掉
+    stopThinkingAnimation(); // 防止重复
 
-  thinkingTimerRef.current = window.setInterval(() => {
-    dots = (dots + 1) % 4;
+    thinkingTimerRef.current = window.setInterval(() => {
+      dots = (dots + 1) % 4;
 
-    setMessages((prev) => {
-      const updated = [...prev];
-      const last = updated[updated.length - 1];
+      setMessages((prev) => {
+        const updated = [...prev];
+        const last = updated[updated.length - 1];
 
-      if (last && last.role === 'assistant') {
-        last.content = `星洲正在思考🤔${'.'.repeat(dots)}`;
-      }
+        if (last && last.role === 'assistant') {
+          last.content = `星洲正在思考⌛️${'.'.repeat(dots)}`;
+        }
 
-      return updated;
-    });
-  }, 300);
-}
-function stopThinkingAnimation() {
-  if (thinkingTimerRef.current !== null) {
-    clearInterval(thinkingTimerRef.current);
-    thinkingTimerRef.current = null;
+        return updated;
+      });
+    }, 300);
   }
-}
-function typeAssistantReply(fullText: string) {
-  let index = 0;
-
-  // ⭐ 关键：先“立刻覆盖”思考文本
-  setMessages((prev) => {
-    const updated = [...prev];
-    const last = updated[updated.length - 1];
-    if (last && last.role === 'assistant') {
-      last.content = '';
-      last.typing = true;
+  function stopThinkingAnimation() {
+    if (thinkingTimerRef.current !== null) {
+      clearInterval(thinkingTimerRef.current);
+      thinkingTimerRef.current = null;
     }
-    return updated;
-  });
+  }
+  function typeAssistantReply(fullText: string) {
+    let index = 0;
 
-  const timer = setInterval(() => {
-    index++;
-
+    // ⭐ 关键：先“立刻覆盖”思考文本
     setMessages((prev) => {
       const updated = [...prev];
       const last = updated[updated.length - 1];
       if (last && last.role === 'assistant') {
-        last.content = fullText.slice(0, index);
+        last.content = '';
+        last.typing = true;
       }
       return updated;
     });
 
-    if (index >= fullText.length) {
-      clearInterval(timer);
+    const timer = setInterval(() => {
+      index++;
+
       setMessages((prev) => {
         const updated = [...prev];
         const last = updated[updated.length - 1];
         if (last && last.role === 'assistant') {
-          last.typing = false;
+          last.content = fullText.slice(0, index);
         }
         return updated;
       });
-    }
-  }, 18);
-}
+
+      if (index >= fullText.length) {
+        clearInterval(timer);
+        setMessages((prev) => {
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
+          if (last && last.role === 'assistant') {
+            last.typing = false;
+          }
+          return updated;
+        });
+      }
+    }, 18);
+  }
 
 
 
@@ -119,7 +150,7 @@ function typeAssistantReply(fullText: string) {
     setMessages([
       {
         role: 'assistant',
-        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我～'
+        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我😎'
       }
     ]);
   }, []);
@@ -127,7 +158,7 @@ function typeAssistantReply(fullText: string) {
   /* ---------------- 发送消息 ---------------- */
 
   async function sendMessage() {
-    
+
     const content = input.trim();
     if (!content || loading) return;
 
@@ -144,12 +175,12 @@ function typeAssistantReply(fullText: string) {
       ...prev,
       {
         role: 'assistant',
-        content: '星洲正在思考🤔',
-        
+        content: '星洲正在思考⌛️',
+
       }
     ]);
     startThinkingAnimation();
-    
+
 
     try {
       const body = {
@@ -226,26 +257,35 @@ function typeAssistantReply(fullText: string) {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
-              sendMessage();
+              handleSend();
             }
           }}
           className="flex-1 resize-none rounded-lg bg-white/10 p-3 outline-none
-                     min-h-[44px] max-h-40 overflow-y-auto
+                     min-h-[44px] max-h-40 overflow-y-auto chat-scroll
                      transition-[height,box-shadow] duration-200
                      focus:shadow-[0_0_0_2px_rgba(59,130,246,0.4)]"
         />
-
+        {/*发送按钮 */}
         <button
-          onClick={sendMessage}
+          onClick={handleSend}
           disabled={loading || !input.trim()}
-          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? (
-            <PaperAirplaneIcon className="w-5 h-5 animate-spin" />
-          ) : (
-            <PaperAirplaneIcon className="w-5 h-5" />
-          )}
+          className="relative w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-500
+            flex items-center justify-center transition-colors disabled:opacity-40  
+            isabled:cursor-not-allowedoverflow-hidden"
+          >
+          <PaperAirplaneIcon
+            className={` w-5 h-5 text-white absolute transition-all duration-700 ease-in-out
+                ${sendPhase === 'out'
+                ? 'translate-x-24 translate-y-0 rotate-0 opacity-0'
+                : sendPhase === 'return'
+                  ? '-translate-x-16 translate-y-0 opacity-0'
+                  : 'translate-x-0 translate-y-0 opacity-100'
+              }
+            `}
+          />
         </button>
+
+
       </div>
     </div>
   );
