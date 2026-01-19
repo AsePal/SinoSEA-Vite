@@ -4,6 +4,7 @@ import Chat from './pages/Chat';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from "./TermsofUse/TermsOfUse";
 import ComplaintPage from './pages/ComplaintPage';
+import AboutUsPage from './pages/AboutUs'
 
 
 
@@ -25,6 +26,8 @@ export default function App() {
       <Route path="/terms" element={<TermsOfUse />} />
       {/*跳转到投诉反馈页 */}
       <Route path="/complaint" element={<ComplaintPage />} />
+      {/*跳转到关于我们 */}
+      <Route path="/about" element={<AboutUsPage />} />
     </Routes>
   );
 }

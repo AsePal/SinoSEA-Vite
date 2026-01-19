@@ -34,6 +34,7 @@ export default function Sidebar() {
       {/* 底部固定区域 */}
       <div className="px-4 py-3 border-t border-white/10 text-sm text-gray-400">
         <button 
+        onClick={() => navigate('/about')}
         className="px-4 py-2 rounded-lg hover:bg-white/5 cursor-pointer">
           关于我们
         </button>
