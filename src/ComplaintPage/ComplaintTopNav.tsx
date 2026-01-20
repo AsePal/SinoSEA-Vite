@@ -43,7 +43,7 @@ export default function ComplaintTopNav({
         </span>
       </div>
 
-      {/* 中间标题（真正居中） */}
+      {/* 中间标题 */}
       <h1 className="text-3xl font-bold text-orange-300">
         投诉与反馈
       </h1>

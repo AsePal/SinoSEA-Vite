@@ -3,7 +3,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
 
-const CHAT_API = 'https://www.sionsea-ai.cn/chat1';
+const CHAT_API = 'https://www.sionsea-ai.cn/chat';
 
 export default function ChatWindow({
   userAvatar
@@ -22,9 +22,9 @@ export default function ChatWindow({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [sendingAnim, setSendingAnim] = useState(false);
-  
+
   const [sendPhase, setSendPhase] =
-  useState<'idle' | 'out' | 'return'>('idle');
+    useState<'idle' | 'out' | 'return'>('idle');
 
 
   /*------------小飞机✈️图标触发逻辑------------ */
@@ -39,18 +39,18 @@ export default function ChatWindow({
   }
   //触发动画
   function triggerSendAnimation() {
-  if (sendPhase !== 'idle') return;
+    if (sendPhase !== 'idle') return;
 
-  setSendPhase('out');
+    setSendPhase('out');
 
-  setTimeout(() => {
-    setSendPhase('return');
-  }, 600);
+    setTimeout(() => {
+      setSendPhase('return');
+    }, 600);
 
-  setTimeout(() => {
-    setSendPhase('idle');
-  }, 1100);
-}
+    setTimeout(() => {
+      setSendPhase('idle');
+    }, 1100);
+  }
 
   /* ---------------- 输入框高度 ---------------- */
 
@@ -66,6 +66,27 @@ export default function ChatWindow({
     if (!el) return;
     el.style.height = 'auto';
   }
+  /*--------------首次对话回复样式 ---------------------*/
+  function getWelcomeMessage(): ChatMessage[] {
+    return [
+      {
+        role: 'assistant',
+        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我😎'
+      }
+    ];
+  }
+//触发欢迎语逐字回复
+function resetChat() {
+  setMessages(getWelcomeMessage());
+  setSessionId(null);
+
+  // 逐字显示欢迎语
+  const welcomeMessage = getWelcomeMessage();
+  if (welcomeMessage && welcomeMessage.length > 0) {
+    typeAssistantReply(welcomeMessage[0].content);
+  }
+}
+
 
   /* ---------------- assistant 打字 ---------------- */
 
@@ -104,6 +125,7 @@ export default function ChatWindow({
       const updated = [...prev];
       const last = updated[updated.length - 1];
       if (last && last.role === 'assistant') {
+        last.loading = false;
         last.content = '';
         last.typing = true;
       }
@@ -124,9 +146,11 @@ export default function ChatWindow({
 
       if (index >= fullText.length) {
         clearInterval(timer);
+
         setMessages((prev) => {
           const updated = [...prev];
           const last = updated[updated.length - 1];
+
           if (last && last.role === 'assistant') {
             last.typing = false;
           }
@@ -147,12 +171,13 @@ export default function ChatWindow({
   /* ---------------- 初始欢迎 ---------------- */
 
   useEffect(() => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我😎'
-      }
-    ]);
+    const welcomeMessage = getWelcomeMessage();
+    setMessages(welcomeMessage);
+
+    // 逐字显示欢迎语
+    if (welcomeMessage && welcomeMessage.length > 0) {
+      typeAssistantReply(welcomeMessage[0].content);
+    }
   }, []);
 
   /* ---------------- 发送消息 ---------------- */
@@ -161,6 +186,7 @@ export default function ChatWindow({
 
     const content = input.trim();
     if (!content || loading) return;
+    setLoading(true);  // 设置为正在加载状态
 
     // 1️⃣ 用户消息
     setMessages((prev) => [...prev, { role: 'user', content }]);
@@ -205,12 +231,12 @@ export default function ChatWindow({
         setSessionId(data.sessionId);
       }
 
-      // 4️⃣ 复用这条气泡打字
+      // 4️⃣ 成功时，清除“思考中”动画并开始显示回复
       stopThinkingAnimation();
       typeAssistantReply(data.reply);
     } catch (err) {
       // ⏳ 模拟真实等待后再失败
-      const delay = 1500 + Math.random() * 500;
+      const delay = 1500 + Math.random() * 100;
       setTimeout(() => {
         stopThinkingAnimation();
         typeAssistantReply('❌ **出了点错误😢**，请稍后再试。');
@@ -219,6 +245,7 @@ export default function ChatWindow({
       setLoading(false);
     }
   }
+
 
   /* ---------------- UI ---------------- */
 
@@ -272,7 +299,7 @@ export default function ChatWindow({
           className="relative w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-500
             flex items-center justify-center transition-colors disabled:opacity-40  
             isabled:cursor-not-allowedoverflow-hidden"
-          >
+        >
           <PaperAirplaneIcon
             className={` w-5 h-5 text-white absolute transition-all duration-700 ease-in-out
                 ${sendPhase === 'out'

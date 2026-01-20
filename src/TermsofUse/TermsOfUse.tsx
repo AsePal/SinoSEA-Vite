@@ -146,7 +146,7 @@ const TermsOfUse = () => {
             <Section title="11. 联系方式">
               <ul className="space-y-1">
                 <li>邮箱：1769797300@qq.com</li>
-                <li>电话：+86 13299677383</li>
+                <li>电话：+86 15107851770</li>
               </ul>
             </Section>
 
