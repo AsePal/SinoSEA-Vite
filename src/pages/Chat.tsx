@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import TopNav from '../components/TopNav';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
-import LoginErrorModal from '../components/LoginErrorModal';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
 
@@ -13,11 +12,8 @@ type UserInfo = {
 
 export default function Chat({ onLogout }: { onLogout: () => void }) {
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [loginError, setLoginError] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [ignoreAuth, setIgnoreAuth] = useState(false);
-  const [hasRetried, setHasRetried] = useState(false);
 
   function fetchUser() {
   fetch('/auth/qq/me', {
@@ -39,15 +35,11 @@ export default function Chat({ onLogout }: { onLogout: () => void }) {
       });
     })
     .catch(() => {
-      if (hasRetried) {
-        setLoginError(true);
-      } else {
-        setHasRetried(true);
-      }
+
     });
 }useEffect(() => {
   fetchUser();
-}, [hasRetried]);
+}, []);
 
 
 
@@ -76,21 +68,7 @@ export default function Chat({ onLogout }: { onLogout: () => void }) {
           
         </main>
 
-      </div>
-      
-         {/* 🚨 登录异常弹窗（全局） */}
-        <LoginErrorModal
-          open={loginError}
-          onConfirm={()=>{
-            //✅ 正式逻辑：跳转登录页
-            window.location.href = '/login';
-            
-          }}
-          onCancel={()=>{
-            // ⚠️ 开发阶段临时逻辑，后续可删
-            setLoginError(false);
-          }}
-          />
+      </div>    
           <LogoutConfirmModal
             open={showLogoutModal}
             onCancel={()=>{

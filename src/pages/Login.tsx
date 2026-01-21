@@ -9,15 +9,57 @@ import {
   ArrowRightOnRectangleIcon,
   CpuChipIcon
 } from '@heroicons/react/24/outline';
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-const LOGIN_URL = 'https://www.sionsea-ai.cn/auth/qq/start?red=http://localhost:5173/chat';
 
 export default function Login() {
   const [agreed, setAgreed] = useState(false);
+  const [account, setAccount] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (!agreed) return;
-    window.location.href = LOGIN_URL;
+  const handleLogin = async () => {
+    if (!agreed) {
+      setError('请先阅读并同意相关条款');
+      return;
+    }
+
+    if (!account || !password) {
+      setError('请输入账号和密码');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          identifier: account, // 👈 对应手机号 / 用户名
+          password: password,
+        }),
+
+      });
+
+      if (res.status === 401) {
+        throw new Error('用户名或密码错误');
+      }
+
+      if (!res.ok) {
+        throw new Error('登录失败，请稍后重试');
+      }
+
+
+      window.location.href = '/chat';
+    } catch (e: any) {
+      setError(e.message || '登录失败');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,7 +70,6 @@ export default function Login() {
           'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("/images/login-bg.avif")'
       }}
     >
-      {/* 主卡片 */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white text-center px-6 py-8">
@@ -39,84 +80,92 @@ export default function Login() {
             </h1>
           </div>
           <p className="text-base opacity-90">
+            让技术，终于抵达人心
+          </p>
+        </div>
+        {/* 标语 */}
+        <div className="text-center mt-8 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
             智能校园服务解决方案
+          </h2>
+          <p className="text-base text-gray-500">
+            专为校园环境设计的智能助手
+            <br />
+            帮助你解决学习、生活、心理等问题，
+          让校园生活更加高效便捷。
           </p>
         </div>
 
-        {/* 内容区 */}
-        <div className="px-6 py-8">
-          {/* 标语 */}
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              智为渡舟，暖心为岸
-            </h2>
-            <p className="text-base text-gray-500">
-              AI智能是帮助你渡过信息之海的舟
-              <br/>
-              而我们的关怀是永远等待你的港湾
-            </p>
-          </div>
-          
+        <div className="px-6 pt-10 pb-8">
+          {/* 账号输入 */}
+          <input
+            className="w-full mb-4 px-4 py-3 border rounded-lg"
+            placeholder="手机号 / 用户名"
+            value={account}
+            onChange={(e) => setAccount(e.target.value)}
+          />
 
+          {/* 密码输入 */}
+          <input
+            type="password"
+            className="w-full mb-3 px-4 py-3 border rounded-lg"
+            placeholder="密码"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-          {/* 描述 */}
-          <p className="text-center text-[14px] text-gray-600 leading-6 mb-7">
-            专为校园环境设计的智能助手
-            <br/>           
-            帮助你解决学习、生活、心理等问题,让校园生活更加高效便捷。
-          </p>
+          {error && (
+            <div className="text-red-500 text-sm mb-3">
+              {error}
+            </div>
+          )}
 
           {/* 登录按钮 */}
           <button
-            disabled={!agreed}
+            disabled={loading || !agreed}
             onClick={handleLogin}
-            className={`
-              group w-full flex items-center justify-center gap-2
-              rounded-xl py-4 text-lg font-semibold
-              transition-all
+            className={` w-full flex items-center justify-center gap-2
+            rounded-xl py-4 text-lg font-semibold transition-all
+            ${loading || !agreed
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg'
+              }
+          `}
+          >
 
-                ${
-                  agreed
-                  ? 'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }
-              `}
-            >
-              <ArrowRightOnRectangleIcon className="w-9 h-7 stroke-[2.7]" />
-              QQ 登录
-            </button>
+            <PaperAirplaneIcon className="w-6 h-6" />
+            {loading ? '登录中...' : '账号登录'}
+          </button>
+
+          {/* 注册 / 忘记密码 */}
+          <div className="flex justify-between mt-4 text-sm text-blue-600">
+            <Link to="/register">用户注册</Link>
+            <Link to="/reset-password">忘记密码？</Link>
+          </div>
 
           {/* 条款 */}
-          <label className="mt-6 flex items-start gap-3 text-[15px] text-gray-600 ...">
-
+          <label className="mt-6 flex items-start gap-3 text-[15px] text-gray-600">
             <input
               type="checkbox"
               className="mt-1 accent-blue-500"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
             />
-            <span className="leading-relaxed">
+            <span>
               我已阅读并同意
-              <Link
-               to = "/privacy"
-               className='text-11px text-indigo-500 font-medium hover:text-indigo-500 hover:underline transition-colors'
-              >
+              <Link to="/privacy" className="text-indigo-500 ml-1">
                 《隐私条款》
               </Link>
               和
-              <a
-                href="/terms"
-                className='text-11px text-indigo-500 font-medium hover:text-indigo-500 hover:underline transition-colors'
-              >
+              <Link to="/terms" className="text-indigo-500 ml-1">
                 《使用条款》
-              </a>
+              </Link>
             </span>
           </label>
 
-          {/* 功能区 */}
+          {/* 功能区保持不变 */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <h3 className="text-center text-base font-semibold text-gray-700 mb-5">
-
               主要功能
             </h3>
 
@@ -127,34 +176,17 @@ export default function Login() {
               <Feature icon={ChatBubbleLeftRightIcon} text="校园社交（敬请期待）" />
             </div>
           </div>
-          {/* 页脚 */}
-          <div className="bg-gray-50 text-center py-3 border-t border-gray-200">
-            <p className="text-[12px] text-gray-400 leading-snug">
-            © 2026 星洲智能助手 | 版权所有
-          </p>
-          <p className="text-[12px] text-gray-400 leading-snug">
-          字体: Misans
-          </p>
-          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function Feature({
-  icon: Icon,
-  text
-}: {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  text: string;
-}) {
+function Feature({ icon: Icon, text }: any) {
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg py-3 px-2 text-gray-600">
+    <div className="flex flex-col items-center bg-gray-100 rounded-lg py-3 px-2 text-gray-600">
       <Icon className="w-5 h-5 text-blue-500 mb-1" />
-      <span className="text-center text-sm leading-snug">
-        {text}
-      </span>
+      <span className="text-sm">{text}</span>
     </div>
   );
 }

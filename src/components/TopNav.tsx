@@ -38,7 +38,7 @@ export default function TopNav({
         )}
 
         <span className="font-semibold text-orange-300">
-          {user?.nickname || '加载中...'}
+          {user?.nickname || '星洲用户'}
         </span>
       </div>
 

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import ComplaintTopNav from '../ComplaintPage/ComplaintTopNav';
 import ComplaintHeader from '../ComplaintPage/ComplaintHeader';
 import ComplaintForm from '../ComplaintPage/ComplaintForm';
-import LoginErrorModal from '../components/LoginErrorModal';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
 
@@ -19,7 +18,6 @@ export default function ComplaintPage() {
   
 
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [loginError, setLoginError] = useState(false);
 
   // ⚠️【开发阶段使用】失败重试次数，后续可删
   const [retryCount, setRetryCount] = useState(0);
@@ -44,20 +42,13 @@ export default function ComplaintPage() {
           figureurl: data.figureurl,
         });
       })
-      .catch(() => {
-        // 第三次仍失败 → 认为登录异常
-        if (retryCount >= 2) {
-          setLoginError(true);
-        } else {
-          // ⚠️【开发阶段使用】允许重试
-          setRetryCount((c) => c + 1);
-        }
+      .catch(() => {        
       });
   }
 
   useEffect(() => {
     fetchUser();
-  }, [retryCount]);
+  }, []);
 
   return (
     <HomeBackground>
@@ -73,19 +64,6 @@ export default function ComplaintPage() {
           <ComplaintForm />
         </div>
       </main>
-
-      {/* 🚨 登录异常弹窗（与主页一致） */}
-      <LoginErrorModal
-        open={loginError}
-        onConfirm={() => {
-          // ✅ 正式逻辑：跳转登录页
-          window.location.href = '/login';
-        }}
-        onCancel={() => {
-          // ⚠️【开发阶段临时逻辑】方便调试，后续可删
-          setLoginError(false);
-        }}
-      />
       <LogoutConfirmModal
         open={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}
