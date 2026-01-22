@@ -37,6 +37,11 @@ export default function Login() {
     setError('请输入账号和密码');
     return;
   }
+  if (/\s/.test(account) || /\s/.test(password)) {
+  setError('账号或密码中不能包含空格');
+  return;
+}
+
 
   setLoading(true);
   setError('');
@@ -139,7 +144,11 @@ export default function Login() {
             className="w-full mb-4 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="手机号 / 用户名"
             value={account}
-            onChange={(e) => setAccount(e.target.value)}
+            onChange={(e) => {
+              const value = e.currentTarget.value.replace(/\s/g, '');
+              setAccount(value);
+
+            }}
 
           />
 
@@ -154,6 +163,9 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyUp={(e) => {
               setCapsLockOn(e.getModifierState('CapsLock'));
+              const value = e.currentTarget.value.replace(/\s/g, '');
+              setPassword(value);
+
             }}
           />
           {capsLockOn && (

@@ -52,63 +52,75 @@ export default function Register() {
 
   /** 注册提交 */
   const handleRegister = async () => {
-  if (!agreed) {
-    setError('请先阅读并同意相关条款');
-    return;
-  }
-
-  if (!name || !phone || !smsCode || !password || !confirmPassword) {
-    setError('请填写完整信息');
-    return;
-  }
-
-  if (password.length < 8) {
-    setError('密码长度不能少于 8 位');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    setError('两次输入的密码不一致');
-    return;
-  }
-
-  if (smsCode !== MOCK_SMS_CODE) {
-    setError('短信验证码错误');
-    return;
-  }
-
-  setLoading(true);
-  setError('');
-
-  try {
-    const res = await fetch(API.auth.register, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: name,
-        phone: phone,
-        password: password,
-      }),
-    });
-
-    if (res.status === 409) {
-      throw new Error('用户已存在');
+    if (!agreed) {
+      setError('请先阅读并同意相关条款');
+      return;
     }
 
-    if (!res.ok) {
-      throw new Error('注册失败，请稍后重试');
+    if (!name || !phone || !smsCode || !password || !confirmPassword) {
+      setError('请填写完整信息');
+      return;
     }
 
-    // 注册成功 → 返回登录页
-    navigate('/login');
-  } catch (e: any) {
-    setError(e.message || '注册失败');
-  } finally {
-    setLoading(false);
-  }
-};
+    if (password.length < 8) {
+      setError('密码长度不能少于 8 位');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('两次输入的密码不一致');
+      return;
+    }
+
+    if (smsCode !== MOCK_SMS_CODE) {
+      setError('短信验证码错误');
+      return;
+    }
+
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(API.auth.register, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: name,
+          phone: phone,
+          password: password,
+        }),
+      });
+
+      if (res.status === 409) {
+        throw new Error('用户已存在');
+      }
+
+      if (!res.ok) {
+        throw new Error('注册失败，请稍后重试');
+      }
+      if (
+        /\s/.test(name) ||
+        /\s/.test(phone) ||
+        /\s/.test(smsCode) ||
+        /\s/.test(password) ||
+        /\s/.test(confirmPassword)
+      ) {
+        setError('输入内容不能包含空格');
+        return;
+      }
+
+
+      // 注册成功 → 返回登录页
+      navigate('/login');
+    } catch (e: any) {
+      setError(e.message || '注册失败');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -137,9 +149,9 @@ export default function Register() {
             </div>
 
             <p className="text-base leading-relaxed opacity-90">
-              创建你的专属账号  
+              创建你的专属账号
               <br />
-              加入智能校园服务体系  
+              加入智能校园服务体系
               <br />
               开启更高效、更温暖的校园体验
             </p>
@@ -166,14 +178,20 @@ export default function Register() {
             className="w-full mb-3 px-4 py-3 border rounded-lg"
             placeholder="昵称 / 名称"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.currentTarget.value.replace(/\s/g, ''));
+
+            }}
           />
 
           <input
             className="w-full mb-3 px-4 py-3 border rounded-lg"
             placeholder="手机号"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.currentTarget.value.replace(/\s/g, ''));
+              
+            }}
           />
 
           {/* 短信验证码 */}
@@ -182,7 +200,10 @@ export default function Register() {
               className="flex-1 px-4 py-3 border rounded-lg"
               placeholder="短信验证码"
               value={smsCode}
-              onChange={(e) => setSmsCode(e.target.value)}
+              onChange={(e) => {
+                setSmsCode(e.currentTarget.value.replace(/\s/g, ''));
+                
+              }}
             />
             <button
               type="button"
@@ -205,7 +226,10 @@ export default function Register() {
             className="w-full mb-3 px-4 py-3 border rounded-lg tracking-normal"
             placeholder="密码（不少于 8 位）"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.currentTarget.value.replace(/\s/g, ''));
+              
+            }}
           />
 
           <input
@@ -213,7 +237,10 @@ export default function Register() {
             className="w-full mb-3 px-4 py-3 border rounded-lg tracking-normal"
             placeholder="确认密码"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''));
+              
+            }}
           />
 
           {error && (
