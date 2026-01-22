@@ -5,6 +5,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from "./TermsofUse/TermsOfUse";
 import ComplaintPage from './pages/ComplaintPage';
 import AboutUsPage from './pages/AboutUs'
+import Register from './pages/Register'
 
 
 
@@ -28,6 +29,8 @@ export default function App() {
       <Route path="/complaint" element={<ComplaintPage />} />
       {/*跳转到关于我们 */}
       <Route path="/about" element={<AboutUsPage />} />
+      {/*跳转到用户注册页 */}
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 }

@@ -9,6 +9,7 @@ import {
   CpuChipIcon
 } from '@heroicons/react/24/outline';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import API from '../utils/apiConfig';
 
 export default function Login() {
   const [agreed, setAgreed] = useState(false);
@@ -16,6 +17,11 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  //大写锁定判断
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  
+
+
 
   const handleLogin = async () => {
     if (!agreed) {
@@ -32,7 +38,7 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await fetch('/auth/login', {
+      const res = await fetch(API.auth.login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -65,7 +71,7 @@ export default function Login() {
       style={{ backgroundImage: 'url("/images/login-bg.avif")' }}
     >
       {/* 主卡片 */}
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+      <div className="w-full max-w-5xl bg-white rounded-2xl h-[590px] shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
         {/* ================= 左侧：项目介绍 ================= */}
         <div
@@ -83,7 +89,7 @@ export default function Login() {
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
               <CpuChipIcon className="w-10 h-10" />
-              <h1 className="text-3xl font-bold">星洲智能助手</h1>
+              <h1 className="text-3xl font-bold">SionSEA-AI</h1>
             </div>
 
             <h2 className="text-xl font-semibold mb-4">
@@ -120,7 +126,7 @@ export default function Login() {
 
           {/* 分隔线 */}
           <div className="mb-6 flex justify-center">
-            <div className="h-px w-32 bg-gray-300" />
+            <div className="h-px w-50 bg-gray-300" />
           </div>
 
           {/* 账号 */}
@@ -129,22 +135,37 @@ export default function Login() {
             placeholder="手机号 / 用户名"
             value={account}
             onChange={(e) => setAccount(e.target.value)}
+           
           />
+          
 
           {/* 密码 */}
           <input
             type="password"
-            className="w-full mb-3 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className=" w-full mb-3 px-4 py-3 border rounded-lg tracking-normal
+            focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="密码"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+             onKeyUp={(e) => {
+              setCapsLockOn(e.getModifierState('CapsLock'));
+            }}
           />
+          {capsLockOn && (
+            <div className="text-amber-600 text-sm mb-3 flex items-center gap-1">
+              <span>⚠️</span>
+              <span>大写锁定已开启（Caps Lock）</span>
+            </div>
+          )}
+
 
           {error && (
             <div className="text-red-500 text-sm mb-3">
               {error}
             </div>
           )}
+          
+
 
           {/* 登录按钮 */}
           <button
@@ -153,16 +174,16 @@ export default function Login() {
             className={`
               w-full flex items-center justify-center gap-2
               rounded-xl py-4 text-lg font-semibold transition-all
-              ${
-                loading || !agreed
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg'
+              ${loading || !agreed
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg'
               }
             `}
           >
             <PaperAirplaneIcon className="w-6 h-6" />
             {loading ? '登录中...' : '账号登录'}
           </button>
+
 
           {/* 注册 / 忘记密码 */}
           <div className="flex justify-between mt-4 text-sm text-blue-600">

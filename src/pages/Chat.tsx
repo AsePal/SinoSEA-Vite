@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
+import API from '../utils/apiConfig';
 
 type UserInfo = {
   nickname: string;
@@ -16,7 +17,7 @@ export default function Chat({ onLogout }: { onLogout: () => void }) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   function fetchUser() {
-  fetch('/auth/qq/me', {
+  fetch(API.auth.qqMe, {
     method: 'GET',
     credentials: 'include',
   })
@@ -77,7 +78,7 @@ export default function Chat({ onLogout }: { onLogout: () => void }) {
             onConfirm={()=>{
               // ✅ 正式退出逻辑
               // 如果有后端登出接口，可以在这里调用
-              // fetch('/auth/logout', { method: 'POST' })          
+              // fetch(API.auth.logout, { method: 'POST' })          
               
               // 清理本地用户态
               setUser(null);

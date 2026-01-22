@@ -6,6 +6,7 @@ import ComplaintHeader from '../ComplaintPage/ComplaintHeader';
 import ComplaintForm from '../ComplaintPage/ComplaintForm';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
+import API from '../utils/apiConfig';
 
 type UserInfo = {
   nickname: string;
@@ -24,7 +25,7 @@ export default function ComplaintPage() {
 
   /** 获取用户信息 */
   function fetchUser() {
-    fetch('/auth/qq/me', {
+    fetch(API.auth.qqMe, {
       method: 'GET',
       credentials: 'include',
     })

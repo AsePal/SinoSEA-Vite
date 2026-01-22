@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isDev, API_BASE } from '../utils/env';
+import { isDev } from '../utils/env';
+import API from '../utils/apiConfig';
 
 export function useAuthGuard() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export function useAuthGuard() {
 
     const checkAuth = async () => {
       try {
-        const res = await fetch(`${API_BASE}/auth/me`, {
+        const res = await fetch(API.auth.me, {
           credentials: 'include' // 关键：带 Cookie
         });
 
