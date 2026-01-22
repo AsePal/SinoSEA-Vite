@@ -6,7 +6,6 @@ import { apiRequest } from '../utils/apiConfig';
 import API from '../utils/apiConfig';
 
 
-const CHAT_API = 'https://www.sionsea-ai.cn/chat';
 
 export default function ChatWindow({
   userAvatar,
@@ -17,7 +16,8 @@ export default function ChatWindow({
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+
   const thinkingTimerRef = useRef<number | null>(null);
 
   // ⚠️ 只用于按钮 / 输入框，不参与消息逻辑
@@ -84,7 +84,7 @@ export default function ChatWindow({
   //触发欢迎语逐字回复
   function resetChat() {
     setMessages(getWelcomeMessage());
-    setSessionId(null);
+    setConversationId(null);
 
     // 逐字显示欢迎语
     const welcomeMessage = getWelcomeMessage();
@@ -189,76 +189,59 @@ export default function ChatWindow({
   /* ---------------- 发送消息 ---------------- */
 
   async function sendMessage() {
-
     const content = input.trim();
     if (!content || loading) return;
 
-    setLoading(true);  // 设置为正在加载状态
+    setLoading(true);
 
     // 1️⃣ 用户消息
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setInput('');
-
     requestAnimationFrame(resetTextareaHeight);
 
-    // 2️⃣ UI loading（按钮）
-    setLoading(true);
-
-    // 3️⃣ 插入 assistant loading 气泡（三个点）
+    // 2️⃣ assistant loading
     setMessages((prev) => [
       ...prev,
-      {
-        role: 'assistant',
-        content: '星洲正在思考⌛️',
-
-      }
+      { role: 'assistant', content: '星洲正在思考⌛️' }
     ]);
     startThinkingAnimation();
-
 
     try {
       const body: any = {
         message: content,
-        userId, // 👈 昵称作为 userId
+        userId,
       };
 
-      if (sessionId) {
-        body.sessionId = sessionId;
+      if (conversationId) {
+        body.conversationId = conversationId;
       }
-
 
       const res = await apiRequest(API.chat.send, {
         method: 'POST',
         body,
       });
 
-
       if (!res.ok) throw new Error('request failed');
 
       const data: {
-        reply: string;
-        sessionId: string;
-        userId?: string;
+        answer: string;
+        conversationId: string;
       } = await res.json();
 
-      if (data.sessionId) {
-        setSessionId(data.sessionId);
+      if (data.conversationId) {
+        setConversationId(data.conversationId);
       }
 
-      // 4️⃣ 成功时，清除“思考中”动画并开始显示回复
       stopThinkingAnimation();
-      typeAssistantReply(data.reply);
-    } catch (err) {
-      // ⏳ 模拟真实等待后再失败
-      const delay = 1500 + Math.random() * 100;
-      setTimeout(() => {
-        stopThinkingAnimation();
-        typeAssistantReply('❌ **出了点错误😢**，请稍后再试。');
-      }, delay);
+      typeAssistantReply(data.answer);
+    } catch {
+      stopThinkingAnimation();
+      typeAssistantReply('❌ **出了点错误😢**，请稍后再试。');
     } finally {
       setLoading(false);
     }
   }
+
 
 
   /* ---------------- UI ---------------- */
@@ -268,9 +251,9 @@ export default function ChatWindow({
       {/* Header */}
       <div className="p-4 border-b border-white/10 text-orange-300 font-semibold">
         SionSEA-AI
-        {sessionId && (
+        {conversationId && (
           <span className="ml-2 text-xs text-gray-400">
-            会话 {sessionId.slice(0, 8)}…
+            会话 {conversationId.slice(0, 8)}…
           </span>
         )}
       </div>

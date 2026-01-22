@@ -13,14 +13,8 @@ export default function TopNav({
 }: TopNavProps) {
   return (
     <header
-      className="
-        h-[70px]
-        shrink-0
-        bg-black/60 backdrop-blur
-        border-b border-white/10
-        px-6
-        flex items-center
-      "
+      className=" h-[70px] shrink-0 bg-black/60 backdrop-blur
+        border-b border-white/10 px-6 flex items-center"
     >
       {/* 左侧用户 */}
       <div className="flex items-center gap-3 min-w-[220px]">

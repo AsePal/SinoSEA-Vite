@@ -1,6 +1,6 @@
 import { API_BASE } from './env';
 
-const BASE = API_BASE ?? 'http://172.16.35.15:3000';
+const BASE = API_BASE ?? 'http://192.168.10.164:3000';
 const TOKEN_KEY = 'auth_token';
 
 
@@ -55,7 +55,7 @@ export const API: Endpoints = {
   },
   chat: {
     //聊天信息接口
-    send: `${BASE}/chat`,
+    send: `${BASE}/chat/send`,
     //
     history: `${BASE}/chat/history`,
   },
