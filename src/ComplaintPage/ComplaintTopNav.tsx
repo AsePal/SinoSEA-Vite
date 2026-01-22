@@ -1,9 +1,7 @@
 import { ArrowLeftOnRectangleIcon, HomeIcon } from '@heroicons/react/24/outline';
+import type { UserInfo } from '../types/user';
 
-type UserInfo = {
-  nickname: string;
-  figureurl: string;
-};
+
 
 type ComplaintTopNavProps = {
   user: UserInfo | null;
@@ -28,9 +26,9 @@ export default function ComplaintTopNav({
     >
       {/* 左侧：用户信息 */}
       <div className="flex items-center gap-3 min-w-[220px]">
-        {user?.figureurl ? (
+        {user?.avatar ? (
           <img
-            src={user.figureurl}
+            src={user.avatar}
             alt="avatar"
             className="w-9 h-9 rounded-full object-cover"
           />

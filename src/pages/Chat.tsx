@@ -78,6 +78,7 @@ export default function Chat() {
               <ChatWindow
                 key={resetKey}
                 userAvatar={user?.avatar}
+                userId={user?.nickname}
               />
             </div>
           </main>

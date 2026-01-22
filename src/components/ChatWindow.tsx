@@ -2,13 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 import type { ChatMessage } from '../types/chat';
+import { apiRequest } from '../utils/apiConfig';
+import API from '../utils/apiConfig';
+
 
 const CHAT_API = 'https://www.sionsea-ai.cn/chat';
 
 export default function ChatWindow({
-  userAvatar
+  userAvatar,
+  userId,
 }: {
   userAvatar?: string;
+  userId?: string;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -52,6 +57,7 @@ export default function ChatWindow({
     }, 1100);
   }
 
+
   /* ---------------- 输入框高度 ---------------- */
 
   function autoResizeTextarea() {
@@ -75,17 +81,17 @@ export default function ChatWindow({
       }
     ];
   }
-//触发欢迎语逐字回复
-function resetChat() {
-  setMessages(getWelcomeMessage());
-  setSessionId(null);
+  //触发欢迎语逐字回复
+  function resetChat() {
+    setMessages(getWelcomeMessage());
+    setSessionId(null);
 
-  // 逐字显示欢迎语
-  const welcomeMessage = getWelcomeMessage();
-  if (welcomeMessage && welcomeMessage.length > 0) {
-    typeAssistantReply(welcomeMessage[0].content);
+    // 逐字显示欢迎语
+    const welcomeMessage = getWelcomeMessage();
+    if (welcomeMessage && welcomeMessage.length > 0) {
+      typeAssistantReply(welcomeMessage[0].content);
+    }
   }
-}
 
 
   /* ---------------- assistant 打字 ---------------- */
@@ -186,11 +192,13 @@ function resetChat() {
 
     const content = input.trim();
     if (!content || loading) return;
+
     setLoading(true);  // 设置为正在加载状态
 
     // 1️⃣ 用户消息
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setInput('');
+
     requestAnimationFrame(resetTextareaHeight);
 
     // 2️⃣ UI loading（按钮）
@@ -209,22 +217,28 @@ function resetChat() {
 
 
     try {
-      const body = {
+      const body: any = {
         message: content,
-        sessionId
+        userId, // 👈 昵称作为 userId
       };
 
-      const res = await fetch(CHAT_API, {
+      if (sessionId) {
+        body.sessionId = sessionId;
+      }
+
+
+      const res = await apiRequest(API.chat.send, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body,
       });
+
 
       if (!res.ok) throw new Error('request failed');
 
       const data: {
         reply: string;
         sessionId: string;
+        userId?: string;
       } = await res.json();
 
       if (data.sessionId) {
