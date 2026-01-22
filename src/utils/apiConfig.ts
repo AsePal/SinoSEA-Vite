@@ -1,6 +1,8 @@
 import { API_BASE } from './env';
 
-const BASE = API_BASE ?? 'http://192.168.10.2:3000';
+const BASE = API_BASE ?? 'http://192.168.10.3:3000';
+const TOKEN_KEY = 'auth_token';
+
 
 type Endpoints = {
   base: string;
@@ -46,6 +48,7 @@ export const API: Endpoints = {
     send: `${BASE}/chat/send`,
     history: `${BASE}/chat/history`,
   },
+  
 };
 
 export function withParam(url: string, params: Record<string, string | number>) {
@@ -57,3 +60,38 @@ export function withParam(url: string, params: Record<string, string | number>) 
 }
 
 export default API;
+
+export async function apiRequest(
+  url: string,
+  options: {
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    body?: any;
+    headers?: Record<string, string>;
+  } = {}
+) {
+  const token = localStorage.getItem(TOKEN_KEY);
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(url, {
+    method: options.method ?? 'GET',
+    headers,
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+
+  // token 失效统一处理
+  if (res.status === 401) {
+    localStorage.removeItem(TOKEN_KEY);
+    window.location.href = '/login';
+  }
+
+  return res;
+}
+

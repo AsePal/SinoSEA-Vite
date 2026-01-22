@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import API, { apiRequest } from '../utils/apiConfig';
 
 import {
   AcademicCapIcon,
@@ -9,7 +10,8 @@ import {
   CpuChipIcon
 } from '@heroicons/react/24/outline';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
-import API from '../utils/apiConfig';
+
+
 
 export default function Login() {
   const [agreed, setAgreed] = useState(false);
@@ -19,51 +21,54 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   //大写锁定判断
   const [capsLockOn, setCapsLockOn] = useState(false);
-  
+
+  const navigate = useNavigate();
+
 
 
 
   const handleLogin = async () => {
-    if (!agreed) {
-      setError('请先阅读并同意相关条款');
-      return;
+  if (!agreed) {
+    setError('请先阅读并同意相关条款');
+    return;
+  }
+
+  if (!account || !password) {
+    setError('请输入账号和密码');
+    return;
+  }
+
+  setLoading(true);
+  setError('');
+
+  try {
+    const res = await apiRequest(API.auth.login, {
+      method: 'POST',
+      body: {
+        identifier: account,
+        password,
+      },
+    });
+
+    if (res.status === 401) {
+      throw new Error('用户名或密码错误');
     }
 
-    if (!account || !password) {
-      setError('请输入账号和密码');
-      return;
+    if (!res.ok) {
+      throw new Error('登录失败，请稍后重试');
     }
 
-    setLoading(true);
-    setError('');
+    const data = await res.json();
+    localStorage.setItem('auth_token', data.accessToken);
 
-    try {
-      const res = await fetch(API.auth.login, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          identifier: account, // 手机号 / 用户名
-          password
-        })
-      });
+    navigate('/chat');
+  } catch (e: any) {
+    setError(e.message || '登录失败');
+  } finally {
+    setLoading(false);
+  }
+};
 
-      if (res.status === 401) {
-        throw new Error('用户名或密码错误');
-      }
-
-      if (!res.ok) {
-        throw new Error('登录失败，请稍后重试');
-      }
-
-      // 登录成功（cookie 已由后端设置）
-      window.location.href = '/chat';
-    } catch (e: any) {
-      setError(e.message || '登录失败');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div
@@ -135,9 +140,9 @@ export default function Login() {
             placeholder="手机号 / 用户名"
             value={account}
             onChange={(e) => setAccount(e.target.value)}
-           
+
           />
-          
+
 
           {/* 密码 */}
           <input
@@ -147,7 +152,7 @@ export default function Login() {
             placeholder="密码"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-             onKeyUp={(e) => {
+            onKeyUp={(e) => {
               setCapsLockOn(e.getModifierState('CapsLock'));
             }}
           />
@@ -164,7 +169,7 @@ export default function Login() {
               {error}
             </div>
           )}
-          
+
 
 
           {/* 登录按钮 */}

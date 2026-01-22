@@ -1,7 +1,4 @@
-type UserInfo = {
-  nickname: string;
-  figureurl: string;
-};
+import type { UserInfo } from '../types/user';
 
 type TopNavProps = {
   user: UserInfo | null;
@@ -27,9 +24,9 @@ export default function TopNav({
     >
       {/* 左侧用户 */}
       <div className="flex items-center gap-3 min-w-[220px]">
-        {user?.figureurl ? (
+        {user?.avatar ? (
           <img
-            src={user.figureurl}
+            src={user.avatar}
             alt="avatar"
             className="w-9 h-9 rounded-full"
           />
