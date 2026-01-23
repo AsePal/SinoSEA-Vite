@@ -24,6 +24,7 @@ type Endpoints = {
   chat: {
     send: string;
     history: string;
+    stream:string;
   };
 };
 
@@ -58,8 +59,11 @@ export const API: Endpoints = {
     send: `${BASE}/chat/send`,
     //
     history: `${BASE}/chat/history`,
+    // ⭐ SSE 流式接口
+    stream: `${BASE}/chat/stream`,
+
   },
-  
+
 };
 
 export function withParam(url: string, params: Record<string, string | number>) {

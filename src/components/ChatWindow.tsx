@@ -72,13 +72,13 @@ export default function ChatWindow({
   }
   /*--------------首次对话回复样式 ---------------------*/
   useEffect(() => {
-  setMessages([
-    {
-      role: 'assistant',
-      content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
-    },
-  ]);
-}, []);
+    setMessages([
+      {
+        role: 'assistant',
+        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
+      },
+    ]);
+  }, []);
 
   /* ---------------- 滚动 ---------------- */
 
@@ -89,80 +89,118 @@ export default function ChatWindow({
   /* ---------------- 发送消息 ---------------- */
 
   async function sendMessage() {
-  const content = input.trim();
-  if (!content || loading) return;
+    let endReceived = false;
+    let assistantText = '';
 
-  setLoading(true);
-  setInput('');
-  requestAnimationFrame(resetTextareaHeight);
+    const content = input.trim();
+    if (!content || loading) return;
 
-  // 1️⃣ 用户消息
-  setMessages((prev) => [
-    ...prev,
-    { role: 'user', content },
-  ]);
+    setLoading(true);
+    setInput('');
+    requestAnimationFrame(resetTextareaHeight);
 
-  let currentAssistantId = '';
-  let assistantText = '';
+    // 1️⃣ 用户消息
+    setMessages((prev) => [...prev, { role: 'user', content }]);
 
-  try {
-    await sendChatSSE(
-      {
-        message: content,
-        conversationId: conversationId ?? undefined,
-        userId,
-      },
-      (event: SSEEvent) => {
-        switch (event.type) {
-          case 'start': {
-            currentAssistantId = event.messageId;
+    // 2️⃣ 立刻创建 assistant 占位（思考中）
+    const assistantMessageId = crypto.randomUUID();
+    //let assistantText = '';
 
-            // 2️⃣ 创建 assistant 气泡
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: 'assistant',
-                content: '',
-                messageId: event.messageId,
-              },
-            ]);
-            break;
-          }
-
-          case 'delta': {
-            // 3️⃣ 追加增量文本
-            assistantText += event.text;
-
-            setMessages((prev) =>
-              prev.map((msg) =>
-                msg.messageId === currentAssistantId
-                  ? { ...msg, content: assistantText }
-                  : msg
-              )
-            );
-            break;
-          }
-
-          case 'end': {
-            // 4️⃣ 结束
-            setConversationId(event.conversationId);
-            setLoading(false);
-            break;
-          }
-        }
-      }
-    );
-  } catch (err) {
     setMessages((prev) => [
       ...prev,
       {
         role: 'assistant',
-        content: '❌ **出了点错误😢**，请稍后再试。',
+        content: '星洲正在思考⌛️',
+        messageId: assistantMessageId,
       },
     ]);
-    setLoading(false);
+
+    try {
+      await sendChatSSE(
+        {
+          message: content,
+          conversationId: conversationId ?? undefined,
+          userId,
+        },
+        (event: SSEEvent) => {
+          switch (event.type) {
+
+            case 'delta': {
+              assistantText += event.text;
+
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.messageId === assistantMessageId
+                    ? { ...msg, content: assistantText }
+                    : msg
+                )
+              );
+              break;
+            }
+
+            case 'end': {
+              endReceived = true;
+              setConversationId(event.conversationId);
+              setLoading(false);
+              break;
+            }
+          }
+        }
+      );
+      // ⭐ 兜底判断：只有“完全没生成内容”才覆盖为错误
+      if (!endReceived) {
+        setMessages((prev) =>
+          prev.map((msg) => {
+            if (msg.messageId !== assistantMessageId) return msg;
+
+            const alreadyHasText =
+              assistantText.trim().length > 0 &&
+              msg.content !== '星洲正在思考⌛️';
+
+            // ✅ 已经有内容了：保留内容，只在末尾轻提示
+            if (alreadyHasText) {
+              return {
+                ...msg,
+                content: msg.content + '\n\n⚠️（本次生成结束信号可能丢失，但内容已完整显示）',
+              };
+            }
+
+            // ❌ 没内容：才显示错误
+            return {
+              ...msg,
+              content: '❌ 出现了点问题，请稍后再试。',
+            };
+          })
+        );
+        setLoading(false);
+      }
+    } catch {
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg.messageId !== assistantMessageId) return msg;
+
+          const alreadyHasText =
+            assistantText.trim().length > 0 &&
+            msg.content !== '星洲正在思考⌛️';
+
+          if (alreadyHasText) {
+            return {
+              ...msg,
+              content: msg.content + '\n\n⚠️（连接中断，但内容已显示）',
+            };
+          }
+
+          return {
+            ...msg,
+            content: '❌ 出现了点问题😢，请稍后再试。',
+          };
+        })
+      );
+      setLoading(false);
+    }
+
   }
-}
+
 
 
 

@@ -1,56 +1,87 @@
-// src/utils/chatSSE.ts
 import type { SSEEvent } from '../pages/Chat';
+import API from './apiConfig';
 
 export async function sendChatSSE(
   payload: {
     message: string;
     conversationId?: string;
-    userId?: string; // ✅ 让 ChatWindow 传 userId 不再报错
+    userId?: string;
   },
   onEvent: (event: SSEEvent) => void
 ) {
-  const res = await fetch('/api/chat/stream', {
+  const controller = new AbortController();
+
+  // ⭐ 1️⃣ 记录最近一次收到数据的时间
+  let lastActivity = Date.now();
+
+  // ⭐ 2️⃣ 空闲超时检测（30 秒无数据才断）
+  const idleTimeout = 30000;
+
+  const idleChecker = setInterval(() => {
+    if (Date.now() - lastActivity > idleTimeout) {
+      controller.abort();
+    }
+  }, 5000);
+
+  const res = await fetch(API.chat.stream, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('auth_token') || ''}`,
     },
     body: JSON.stringify(payload),
+    signal: controller.signal,
   });
 
-  if (!res.body) throw new Error('SSE response has no body');
+  if (!res.ok) {
+    clearInterval(idleChecker);
+    throw new Error(`SSE request failed: ${res.status}`);
+  }
+
+  if (!res.body) {
+    clearInterval(idleChecker);
+    throw new Error('SSE response has no body');
+  }
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder('utf-8');
 
   let buffer = '';
 
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
 
-    buffer += decoder.decode(value, { stream: true });
+      if (done) break;
 
-    // 支持两种格式：
-    // 1) 纯 JSON 每行一个： {"type":"delta"...}\n
-    // 2) SSE data 行： data: {"type":"delta"...}\n
-    const lines = buffer.split('\n');
-    buffer = lines.pop() || '';
+      if (value) {
+        // ⭐ 3️⃣ 只要收到任何字节，就认为“活跃”
+        lastActivity = Date.now();
 
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (!line) continue;
+        buffer += decoder.decode(value, { stream: true });
 
-      const jsonText = line.startsWith('data:')
-        ? line.replace(/^data:\s*/, '')
-        : line;
+        // ⭐ 4️⃣ 正确分割 SSE 事件（支持 \n\n 和 \r\n\r\n）
+        const events = buffer.split(/\r?\n\r?\n/);
+        buffer = events.pop() || '';
 
-      try {
-        const evt = JSON.parse(jsonText) as SSEEvent;
-        onEvent(evt);
-      } catch {
-        console.warn('Invalid SSE line:', jsonText);
+        for (const rawEvent of events) {
+          const line = rawEvent.trim();
+          if (!line.startsWith('data:')) continue;
+
+          const jsonText = line.replace(/^data:\s*/, '');
+          const event = JSON.parse(jsonText) as SSEEvent;
+
+          onEvent(event);
+
+          // ⭐ 5️⃣ 收到 end，直接结束循环
+          if (event.type === 'end') {
+            return;
+          }
+        }
       }
     }
+  } finally {
+    // ⭐ 6️⃣ 清理定时器，避免内存泄漏
+    clearInterval(idleChecker);
   }
 }
