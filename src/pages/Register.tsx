@@ -10,6 +10,9 @@ import {
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import API from '../utils/apiConfig';
 
+
+
+
 const MOCK_SMS_CODE = '143323';
 
 export default function Register() {
@@ -24,6 +27,8 @@ export default function Register() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  //注册成功弹窗
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // 短信验证码倒计时
   const [countdown, setCountdown] = useState(0);
@@ -52,75 +57,78 @@ export default function Register() {
 
   /** 注册提交 */
   const handleRegister = async () => {
-    if (!agreed) {
-      setError('请先阅读并同意相关条款');
-      return;
+  // ===== 1️⃣ 前端校验（全部在这里） =====
+  if (!agreed) {
+    setError('请先阅读并同意相关条款');
+    return;
+  }
+
+  if (!name || !phone || !smsCode || !password || !confirmPassword) {
+    setError('请填写完整信息');
+    return;
+  }
+
+  if (
+    /\s/.test(name) ||
+    /\s/.test(phone) ||
+    /\s/.test(smsCode) ||
+    /\s/.test(password) ||
+    /\s/.test(confirmPassword)
+  ) {
+    setError('输入内容不能包含空格');
+    return;
+  }
+
+  if (password.length < 8) {
+    setError('密码长度不能少于 8 位');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError('两次输入的密码不一致');
+    return;
+  }
+
+  if (smsCode !== MOCK_SMS_CODE) {
+    setError('短信验证码错误');
+    return;
+  }
+
+  // ===== 2️⃣ 请求阶段 =====
+  setLoading(true);
+  setError('');
+
+  try {
+    const res = await fetch(API.auth.register, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: name,
+        phone,
+        password,
+      }),
+    });
+
+    if (res.status === 409) {
+      throw new Error('用户已存在');
     }
 
-    if (!name || !phone || !smsCode || !password || !confirmPassword) {
-      setError('请填写完整信息');
-      return;
+    if (!res.ok) {
+      throw new Error('注册失败，请稍后重试');
     }
 
-    if (password.length < 8) {
-      setError('密码长度不能少于 8 位');
-      return;
-    }
+    // ===== 3️⃣ 成功收口 =====
+    setShowSuccessModal(true);
 
-    if (password !== confirmPassword) {
-      setError('两次输入的密码不一致');
-      return;
-    }
+  } catch (e: any) {
+    setError(e.message || '注册失败');
+  } finally {
+    setLoading(false);
+  }
+};
 
-    if (smsCode !== MOCK_SMS_CODE) {
-      setError('短信验证码错误');
-      return;
-    }
-
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await fetch(API.auth.register, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: name,
-          phone: phone,
-          password: password,
-        }),
-      });
-
-      if (res.status === 409) {
-        throw new Error('用户已存在');
-      }
-
-      if (!res.ok) {
-        throw new Error('注册失败，请稍后重试');
-      }
-      if (
-        /\s/.test(name) ||
-        /\s/.test(phone) ||
-        /\s/.test(smsCode) ||
-        /\s/.test(password) ||
-        /\s/.test(confirmPassword)
-      ) {
-        setError('输入内容不能包含空格');
-        return;
-      }
-
-
-      // 注册成功 → 返回登录页
-      navigate('/login');
-    } catch (e: any) {
-      setError(e.message || '注册失败');
-    } finally {
-      setLoading(false);
-    }
-  };
 
 
   return (
@@ -190,7 +198,7 @@ export default function Register() {
             value={phone}
             onChange={(e) => {
               setPhone(e.currentTarget.value.replace(/\s/g, ''));
-              
+
             }}
           />
 
@@ -202,7 +210,7 @@ export default function Register() {
               value={smsCode}
               onChange={(e) => {
                 setSmsCode(e.currentTarget.value.replace(/\s/g, ''));
-                
+
               }}
             />
             <button
@@ -228,7 +236,7 @@ export default function Register() {
             value={password}
             onChange={(e) => {
               setPassword(e.currentTarget.value.replace(/\s/g, ''));
-              
+
             }}
           />
 
@@ -239,7 +247,7 @@ export default function Register() {
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''));
-              
+
             }}
           />
 
@@ -292,7 +300,75 @@ export default function Register() {
           </div>
         </div>
       </div>
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* 遮罩 */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
+          {/* 弹窗卡片 */}
+          <div
+            className="
+        relative z-10
+        w-full max-w-sm
+        rounded-2xl
+        bg-white/20
+        backdrop-blur-lg
+        border border-white/30
+        shadow-[0_20px_60px_rgba(0,0,0,0.4)]
+        px-8 py-10
+        text-center text-white
+      "
+          >
+            {/* 图标 */}
+            <div className="flex justify-center mb-4">
+              <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-green-400"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* 文本 */}
+            <h2 className="text-xl font-semibold mb-2">
+              注册成功
+            </h2>
+            <p className="text-sm text-white/80 mb-6">
+              你的账号已创建完成，可以前往登录
+            </p>
+
+            {/* 按钮 */}
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                navigate('/login');
+              }}
+              className="
+          w-full h-12
+          rounded-xl
+          bg-indigo-500
+          hover:bg-indigo-400
+          transition
+          font-medium
+        "
+            >
+              返回登录
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
+
   );
 }
 
