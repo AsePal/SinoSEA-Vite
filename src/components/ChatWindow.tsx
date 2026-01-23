@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
-import type { ChatMessage } from '../types/chat';
-import { apiRequest } from '../utils/apiConfig';
-import API from '../utils/apiConfig';
+
+///引入SSE
+import type { ChatMessage, SSEEvent } from '../pages/Chat';
+import { sendChatSSE } from '../utils/chatSSE';
+
 
 
 
@@ -18,15 +20,11 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
 
-  const thinkingTimerRef = useRef<number | null>(null);
-
   // ⚠️ 只用于按钮 / 输入框，不参与消息逻辑
   const [loading, setLoading] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  //const [sendingAnim, setSendingAnim] = useState(false);
 
   const [sendPhase, setSendPhase] =
     useState<'idle' | 'out' | 'return'>('idle');
@@ -73,100 +71,14 @@ export default function ChatWindow({
     el.style.height = 'auto';
   }
   /*--------------首次对话回复样式 ---------------------*/
-  function getWelcomeMessage(): ChatMessage[] {
-    return [
-      {
-        role: 'assistant',
-        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我😎'
-      }
-    ];
-  }
-  //触发欢迎语逐字回复
-  function resetChat() {
-    setMessages(getWelcomeMessage());
-    setConversationId(null);
-
-    // 逐字显示欢迎语
-    const welcomeMessage = getWelcomeMessage();
-    if (welcomeMessage && welcomeMessage.length > 0) {
-      typeAssistantReply(welcomeMessage[0].content);
-    }
-  }
-
-
-  /* ---------------- assistant 打字 ---------------- */
-
-  function startThinkingAnimation() {
-    let dots = 0;
-
-    // 如果之前有动画，先停掉
-    stopThinkingAnimation(); // 防止重复
-
-    thinkingTimerRef.current = window.setInterval(() => {
-      dots = (dots + 1) % 4;
-
-      setMessages((prev) => {
-        const updated = [...prev];
-        const last = updated[updated.length - 1];
-
-        if (last && last.role === 'assistant') {
-          last.content = `星洲正在思考⌛️${'.'.repeat(dots)}`;
-        }
-
-        return updated;
-      });
-    }, 300);
-  }
-  function stopThinkingAnimation() {
-    if (thinkingTimerRef.current !== null) {
-      clearInterval(thinkingTimerRef.current);
-      thinkingTimerRef.current = null;
-    }
-  }
-  function typeAssistantReply(fullText: string) {
-    let index = 0;
-
-    // ⭐ 关键：先“立刻覆盖”思考文本
-    setMessages((prev) => {
-      const updated = [...prev];
-      const last = updated[updated.length - 1];
-      if (last && last.role === 'assistant') {
-        last.loading = false;
-        last.content = '';
-        last.typing = true;
-      }
-      return updated;
-    });
-
-    const timer = setInterval(() => {
-      index++;
-
-      setMessages((prev) => {
-        const updated = [...prev];
-        const last = updated[updated.length - 1];
-        if (last && last.role === 'assistant') {
-          last.content = fullText.slice(0, index);
-        }
-        return updated;
-      });
-
-      if (index >= fullText.length) {
-        clearInterval(timer);
-
-        setMessages((prev) => {
-          const updated = [...prev];
-          const last = updated[updated.length - 1];
-
-          if (last && last.role === 'assistant') {
-            last.typing = false;
-          }
-          return updated;
-        });
-      }
-    }, 18);
-  }
-
-
+  useEffect(() => {
+  setMessages([
+    {
+      role: 'assistant',
+      content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
+    },
+  ]);
+}, []);
 
   /* ---------------- 滚动 ---------------- */
 
@@ -174,73 +86,84 @@ export default function ChatWindow({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  /* ---------------- 初始欢迎 ---------------- */
-
-  useEffect(() => {
-    const welcomeMessage = getWelcomeMessage();
-    setMessages(welcomeMessage);
-
-    // 逐字显示欢迎语
-    if (welcomeMessage && welcomeMessage.length > 0) {
-      typeAssistantReply(welcomeMessage[0].content);
-    }
-  }, []);
-
   /* ---------------- 发送消息 ---------------- */
 
   async function sendMessage() {
-    const content = input.trim();
-    if (!content || loading) return;
+  const content = input.trim();
+  if (!content || loading) return;
 
-    setLoading(true);
+  setLoading(true);
+  setInput('');
+  requestAnimationFrame(resetTextareaHeight);
 
-    // 1️⃣ 用户消息
-    setMessages((prev) => [...prev, { role: 'user', content }]);
-    setInput('');
-    requestAnimationFrame(resetTextareaHeight);
+  // 1️⃣ 用户消息
+  setMessages((prev) => [
+    ...prev,
+    { role: 'user', content },
+  ]);
 
-    // 2️⃣ assistant loading
+  let currentAssistantId = '';
+  let assistantText = '';
+
+  try {
+    await sendChatSSE(
+      {
+        message: content,
+        conversationId: conversationId ?? undefined,
+        userId,
+      },
+      (event: SSEEvent) => {
+        switch (event.type) {
+          case 'start': {
+            currentAssistantId = event.messageId;
+
+            // 2️⃣ 创建 assistant 气泡
+            setMessages((prev) => [
+              ...prev,
+              {
+                role: 'assistant',
+                content: '',
+                messageId: event.messageId,
+              },
+            ]);
+            break;
+          }
+
+          case 'delta': {
+            // 3️⃣ 追加增量文本
+            assistantText += event.text;
+
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.messageId === currentAssistantId
+                  ? { ...msg, content: assistantText }
+                  : msg
+              )
+            );
+            break;
+          }
+
+          case 'end': {
+            // 4️⃣ 结束
+            setConversationId(event.conversationId);
+            setLoading(false);
+            break;
+          }
+        }
+      }
+    );
+  } catch (err) {
     setMessages((prev) => [
       ...prev,
-      { role: 'assistant', content: '星洲正在思考⌛️' }
+      {
+        role: 'assistant',
+        content: '❌ **出了点错误😢**，请稍后再试。',
+      },
     ]);
-    startThinkingAnimation();
-
-    try {
-      const body: any = {
-        message: content,
-        userId,
-      };
-
-      if (conversationId) {
-        body.conversationId = conversationId;
-      }
-
-      const res = await apiRequest(API.chat.send, {
-        method: 'POST',
-        body,
-      });
-
-      if (!res.ok) throw new Error('request failed');
-
-      const data: {
-        answer: string;
-        conversationId: string;
-      } = await res.json();
-
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
-      }
-
-      stopThinkingAnimation();
-      typeAssistantReply(data.answer);
-    } catch {
-      stopThinkingAnimation();
-      typeAssistantReply('❌ **出了点错误😢**，请稍后再试。');
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
   }
+}
+
 
 
 

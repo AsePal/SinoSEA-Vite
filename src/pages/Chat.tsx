@@ -12,12 +12,48 @@ import HomeBackground from '../Background/HomeBackground';
 import API, { apiRequest } from '../utils/apiConfig';
 import { parseJwt } from '../utils/jwt';
 
+// src/types/chat.ts
+
+export type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+  messageId?: string; // ⭐ 为 SSE 准备
+};
+
+/* ---------- SSE 事件类型 ---------- */
+
+export type SSEStartEvent = {
+  type: 'start';
+  conversationId: string;
+  messageId: string;
+};
+
+export type SSEDletaEvent = {
+  type: 'delta';
+  text: string;
+};
+
+export type SSEEndEvent = {
+  type: 'end';
+  conversationId: string;
+  messageId: string;
+  usage?: {
+    total_tokens: number;
+  };
+};
+
+export type SSEEvent = SSEStartEvent | SSEDletaEvent | SSEEndEvent;
+
+
+
 
 export default function Chat() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const DEFAULT_AVATAR = '/userlogo.ico';
+  const [conversationId, setConversationId] = useState<string | undefined>();
+
 
 
   const navigate = useNavigate();
@@ -52,7 +88,7 @@ export default function Chat() {
         // 未获取到信息则使用本地的头像
         setUser({
           nickname,
-          avatar:'/userlogo.ico'
+          avatar: '/userlogo.ico'
         })
       });
   }, [navigate]);
