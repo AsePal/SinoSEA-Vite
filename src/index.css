@@ -51,3 +51,28 @@ body {
   background: rgba(255, 255, 255, 0.45);
 }
 
+.draw-circle {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: draw-circle 0.6s ease-out forwards;
+}
+
+.draw-check {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: draw-check 0.4s ease-out forwards;
+  animation-delay: 0.6s; /* 等圆画完再画勾 */
+}
+
+@keyframes draw-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+

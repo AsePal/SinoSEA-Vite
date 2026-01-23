@@ -57,77 +57,77 @@ export default function Register() {
 
   /** 注册提交 */
   const handleRegister = async () => {
-  // ===== 1️⃣ 前端校验（全部在这里） =====
-  if (!agreed) {
-    setError('请先阅读并同意相关条款');
-    return;
-  }
-
-  if (!name || !phone || !smsCode || !password || !confirmPassword) {
-    setError('请填写完整信息');
-    return;
-  }
-
-  if (
-    /\s/.test(name) ||
-    /\s/.test(phone) ||
-    /\s/.test(smsCode) ||
-    /\s/.test(password) ||
-    /\s/.test(confirmPassword)
-  ) {
-    setError('输入内容不能包含空格');
-    return;
-  }
-
-  if (password.length < 8) {
-    setError('密码长度不能少于 8 位');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    setError('两次输入的密码不一致');
-    return;
-  }
-
-  if (smsCode !== MOCK_SMS_CODE) {
-    setError('短信验证码错误');
-    return;
-  }
-
-  // ===== 2️⃣ 请求阶段 =====
-  setLoading(true);
-  setError('');
-
-  try {
-    const res = await fetch(API.auth.register, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: name,
-        phone,
-        password,
-      }),
-    });
-
-    if (res.status === 409) {
-      throw new Error('用户已存在');
+    // ===== 1️⃣ 前端校验（全部在这里） =====
+    if (!agreed) {
+      setError('请先阅读并同意相关条款');
+      return;
     }
 
-    if (!res.ok) {
-      throw new Error('注册失败，请稍后重试');
+    if (!name || !phone || !smsCode || !password || !confirmPassword) {
+      setError('请填写完整信息');
+      return;
     }
 
-    // ===== 3️⃣ 成功收口 =====
-    setShowSuccessModal(true);
+    if (
+      /\s/.test(name) ||
+      /\s/.test(phone) ||
+      /\s/.test(smsCode) ||
+      /\s/.test(password) ||
+      /\s/.test(confirmPassword)
+    ) {
+      setError('输入内容不能包含空格');
+      return;
+    }
 
-  } catch (e: any) {
-    setError(e.message || '注册失败');
-  } finally {
-    setLoading(false);
-  }
-};
+    if (password.length < 8) {
+      setError('密码长度不能少于 8 位');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('两次输入的密码不一致');
+      return;
+    }
+
+    if (smsCode !== MOCK_SMS_CODE) {
+      setError('短信验证码错误');
+      return;
+    }
+
+    // ===== 2️⃣ 请求阶段 =====
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(API.auth.register, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: name,
+          phone,
+          password,
+        }),
+      });
+
+      if (res.status === 409) {
+        throw new Error('用户已存在');
+      }
+
+      if (!res.ok) {
+        throw new Error('注册失败，请稍后重试');
+      }
+
+      // ===== 3️⃣ 成功收口 =====
+      setShowSuccessModal(true);
+
+    } catch (e: any) {
+      setError(e.message || '注册失败');
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -321,22 +321,34 @@ export default function Register() {
           >
             {/* 图标 */}
             <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-green-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
+              <svg
+                className="w-16 h-16"
+                viewBox="0 0 52 52"
+                fill="none"
+              >
+                {/* 外圆 */}
+                <circle
+                  cx="26"
+                  cy="26"
+                  r="24"
+                  stroke="rgba(74,222,128,0.9)"   // green-400
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  className="draw-circle"
+                />
+
+                {/* 对勾 */}
+                <path
+                  d="M14 27 L23 35 L38 18"
+                  stroke="rgba(74,222,128,0.9)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="draw-check"
+                />
+              </svg>
             </div>
+
 
             {/* 文本 */}
             <h2 className="text-xl font-semibold mb-2">
