@@ -1,4 +1,6 @@
 import type { UserInfo } from '../types/user';
+import UserAvatarMenu from './UserAvatarMenu';
+
 
 type TopNavProps = {
   user: UserInfo | null;
@@ -14,24 +16,18 @@ export default function TopNav({
   return (
     <header
       className=" h-[70px] shrink-0 bg-black/60 backdrop-blur
-        border-b border-white/10 px-6 flex items-center"
+        border-b border-white/10 px-6 flex items-center relative z-50 overflow-visible"
     >
       {/* 左侧用户 */}
-      <div className="flex items-center gap-3 min-w-[220px]">
-        {user?.avatar ? (
-          <img
-            src={user.avatar}
-            alt="avatar"
-            className="w-9 h-9 rounded-full"
-          />
-        ) : (
-          <div className="w-9 h-9 rounded-full bg-white/10" />
-        )}
-
-        <span className="font-semibold text-orange-300">
-          {user?.nickname || '星洲用户'}
-        </span>
+      <div className="flex items-center min-w-[220px]">
+        <UserAvatarMenu
+          user={{
+            nickname: user?.nickname || '星洲用户',
+            avatarUrl: user?.avatar,
+          }}
+        />
       </div>
+
 
       {/* 中间欢迎语（真正居中） */}
       <div className="flex-1 text-center pointer-events-none">

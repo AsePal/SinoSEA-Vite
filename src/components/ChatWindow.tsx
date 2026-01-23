@@ -26,7 +26,7 @@ export default function ChatWindow({
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [sendingAnim, setSendingAnim] = useState(false);
+  //const [sendingAnim, setSendingAnim] = useState(false);
 
   const [sendPhase, setSendPhase] =
     useState<'idle' | 'out' | 'return'>('idle');
