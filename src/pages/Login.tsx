@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API, { apiRequest } from '../utils/apiConfig';
+import type { Variants } from "framer-motion";
 
+//图标样式
 import {
   AcademicCapIcon,
   HeartIcon,
@@ -11,6 +13,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
+//卡片动画
+import { motion } from 'framer-motion';
 
 
 export default function Login() {
@@ -24,61 +28,101 @@ export default function Login() {
 
   const navigate = useNavigate();
 
+  //提示动画（标题）
+  const titleVariants: Variants = {
+    hidden: { opacity: 0, x: -20 },
+    show: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut'as const,
+      },
+    },
+  };
+
+
+  //提示动画(文本)
+  const textContainer:Variants = {
+    show: {
+      transition: {
+        //延迟控制
+        delayChildren: 0.6,
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const textItem:Variants = {
+    hidden: { opacity: 0, y: 8 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: 'easeOut' },
+    },
+  };
 
 
 
   const handleLogin = async () => {
-  if (!agreed) {
-    setError('请先阅读并同意相关条款');
-    return;
-  }
-
-  if (!account || !password) {
-    setError('请输入账号和密码');
-    return;
-  }
-  if (/\s/.test(account) || /\s/.test(password)) {
-  setError('账号或密码中不能包含空格');
-  return;
-}
-
-
-  setLoading(true);
-  setError('');
-
-  try {
-    const res = await apiRequest(API.auth.login, {
-      method: 'POST',
-      body: {
-        identifier: account,
-        password,
-      },
-    });
-
-    if (res.status === 401) {
-      throw new Error('用户名或密码错误');
+    if (!agreed) {
+      setError('请先阅读并同意相关条款');
+      return;
     }
 
-    if (!res.ok) {
-      throw new Error('登录失败，请稍后重试');
+    if (!account || !password) {
+      setError('请输入账号和密码');
+      return;
+    }
+    if (/\s/.test(account) || /\s/.test(password)) {
+      setError('账号或密码中不能包含空格');
+      return;
     }
 
-    const data = await res.json();
-    localStorage.setItem('auth_token', data.accessToken);
 
-    navigate('/chat');
-  } catch (e: any) {
-    setError(e.message || '登录失败');
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await apiRequest(API.auth.login, {
+        method: 'POST',
+        body: {
+          identifier: account,
+          password,
+        },
+      });
+
+      if (res.status === 401) {
+        throw new Error('用户名或密码错误');
+      }
+
+      if (!res.ok) {
+        throw new Error('登录失败，请稍后重试');
+      }
+
+      const data = await res.json();
+      localStorage.setItem('auth_token', data.accessToken);
+
+      navigate('/chat');
+    } catch (e: any) {
+      setError(e.message || '登录失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
 
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center px-4"
       style={{ backgroundImage: 'url("/images/login-bg.avif")' }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
     >
       {/* 主卡片 */}
       <div className="w-full max-w-5xl bg-white rounded-2xl h-[590px] shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
@@ -97,24 +141,47 @@ export default function Login() {
 
           {/* 内容 */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
+            <motion.h1
+              variants={titleVariants}
+                initial="hidden"
+                animate="show"
+              className="flex items-center gap-3 mb-6">
               <CpuChipIcon className="w-10 h-10" />
-              <h1 className="text-3xl font-bold">SionSEA-AI</h1>
-            </div>
+              <p
+                
+                className="text-3xl font-bold">
+                SionSEA-AI
+              </p>
+            </motion.h1>
 
-            <h2 className="text-xl font-semibold mb-4">
+            <motion.h1
+              //位置控制
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              //时间控制
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="text-xl font-semibold mb-4">
               智能校园服务解决方案
-            </h2>
+            </motion.h1>
 
-            <p className="text-base leading-relaxed opacity-90">
-              智为渡舟，暖心为岸
-              <br />
-              专为校园环境设计的智能助手
-              <br />
-              帮助你解决学习、生活、心理等问题，
-              <br />
-              让校园生活更加高效便捷。
-            </p>
+            <motion.div
+              variants={textContainer}
+              initial="hidden"
+              animate="show"
+              className="space-y-1 text-base opacity-90"
+            >
+              {[
+                '智为渡舟，暖心为岸',
+                '专为校园环境设计的智能助手',
+                '帮助你解决学习、生活、心理等问题，',
+                '让校园生活更加高效便捷。',
+              ].map((line) => (
+                <motion.p key={line} variants={textItem}>
+                  {line}
+                </motion.p>
+              ))}
+            </motion.div>
+
 
             <div className="mt-10 grid grid-cols-2 gap-4 text-sm">
               <Feature icon={AcademicCapIcon} text="学习助手" />
@@ -186,6 +253,7 @@ export default function Login() {
 
           {/* 登录按钮 */}
           <button
+            type='button'
             disabled={loading || !agreed}
             onClick={handleLogin}
             className={`

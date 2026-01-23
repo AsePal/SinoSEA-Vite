@@ -145,7 +145,7 @@ export default function Register() {
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
               <CpuChipIcon className="w-10 h-10" />
-              <h1 className="text-3xl font-bold">星洲智能助手</h1>
+              <h1 className="text-3xl font-bold">SionSEA-AI</h1>
             </div>
 
             <p className="text-base leading-relaxed opacity-90">

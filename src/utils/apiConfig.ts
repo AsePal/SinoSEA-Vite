@@ -1,6 +1,6 @@
 import { API_BASE } from './env';
 
-const BASE = API_BASE ?? 'http://192.168.10.164:3000';
+const BASE = API_BASE ?? 'http://172.16.35.15:3000';
 const TOKEN_KEY = 'auth_token';
 
 
@@ -100,7 +100,7 @@ export async function apiRequest(
   // token 失效统一处理
   if (res.status === 401) {
     localStorage.removeItem(TOKEN_KEY);
-    window.location.href = '/login';
+    //throw new Error('UNAUTHORIZED');
   }
 
   return res;
