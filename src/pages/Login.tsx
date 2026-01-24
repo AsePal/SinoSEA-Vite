@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API, { apiRequest } from '../utils/apiConfig';
+
 
 export default function Login() {
   const [account, setAccount] = useState('');
@@ -10,7 +11,31 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [capsLockOn, setCapsLockOn] = useState(false);
 
+  //密码查看事件
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
+  //密码框聚焦
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
+  //键盘事件监听
+  useEffect(() => {
+    const handleKeyEvent = (e: KeyboardEvent) => {
+      setCapsLockOn(e.getModifierState('CapsLock'));
+    };
+
+    window.addEventListener('keydown', handleKeyEvent);
+    window.addEventListener('keyup', handleKeyEvent);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyEvent);
+      window.removeEventListener('keyup', handleKeyEvent);
+    };
+  }, []);
+
+  const clearError = () => {
+    if (error) setError('');
+  };
 
   const handleLogin = async () => {
     if (!agreed) {
@@ -65,7 +90,7 @@ export default function Login() {
       {/* 登录卡片 */}
       <div className="relative z-10 w-full max-w-2xl px-4 ">
         <div
-          className=" min-h-[570px] rounded-3xl bg-white/20 backdrop-blur-lg
+          className=" min-h-[600px] rounded-3xl bg-white/20 backdrop-blur-lg
             border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white
           "
         >
@@ -92,31 +117,50 @@ export default function Login() {
             "
             placeholder="手机号 / 用户名"
             value={account}
+            onFocus={clearError}
             onChange={(e) =>
               setAccount(e.currentTarget.value.replace(/\s/g, ''))
             }
           />
           {/* 密码 */}
-          <input
-            type="password"
-            className="
-              w-full mb-2 px-4 py-3
-              rounded-xl
-              bg-white/20
-              text-white
-              placeholder-white/60
-              border border-white/30
-              focus:outline-none
+          <div className="relative w-full mb-2">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              className=" w-full px-4 py-3 pr-12
+              rounded-xl bg-white/20 text-white
+             placeholder-white/60
+             border border-white/30
+             focus:outline-none
               focus:ring-2 focus:ring-white/40
-              transition
+             transition
             "
-            placeholder="密码"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.currentTarget.value.replace(/\s/g, ''))
-            }
-            onKeyUp={(e) => setCapsLockOn(e.getModifierState('CapsLock'))}
-          />
+              placeholder="密码"
+              value={password}
+              onFocus={() => {
+                clearError();
+                setPasswordFocused(true);
+              }}
+              onBlur={() => setPasswordFocused(false)}
+              onChange={(e) =>
+                setPassword(e.currentTarget.value.replace(/\s/g, ''))
+              }
+            />
+
+            {/* 👁️ 小眼睛：永远显示 */}
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="
+             absolute right-4 top-1/2 -translate-y-1/2
+             text-white/60 hover:text-white
+             transition
+            "
+              tabIndex={-1}
+            >
+              {showPassword ? '🧐' : '🙈'}
+            </button>
+          </div>
+
           {/* 错误提示占位区 */}
           <div className="min-h-[20px] mb-2 transition-opacity duration-200">
             {error && (
@@ -126,15 +170,24 @@ export default function Login() {
             )}
           </div>
 
-          {capsLockOn && (
-            <div className="text-amber-300 text-sm mb-3">
+
+          <div className="h-[20px] mb-3">
+            <div
+              className={` text-amber-300 text-sm transition-opacity duration-200
+             ${passwordFocused && capsLockOn ? 'opacity-100' : 'opacity-0'}
+            `}
+            >
               ⚠️ 大写锁定已开启（Caps Lock）
             </div>
-          )}
-          {/* 分隔线 */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 h-px bg-white/20" />
           </div>
+
+
+
+          {/* 错误提示与操作区分隔线 */}
+          <div className="my-4 flex items-center">
+            <div className="flex-1 h-px bg-white/25" />
+          </div>
+
 
 
           {/* 主登录按钮 */}

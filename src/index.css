@@ -46,7 +46,7 @@ body {
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
-
+/*注册页的注册成功手绘图标*/
 .chat-scroll:hover::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.45);
 }
@@ -74,5 +74,16 @@ body {
   to {
     stroke-dashoffset: 0;
   }
+}
+/*CSS 禁用浏览器自带的密码眼睛*/
+/* Edge / IE（Chromium & 老 Edge 都管） */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Chrome / Safari / Chromium */
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none;
 }
 
