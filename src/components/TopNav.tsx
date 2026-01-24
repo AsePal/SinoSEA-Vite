@@ -21,7 +21,7 @@ export default function TopNav({
         border-b border-white/10 px-6 flex items-center relative z-50 overflow-visible"
     >
       {/* 左侧用户 */}
-      <div className="flex items-center min-w-[220px]">
+      <div className="flex items-center min-w-0 md:min-w-[220px]">
         <UserAvatarMenu
           user={{
             nickname: user?.nickname || '星洲用户',
@@ -34,16 +34,21 @@ export default function TopNav({
 
       {/* 中间欢迎语（真正居中） */}
       <div className="flex-1 text-center pointer-events-none">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
+        <h1 className="text-lg md:text-2xl font-bold
+          bg-gradient-to-r from-orange-400 to-yellow-300
+          bg-clip-text text-transparent
+          ">
           欢迎！
         </h1>
+
       </div>
 
       {/* 右侧按钮 */}
-      <div className="flex items-center gap-3 min-w-[220px] justify-end">
+      <div className="flex items-center gap-3 min-w-0 md:min-w-[220px] justify-end">
+
         <button
           type="button"
-          className="btn-primary"
+          className="btn-primary hidden sm:inline-flex"
           onClick={onNewChat}
         >
           新对话

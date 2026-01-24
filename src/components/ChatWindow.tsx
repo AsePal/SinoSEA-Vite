@@ -238,9 +238,20 @@ export default function ChatWindow({
   /* ---------------- UI ---------------- */
 
   return (
-    <div className="w-full h-full bg-black/50 backdrop-blur rounded-xl border border-white/10 flex flex-col">
+    <div className=" w-full h-full bg-black/50 backdrop-blur
+    rounded-lg md:rounded-xl
+    border border-white/10
+    flex flex-col
+   "
+    >
       {/* Header */}
-      <div className="p-4 border-b border-white/10 text-orange-300 font-semibold">
+      <div className=" p-3 md:p-4
+          border-b border-white/10
+         text-orange-300
+          text-sm md:text-base
+          font-semibold
+        ">
+
         SionSEA-AI
         {conversationId && (
           <span className="ml-2 text-xs text-gray-400">
@@ -258,7 +269,7 @@ export default function ChatWindow({
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-white/10 flex gap-2">
+      <div className="p-3 md:p-4 border-t border-white/10 flex gap-2">
         <textarea
           ref={textareaRef}
           value={input}

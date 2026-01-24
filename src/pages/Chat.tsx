@@ -112,10 +112,22 @@ export default function Chat() {
         />
 
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
+          {/* 桌面显示，手机隐藏 */}
+          <div className="hidden md:block">
+            <Sidebar />
+          </div>
 
           <main className="flex-1 flex justify-center overflow-hidden">
-            <div className="w-full max-w-[1100px] h-full px-6 py-8 animate-fade-in">
+            <div
+              className="
+              w-full
+              max-w-[1100px]
+              h-full
+              px-3 md:px-6
+              py-4 md:py-8
+              animate-fade-in
+             "
+            >
               <ChatWindow
                 key={resetKey}
                 userAvatar={user?.avatar}
@@ -124,6 +136,7 @@ export default function Chat() {
             </div>
           </main>
         </div>
+
 
         {/* 退出登录 */}
         <LogoutConfirmModal
