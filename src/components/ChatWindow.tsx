@@ -20,14 +20,20 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
 
+  const [justEntered, setJustEntered] = useState(true);
+
+
+
+
   // ⚠️ 只用于按钮 / 输入框，不参与消息逻辑
   const [loading, setLoading] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [sendPhase, setSendPhase] =
-    useState<'idle' | 'out' | 'return'>('idle');
+  type SendPhase = 'idle' | 'out' | 'reset' | 'return';
+  const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
+
 
 
   /*------------小飞机✈️图标触发逻辑------------ */
@@ -44,16 +50,25 @@ export default function ChatWindow({
   function triggerSendAnimation() {
     if (sendPhase !== 'idle') return;
 
+    // 1️⃣ 向右飞走
     setSendPhase('out');
 
+    // 2️⃣ 瞬移到左侧（无动画）
+    setTimeout(() => {
+      setSendPhase('reset');
+    }, 400); // 与 out 动画时长一致
+
+    // 3️⃣ 从左侧飞回
     setTimeout(() => {
       setSendPhase('return');
-    }, 600);
+    }, 420); // 必须比 reset 稍晚一帧
 
+    // 4️⃣ 回到稳定态
     setTimeout(() => {
       setSendPhase('idle');
-    }, 1100);
+    }, 900);
   }
+
 
 
   /* ---------------- 输入框高度 ---------------- */
@@ -85,6 +100,21 @@ export default function ChatWindow({
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  /*飞机入场动画*/
+  useEffect(() => {
+    // 页面初次进入：从左侧飞入
+    requestAnimationFrame(() => {
+      setSendPhase('return');
+    });
+
+    const t = setTimeout(() => {
+      setSendPhase('idle');
+      setJustEntered(false);
+    }, 600);
+
+    return () => clearTimeout(t);
+  }, []);
 
   /* ---------------- 发送消息 ---------------- */
 
@@ -259,12 +289,20 @@ export default function ChatWindow({
             isabled:cursor-not-allowedoverflow-hidden"
         >
           <PaperAirplaneIcon
-            className={` w-5 h-5 text-white absolute transition-all duration-700 ease-in-out
-                ${sendPhase === 'out'
-                ? 'translate-x-24 translate-y-0 rotate-0 opacity-0'
+            className={` absolute w-5 h-5 text-white
+
+            ${sendPhase === 'reset'
+                ? 'transition-none -translate-x-16 opacity-0'
+                : 'transition-all duration-500 ease-in-out'
+              }
+
+             ${sendPhase === 'out'
+                ? 'translate-x-32 opacity-0'
                 : sendPhase === 'return'
-                  ? '-translate-x-16 translate-y-0 opacity-0'
-                  : 'translate-x-0 translate-y-0 opacity-100'
+                  ? 'translate-x-0 opacity-100'
+                  : sendPhase === 'idle'
+                    ? 'translate-x-0 opacity-100'
+                    : ''
               }
             `}
           />

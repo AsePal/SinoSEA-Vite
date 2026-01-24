@@ -110,7 +110,7 @@ export default function Chat() {
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
           <main className="flex-1 flex justify-center overflow-hidden">
-            <div className="w-full max-w-[1100px] h-full px-6 py-8">
+            <div className="w-full max-w-[1100px] h-full px-6 py-8 animate-fade-in">
               <ChatWindow
                 key={resetKey}
                 userAvatar={user?.avatar}

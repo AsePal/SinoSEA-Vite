@@ -54,6 +54,50 @@ export default function Landing() {
       `}
     >
       {/* ===== Hero 首屏 ===== */}
+      {/* ===== 背景层 ===== */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
+        {/* 渐变光晕（保留 + 微调） */}
+        <div className="absolute -top-40 -left-40 w-[520px] h-[520px] bg-sky-200/40 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -right-40 w-[480px] h-[480px] bg-blue-200/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-[420px] h-[420px] bg-cyan-200/30 rounded-full blur-3xl" />
+
+        {/* 流动线条（极弱存在感） */}
+        <svg
+          className="absolute inset-0 w-full h-full opacity-[0.08]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#06b6d4" />
+            </linearGradient>
+          </defs>
+
+          <path
+            d="M0,200 C300,100 600,300 1200,180"
+            fill="none"
+            stroke="url(#lineGradient)"
+            strokeWidth="2"
+          />
+          <path
+            d="M0,420 C400,320 800,520 1200,380"
+            fill="none"
+            stroke="url(#lineGradient)"
+            strokeWidth="1.5"
+          />
+        </svg>
+
+        {/* 点阵（星点感，呼应“星洲”） */}
+        <div
+          className="
+      absolute inset-0
+      bg-[radial-gradient(circle,_rgba(59,130,246,0.15)_1px,_transparent_1px)]
+      [background-size:28px_28px]
+      opacity-[0.15]
+      "
+        />
+      </div>
       <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
 
         <h1
@@ -103,7 +147,7 @@ export default function Landing() {
           "
           style={{ animationDelay: `${BASE_DELAY + STEP * 6}s` }}
         >
-          让我们开始吧
+          让我们开始吧 →
         </button>
       </section>
 
