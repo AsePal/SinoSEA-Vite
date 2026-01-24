@@ -2,22 +2,22 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../types/user';
 
-
 import TopNav from '../components/TopNav';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
+import AvatarEditorModal from '../components/AvatarEditorModal';
 
 import API, { apiRequest } from '../utils/apiConfig';
 import { parseJwt } from '../utils/jwt';
 
-// src/types/chat.ts
+/* ---------- 聊天消息类型 ---------- */
 
 export type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
-  messageId?: string; // ⭐ 为 SSE 准备
+  messageId?: string;
 };
 
 /* ---------- SSE 事件类型 ---------- */
@@ -37,62 +37,65 @@ export type SSEEndEvent = {
   type: 'end';
   conversationId: string;
   messageId: string;
-  usage?: {
-    total_tokens: number;
-  };
 };
 
 export type SSEEvent = SSEStartEvent | SSEDletaEvent | SSEEndEvent;
 
-
-
+/* ---------- 主组件 ---------- */
 
 export default function Chat() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showAvatarEditor, setShowAvatarEditor] = useState(false);
+
   const DEFAULT_AVATAR = '/userlogo.ico';
-  const [conversationId, setConversationId] = useState<string | undefined>();
-
-
-
   const navigate = useNavigate();
 
-  // ✅ 用户初始化逻辑（必须在组件内部）
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+  /* ---------- 获取用户信息（权威逻辑） ---------- */
 
-    // ❗ 没有 token，直接回登录页
+  function fetchUserInfo() {
+    const token = localStorage.getItem('auth_token');
     if (!token) {
       navigate('/login');
       return;
     }
 
-    // 1️⃣ 从 JWT 解析昵称
+    // 🔹 token 里的用户名作为备用
     const payload = parseJwt(token);
-    const nickname = payload?.username ?? '星洲用户';
+    const fallbackNickname = payload?.username ?? '星洲用户';
 
-    // 2️⃣ 请求 user/info 拿头像
-    apiRequest(API.user.profile)
+    apiRequest(API.user.info)
       .then((res) => {
-        if (!res.ok) throw new Error('failed to fetch user info');
+        if (!res.ok) throw new Error('fetch user info failed');
         return res.json();
       })
       .then((data) => {
+        console.log('🟢 user/info 返回数据:', data);
+
         setUser({
-          nickname,
-          avatar: data.avatar || DEFAULT_AVATAR,
+          nickname: data.userName || fallbackNickname,
+          avatar: data.avatarUrl
+            ? `${data.avatarUrl}?t=${Date.now()}`
+            : DEFAULT_AVATAR,
         });
       })
       .catch(() => {
-        // 未获取到信息则使用本地的头像
+        // ❗ 接口失败才整体回退
         setUser({
-          nickname,
-          avatar: '/userlogo.ico'
-        })
+          nickname: fallbackNickname,
+          avatar: DEFAULT_AVATAR,
+        });
       });
-  }, [navigate]);
+  }
 
+  /* ---------- 页面初始化 ---------- */
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
+  /* ---------- 新对话 ---------- */
 
   function handleNewChat() {
     setResetKey((k) => k + 1);
@@ -105,10 +108,12 @@ export default function Chat() {
           user={user}
           onNewChat={handleNewChat}
           onLogout={() => setShowLogoutModal(true)}
+          onEditAvatar={() => setShowAvatarEditor(true)}
         />
 
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
+
           <main className="flex-1 flex justify-center overflow-hidden">
             <div className="w-full max-w-[1100px] h-full px-6 py-8 animate-fade-in">
               <ChatWindow
@@ -120,6 +125,7 @@ export default function Chat() {
           </main>
         </div>
 
+        {/* 退出登录 */}
         <LogoutConfirmModal
           open={showLogoutModal}
           onCancel={() => setShowLogoutModal(false)}
@@ -128,6 +134,17 @@ export default function Chat() {
             setUser(null);
             setShowLogoutModal(false);
             navigate('/login');
+          }}
+        />
+
+        {/* 修改头像 */}
+        <AvatarEditorModal
+          open={showAvatarEditor}
+          currentAvatar={user?.avatar || DEFAULT_AVATAR}
+          onClose={() => setShowAvatarEditor(false)}
+          onSuccess={() => {
+            // ⭐ 上传成功后，重新从后端拉一次权威数据
+            fetchUserInfo();
           }}
         />
       </div>

@@ -6,12 +6,14 @@ type TopNavProps = {
   user: UserInfo | null;
   onNewChat: () => void;
   onLogout: () => void;
+  onEditAvatar: () => void;
 };
 
 export default function TopNav({
   user,
   onNewChat,
   onLogout,
+  onEditAvatar,
 }: TopNavProps) {
   return (
     <header
@@ -23,8 +25,9 @@ export default function TopNav({
         <UserAvatarMenu
           user={{
             nickname: user?.nickname || '星洲用户',
-            avatarUrl: user?.avatar,
+            avatar: user?.avatar,
           }}
+          onEditAvatar={onEditAvatar}
         />
       </div>
 

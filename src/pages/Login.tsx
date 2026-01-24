@@ -13,6 +13,10 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [capsLockOn, setCapsLockOn] = useState(false);
+  //用于“记住我”的控件
+  const [rememberMe, setRememberMe] = useState(false);
+
+
 
 
 
@@ -46,6 +50,15 @@ export default function Login() {
       window.removeEventListener('keyup', handleKeyEvent);
     };
   }, []);
+  //读取已保存的账号信息
+  useEffect(() => {
+    const savedAccount = localStorage.getItem('remember_account');
+    if (savedAccount) {
+      setAccount(savedAccount);
+      setRememberMe(true);
+    }
+  }, []);
+
 
   const clearError = () => {
     if (error) setError('');
@@ -82,7 +95,12 @@ export default function Login() {
 
       const data = await res.json();
       localStorage.setItem('auth_token', data.accessToken);
-
+      //判断是否记住账号信息
+      if (rememberMe) {
+        localStorage.setItem('remember_account', account);
+      } else {
+        localStorage.removeItem('remember_account');
+      }
 
       // ① 触发离场动画
       setLoginAnim('success');
@@ -258,25 +276,46 @@ export default function Login() {
               `}
             />
           </button>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="
-    mt-4 w-full
-    text-sm text-white/60
-    hover:text-white/90
-    transition-colors
-  "
-          >
-            返回首页
-          </button>
+          
+          <div className='mt-4 space-y-2'>
+            {/*记住我按钮选择控件*/}
+            <label className="flex items-center gap-2 text-sm text-white/80 mb-4">
+              <input
+                type="checkbox"
+                className="accent-white"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              记住我
+            </label>
+            {/* 条款 */}
+            <label className="mt-6 flex items-start gap-2 text-xs text-white/70">
+              <input
+                type="checkbox"
+                className="mt-1 accent-white"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              <span>
+                我已阅读并同意
+                <Link to="/privacy" className="underline ml-1 text-blue-300">
+                  《隐私条款》
+                </Link>
+                和
+                <Link to="/terms" className="underline ml-1 text-blue-300">
+                  《使用条款》
+                </Link>
+              </span>
+            </label>
+          </div>
 
-
-
-
+          {/* 错误提示与操作区分隔线 */}
+          <div className="my-4 flex items-center">
+            <div className="flex-1 h-px bg-white/25" />
+          </div>
 
           {/* 链接 */}
-          <div className="flex justify-between mt-6 text-sm text-white/80">
+          <div className="flex justify-between text-sm text-white/70 mt-6">
             <Link to="/register" className="hover:text-white">
               用户注册
             </Link>
@@ -284,26 +323,6 @@ export default function Login() {
               忘记密码？
             </Link>
           </div>
-
-          {/* 条款 */}
-          <label className="mt-6 flex items-start gap-2 text-xs text-white/70">
-            <input
-              type="checkbox"
-              className="mt-1 accent-white"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
-            <span>
-              我已阅读并同意
-              <Link to="/privacy" className="underline ml-1 text-blue-300">
-                《隐私条款》
-              </Link>
-              和
-              <Link to="/terms" className="underline ml-1 text-blue-300">
-                《使用条款》
-              </Link>
-            </span>
-          </label>
         </div>
       </div>
     </div>

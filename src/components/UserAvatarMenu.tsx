@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { UserInfo } from '../types/user';
 
-type UserInfo = {
-    nickname: string;
-    avatarUrl?: string;
-};
 
-export default function UserAvatarMenu({ user }: { user: UserInfo }) {
+export default function UserAvatarMenu({
+    user,
+    onEditAvatar,
+}: {
+    user: UserInfo;
+    onEditAvatar: () => void;
+}) {
+
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +38,7 @@ export default function UserAvatarMenu({ user }: { user: UserInfo }) {
                 className=" flex items-center gap-3 px-2 py-1 rounded-lg hover:bg-white/10 transition"
             >
                 <img
-                    src={user.avatarUrl || '/images/default-avatar.png'}
+                    src={user.avatar || '/images/default-avatar.png'}
                     alt="avatar"
                     className="w-9 h-9 rounded-full object-cover"
                 />
@@ -64,7 +68,7 @@ export default function UserAvatarMenu({ user }: { user: UserInfo }) {
                         <div className="px-4 py-4 border-b text-center">
                             <div className="flex justify-center mb-2">
                                 <img
-                                    src={user.avatarUrl || '/images/default-avatar.png'}
+                                    src={user.avatar || '../public/userlogo.ico'}
                                     className="w-14 h-14 rounded-full object-cover"
                                 />
                             </div>
@@ -76,12 +80,20 @@ export default function UserAvatarMenu({ user }: { user: UserInfo }) {
                             </div>
                         </div>
 
-                        {/* 操作区（预留） */}
+                        {/* 操作区 */}
                         <div className="py-4 px-3">
-                            <MenuItem label="修改头像" />
+                            <MenuItem
+                                label="修改头像"
+                                onClick={() => {
+                                    console.log('🔥 点击了修改头像');
+                                    setOpen(false);      // ① 关闭菜单
+                                    onEditAvatar();     // ② 通知父组件
+                                }}
+                            />
                             <MenuItem label="修改昵称" />
                             <MenuItem label="修改手机号" />
                         </div>
+
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -89,17 +101,25 @@ export default function UserAvatarMenu({ user }: { user: UserInfo }) {
     );
 }
 
-function MenuItem({ label }: { label: string }) {
+function MenuItem({
+    label,
+    onClick,
+}: {
+    label: string;
+    onClick?: () => void;
+}) {
+
     return (
         <button
             type="button"
-            className="
-        w-full px-4 py-2 text-sm text-left
-        text-gray-700 hover:bg-gray-100
-        transition-colors
-      "
+            onClick={onClick}
+            className="  w-full px-4 py-2 text-sm text-left
+             text-gray-700 hover:bg-gray-100
+                transition-colors
+            "
         >
             {label}
         </button>
+
     );
 }

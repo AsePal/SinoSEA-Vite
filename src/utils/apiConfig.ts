@@ -14,7 +14,7 @@ type Endpoints = {
     qqMe: string;
   };
   user: {
-    profile: string;
+    info: string;
     update: string;
   };
   complaint: {
@@ -44,7 +44,7 @@ export const API: Endpoints = {
   },
   user: {
     //
-    profile: `${BASE}/user/profile`,
+    info: `${BASE}/user/info`,
     //用户信息更新
     update: `${BASE}/user/update`,
   },

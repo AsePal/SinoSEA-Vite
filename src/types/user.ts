@@ -1,4 +1,4 @@
 export type UserInfo = {
   nickname: string;
-  avatar: string;
+  avatar?: string;
 };
