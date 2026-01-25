@@ -13,7 +13,7 @@ import API from '../utils/apiConfig';
 
 
 
-const MOCK_SMS_CODE = '143323';
+const MOCK_SMS_CODE = '114514';
 
 export default function Register() {
   const navigate = useNavigate();

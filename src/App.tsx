@@ -7,6 +7,7 @@ import TermsOfUse from "./TermsofUse/TermsOfUse";
 import ComplaintPage from './pages/ComplaintPage';
 import AboutUsPage from './pages/AboutUs';
 import Register from './pages/Register';
+import ForgotPassword from'./pages/ForgotPassword'
 console.log('🔥 App.tsx 已重新加载');
 
 
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/complaint" element={<ComplaintPage />} />
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/register" element={<Register />} />
+      <Route path='/forgot-password' element={<ForgotPassword/>}/>
     </Routes>
   );
 }

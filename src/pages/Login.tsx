@@ -319,7 +319,7 @@ export default function Login() {
             <Link to="/register" className="hover:text-white">
               用户注册
             </Link>
-            <Link to="/reset-password" className="hover:text-white">
+            <Link to="/forgot-password" className="hover:text-white">
               忘记密码？
             </Link>
           </div>

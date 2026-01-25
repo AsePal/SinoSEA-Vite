@@ -10,8 +10,8 @@ type Endpoints = {
     login: string;
     register: string;
     logout: string;
-    me: string;
-    qqMe: string;
+    resetPassword: string;
+    forgotPassword: string;
   };
   user: {
     info: string;
@@ -37,10 +37,10 @@ export const API: Endpoints = {
     register: `${BASE}/auth/register`,
     //退出接口
     logout: `${BASE}/auth/logout`,
-    //弃用
-    me: `${BASE}/auth/me`,
-    //弃用
-    qqMe: `${BASE}/auth/qq/me`,
+    //忘记密码接口
+    resetPassword: `${BASE}/auth/reset-password`,
+    //验证码发送接口
+    forgotPassword: `${BASE}/auth/forgot-Password`,
   },
   user: {
     //
