@@ -165,7 +165,7 @@ export default function AvatarEditorModal({
               </button>
 
               <p className="text-sm text-gray-500">
-                支持 JPG / PNG / GIF / WebP ≤ 5MB
+                仅支持 JPG / PNG / GIF / WebP ≤ 5MB
               </p>
             </div>
 

@@ -105,7 +105,7 @@ export default function ForgotPassword() {
             setCodeSent(false);
           }}
         >
-          <option value="">请选择验证方式</option>
+          <option value="" disabled>请选择验证方式</option>
           <option value="phone">手机号</option>
           <option value="email">邮箱</option>
         </select>

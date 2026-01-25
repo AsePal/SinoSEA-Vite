@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+
+
 type LogoutConfirmModalProps = {
   open: boolean;
   onConfirm: () => void;
@@ -9,35 +12,75 @@ export default function LogoutConfirmModal({
   onConfirm,
   onCancel,
 }: LogoutConfirmModalProps) {
+  type EmojiState = '😯' | '😁' | '😨';
+
+  const [emoji, setEmoji] = useState<EmojiState>('😯');
+  
+  useEffect(() => {
+    if (open) {
+      setEmoji('😯');
+    }
+  }, [open]);
+
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-[90%] max-w-sm rounded-2xl bg-zinc-900 p-6 shadow-xl border border-white/10">
-        <h3 className="text-lg font-semibold text-white mb-2">
-          确认退出登录
-        </h3>
+      <div className="w-[92%] max-w-md rounded-2xl bg-zinc-900 px-8 py-7 shadow-xl border border-white/10">
 
-        <p className="text-sm text-gray-400 mb-6">
-          退出后需要重新登录，是否确认退出？
-        </p>
+        {/* emoji + 文案 */}
+        <div className="flex flex-col items-center text-center mb-8 space-y-4">
+          <div className="text-6xl transition-transform duration-200">
+            {emoji}
+          </div>
 
-        <div className="flex justify-end gap-3">
+          <p className="text-lg font-medium text-white">
+            你真的要退出吗？
+          </p>
+        </div>
+
+        {/* 操作按钮 */}
+        <div className="flex justify-between items-center">
+          {/* 取消（左侧 / 蓝色） */}
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10"
+            onMouseEnter={() => setEmoji('😁')}
+            onMouseLeave={() => setEmoji('😯')}
+            className="
+              px-5 py-2.5
+              rounded-lg
+              text-sm font-medium
+              border border-blue-500/60
+              text-blue-400
+              hover:bg-blue-500
+              hover:text-white
+              transition-colors
+            "
           >
             取消
           </button>
 
+
+          {/* 确认退出（右侧 / 危险） */}
           <button
             type="button"
             onClick={onConfirm}
-            className="px-4 py-2 rounded-lg text-sm bg-red-500 hover:bg-red-600 text-white font-medium"
+            onMouseEnter={() => setEmoji('😨')}
+            onMouseLeave={() => setEmoji('😯')}
+            className="
+              px-5 py-2.5
+              rounded-lg
+              text-sm
+              bg-red-500 hover:bg-red-600
+              text-white font-medium
+              transition-colors
+            "
           >
             确认退出
           </button>
+
         </div>
       </div>
     </div>
