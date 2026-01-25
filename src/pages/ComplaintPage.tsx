@@ -11,14 +11,6 @@ import API, { apiRequest } from '../utils/apiConfig';
 import { parseJwt } from '../utils/jwt';
 import type { UserInfo } from '../types/user';
 
-type Props = {
-  user: UserInfo | null;
-  onBackHome: () => void;
-  onLogout: () => void;
-};
-
-
-
 export default function ComplaintPage() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -35,30 +27,29 @@ export default function ComplaintPage() {
       return;
     }
 
-    // 昵称来自 JWT
-    const payload = parseJwt(token);
-    const nickname = payload?.username ?? '星洲用户';
-
-    // 头像来自 user/info
-    apiRequest(API.user.profile)
+    // 先尝试主方案：user/info
+    apiRequest(API.user.info)
       .then(res => {
         if (!res.ok) throw new Error();
         return res.json();
       })
       .then(data => {
         setUser({
-          nickname,
-          avatar: data.avatar || '/userlogo.ico',
+          nickname: data.username,
+          avatar: data.avatarUrl || '/userlogo.ico',
         });
       })
       .catch(() => {
-        // user/info 失败不等于未登录
+        // 主方案失败 → 启用 JWT 备用方案
+        const payload = parseJwt(token);
+
         setUser({
-          nickname,
+          nickname: payload?.username ?? '星洲用户',
           avatar: '/userlogo.ico',
         });
       });
   }, [navigate]);
+
 
 
   return (
