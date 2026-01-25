@@ -85,7 +85,7 @@ export default function UserAvatarMenu({
                             <MenuItem
                                 label="修改头像"
                                 onClick={() => {
-                                    console.log('🔥 点击了修改头像');
+                                    
                                     setOpen(false);      // ① 关闭菜单
                                     onEditAvatar();     // ② 通知父组件
                                 }}

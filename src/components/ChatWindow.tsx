@@ -20,7 +20,7 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
 
-  const [justEntered, setJustEntered] = useState(true);
+  
 
 
 
@@ -110,7 +110,6 @@ export default function ChatWindow({
 
     const t = setTimeout(() => {
       setSendPhase('idle');
-      setJustEntered(false);
     }, 600);
 
     return () => clearTimeout(t);

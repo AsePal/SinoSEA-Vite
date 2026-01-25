@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API, { apiRequest } from '../utils/apiConfig';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
-import { useLocation } from 'react-router-dom';
 
 type LoginAnim = 'idle' | 'success' | 'error';
 
@@ -20,8 +19,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
-
-  const [leaving, setLeaving] = useState(false);
   const [loginAnim, setLoginAnim] = useState<LoginAnim>('idle');
   const [visible, setVisible] = useState(false);
 
@@ -82,8 +79,7 @@ export default function Login() {
       }
 
       setLoginAnim('success');
-      setLeaving(true);
-
+      
       setTimeout(() => navigate('/chat'), 350);
     } catch (e: any) {
       setError(e.message || '登录失败');

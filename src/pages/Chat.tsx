@@ -77,8 +77,7 @@ export default function Chat() {
         return res.json();
       })
       .then((data) => {
-        console.log('🟢 user/info 返回数据:', data);
-
+        
         setUser({
           nickname: data.userName || fallbackNickname,
           avatar: data.avatarUrl
