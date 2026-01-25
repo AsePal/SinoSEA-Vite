@@ -8,6 +8,8 @@ import ChatWindow from '../components/ChatWindow';
 import LogoutConfirmModal from '../components/LogoutConfirmModal';
 import HomeBackground from '../Background/HomeBackground';
 import AvatarEditorModal from '../components/AvatarEditorModal';
+//导入SuccessToastModal
+import SuccessToastModal from '../components/SuccessToastModal'
 
 import API, { apiRequest } from '../utils/apiConfig';
 import { parseJwt } from '../utils/jwt';
@@ -51,6 +53,10 @@ export default function Chat() {
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
+  //接管用户更新头像的弹窗
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+
 
   /* ---------- 获取用户信息（权威逻辑） ---------- */
 
@@ -156,10 +162,22 @@ export default function Chat() {
           currentAvatar={user?.avatar || DEFAULT_AVATAR}
           onClose={() => setShowAvatarEditor(false)}
           onSuccess={() => {
-            // ⭐ 上传成功后，重新从后端拉一次权威数据
-            fetchUserInfo();
+            fetchUserInfo();          // 头像立即刷新
+            setShowSuccessToast(true); // ⭐ 显示成功提示
+
+            setTimeout(() => {
+              setShowSuccessToast(false);
+            }, 1800);
           }}
         />
+        <SuccessToastModal
+          open={showSuccessToast}
+          title="头像更新成功"
+          description="你的新头像已生效"
+        />
+
+
+
       </div>
     </HomeBackground>
   );

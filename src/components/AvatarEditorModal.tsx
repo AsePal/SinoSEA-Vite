@@ -2,6 +2,14 @@ import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
+//校验用户上传头像的类型
+const ALLOWED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+] as const;
+
 
 
 
@@ -23,10 +31,12 @@ export default function AvatarEditorModal({
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  
+
   useEffect(() => {
-  setPreview(currentAvatar);
-  setSelectedFile(null);
-}, [currentAvatar]);
+    setPreview(currentAvatar);
+    setSelectedFile(null);
+  }, [currentAvatar]);
 
 
   function triggerFileSelect() {
@@ -38,8 +48,8 @@ export default function AvatarEditorModal({
     if (!file) return;
 
     // 简单校验
-    if (!file.type.startsWith('image/')) {
-      alert('请选择图片文件');
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type as any)) {
+      alert('仅支持 JPG / PNG / GIF / WebP 格式的图片');
       return;
     }
 
@@ -55,6 +65,10 @@ export default function AvatarEditorModal({
   async function handleSave() {
     if (!selectedFile) {
       onClose();
+      return;
+    }
+    if (!ALLOWED_IMAGE_TYPES.includes(selectedFile.type as any)) {
+      alert('图片格式不支持，请重新选择');
       return;
     }
 
@@ -151,7 +165,7 @@ export default function AvatarEditorModal({
               </button>
 
               <p className="text-sm text-gray-500">
-                支持 JPG / PNG，≤ 5MB
+                支持 JPG / PNG / GIF / WebP ≤ 5MB
               </p>
             </div>
 
@@ -191,7 +205,7 @@ export default function AvatarEditorModal({
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               hidden
               onChange={handleFileChange}
             />
