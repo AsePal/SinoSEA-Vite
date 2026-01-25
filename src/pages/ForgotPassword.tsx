@@ -22,6 +22,7 @@ export default function ForgotPassword() {
 
   const [showToast, setShowToast] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [methodOpen, setMethodOpen] = useState(false);
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -96,19 +97,75 @@ export default function ForgotPassword() {
           通过验证码设置新密码
         </p>
 
-        <select
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          value={method}
-          onChange={(e) => {
-            setMethod(e.target.value as VerifyMethod);
-            setIdentifier('');
-            setCodeSent(false);
-          }}
-        >
-          <option value="" disabled>请选择验证方式</option>
-          <option value="phone">手机号</option>
-          <option value="email">邮箱</option>
-        </select>
+        <div className="relative mb-4">
+          {/* 触发按钮 */}
+          <button
+            type="button"
+            onClick={() => setMethodOpen(v => !v)}
+            className="
+      w-full px-4 py-3 rounded-xl
+      bg-white/20 border border-white/30
+      text-left text-white
+      flex items-center justify-between
+      hover:bg-white/25 transition
+    "
+          >
+            <span className={method ? 'text-white' : 'text-white/60'}>
+              {method === 'phone'
+                ? '手机号'
+                : method === 'email'
+                  ? '邮箱'
+                  : '请选择验证方式'}
+            </span>
+            <span className="text-white/60">▾</span>
+          </button>
+
+          {/* 下拉面板 */}
+          {methodOpen && (
+            <div
+              className="
+        absolute z-20 mt-2 w-full
+        rounded-xl overflow-hidden
+        bg-zinc-900/95 backdrop-blur
+        border border-white/20
+        shadow-xl
+      "
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setMethod('phone');
+                  setIdentifier('');
+                  setCodeSent(false);
+                  setMethodOpen(false);
+                }}
+                className="
+          w-full px-4 py-3 text-left
+          hover:bg-white/10 transition
+        "
+              >
+                手机号
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMethod('email');
+                  setIdentifier('');
+                  setCodeSent(false);
+                  setMethodOpen(false);
+                }}
+                className="
+          w-full px-4 py-3 text-left
+          hover:bg-white/10 transition
+        "
+              >
+                邮箱
+              </button>
+            </div>
+          )}
+        </div>
+
 
         <input
           disabled={!method}
@@ -133,11 +190,10 @@ export default function ForgotPassword() {
           <button
             disabled={!method || !identifier || countdown > 0}
             onClick={handleSendCode}
-            className={`px-4 rounded-xl ${
-              countdown > 0
+            className={`px-4 rounded-xl ${countdown > 0
                 ? 'bg-white/30'
                 : 'bg-indigo-500 hover:bg-indigo-400'
-            }`}
+              }`}
           >
             {countdown > 0 ? `${countdown}s` : '发送验证码'}
           </button>

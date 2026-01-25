@@ -57,7 +57,9 @@ export default function Register() {
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
-        <h1 className="text-3xl font-semibold mb-2 text-center">用户注册</h1>
+        <h1 className="text-3xl font-semibold mb-2 text-center">
+          用户注册
+          </h1>
         <p className="text-white/70 mb-10 text-center">
           使用手机号完成注册
         </p>
