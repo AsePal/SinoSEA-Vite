@@ -23,6 +23,7 @@ export default function ForgotPassword() {
   const [showToast, setShowToast] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
+  
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -177,27 +178,36 @@ export default function ForgotPassword() {
           }
         />
 
-        <div className="flex gap-3 mb-4">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             disabled={!codeSent}
-            className="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+            className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
             placeholder="验证码"
             value={verificationCode}
             onChange={(e) =>
               setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))
             }
           />
+
           <button
             disabled={!method || !identifier || countdown > 0}
             onClick={handleSendCode}
-            className={`px-4 rounded-xl ${countdown > 0
-                ? 'bg-white/30'
+            className={`
+              w-full sm:w-auto
+              px-4 py-3
+              rounded-xl
+              whitespace-nowrap
+              transition
+              ${countdown > 0
+                ? 'bg-white/30 text-white/50 cursor-not-allowed'
                 : 'bg-indigo-500 hover:bg-indigo-400'
-              }`}
+              }
+            `}
           >
             {countdown > 0 ? `${countdown}s` : '发送验证码'}
           </button>
         </div>
+
 
         <input
           disabled={!codeSent}

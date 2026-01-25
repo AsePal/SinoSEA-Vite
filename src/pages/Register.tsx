@@ -14,11 +14,14 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreed, setAgreed] = useState(false);
+  
+
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [success, setSuccess] = useState(false);
+  const canSendCode = phone.trim().length > 0 && countdown === 0;
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -59,7 +62,7 @@ export default function Register() {
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
         <h1 className="text-3xl font-semibold mb-2 text-center">
           用户注册
-          </h1>
+        </h1>
         <p className="text-white/70 mb-10 text-center">
           使用手机号完成注册
         </p>
@@ -77,28 +80,37 @@ export default function Register() {
           value={phone}
           onChange={(e) => setPhone(e.currentTarget.value.replace(/\s/g, ''))}
         />
-
-        <div className="flex gap-3 mb-4">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
-            className="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+            className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
             placeholder="短信验证码"
             value={smsCode}
             onChange={(e) =>
               setSmsCode(e.currentTarget.value.replace(/\s/g, ''))
             }
           />
+
           <button
-            disabled={countdown > 0}
+            disabled={!canSendCode}
             onClick={() => setCountdown(60)}
-            className={`px-4 rounded-xl ${
-              countdown > 0
-                ? 'bg-white/30'
-                : 'bg-indigo-500 hover:bg-indigo-400'
-            }`}
+            className={`
+            w-full sm:w-auto
+            px-4 py-3
+            rounded-xl
+            whitespace-nowrap
+            transition
+            ${canSendCode
+                ? 'bg-indigo-500 hover:bg-indigo-400'
+                : 'bg-white/30 text-white/50 cursor-not-allowed'
+              }
+          `}
           >
             {countdown > 0 ? `${countdown}s` : '获取验证码'}
           </button>
+
         </div>
+
+
 
         <input
           type="password"
