@@ -21,6 +21,14 @@ export default function Login() {
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [loginAnim, setLoginAnim] = useState<LoginAnim>('idle');
   const [visible, setVisible] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+  requestAnimationFrame(() => {
+    setReady(true);
+  });
+}, []);
+
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 120);
@@ -95,14 +103,12 @@ export default function Login() {
       <div
         className={`
           min-h-[600px]
-          rounded-3xl bg-white/20 backdrop-blur-lg
+          rounded-3xl bg-white/20 
           border border-white/30
           shadow-[0_30px_80px_rgba(0,0,0,0.45)]
           px-14 py-16 text-white
           transition-all duration-400 ease-out
-          ${visible
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-6'}
+          ${ready ? 'backdrop-blur-lg' : 'backdrop-blur-none'}
         `}
       >
         <h1 className="text-3xl font-semibold mb-2 text-center">欢迎登录</h1>

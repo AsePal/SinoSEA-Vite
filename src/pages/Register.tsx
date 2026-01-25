@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../utils/apiConfig';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import SuccessToastModal from '../components/SuccessToastModal';
+
 
 const MOCK_SMS_CODE = '114514';
 
@@ -14,13 +16,14 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreed, setAgreed] = useState(false);
-  
+
 
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [success, setSuccess] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const canSendCode = phone.trim().length > 0 && countdown === 0;
 
   useEffect(() => {
@@ -48,7 +51,7 @@ export default function Register() {
         body: JSON.stringify({ username: name, phone, password }),
       });
       if (!res.ok) throw new Error('注册失败');
-      setSuccess(true);
+      setShowSuccess(true);
       setTimeout(() => navigate('/login'), 1800);
     } catch (e: any) {
       setError(e.message || '注册失败');
@@ -155,17 +158,12 @@ export default function Register() {
           已有账号？<Link to="/login">去登录</Link>
         </div>
       </div>
+      <SuccessToastModal
+        open={showSuccess}
+        title="注册成功"
+        description="即将跳转登录"
+      />
 
-      {success && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-          <div className="relative z-10 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl px-8 py-10 text-white text-center">
-            <h2 className="text-xl font-semibold mb-2">注册成功</h2>
-            <p className="text-white/80 mb-6">即将跳转登录</p>
-            <PaperAirplaneIcon className="w-10 h-10 mx-auto" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
