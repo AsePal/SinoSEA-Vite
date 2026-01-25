@@ -1,58 +1,42 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import API from '../utils/apiConfig';
 import SuccessToastModal from '../components/SuccessToastModal';
-
 
 type VerifyMethod = 'phone' | 'email';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
 
-  /** 阶段控制 */
   const [method, setMethod] = useState<VerifyMethod | ''>('');
   const [identifier, setIdentifier] = useState('');
   const [codeSent, setCodeSent] = useState(false);
 
-  /** 表单数据 */
   const [verificationCode, setVerificationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  /** 状态 */
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
+
   const [showToast, setShowToast] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  /** 倒计时 */
   useEffect(() => {
     if (countdown <= 0) return;
-    const timer = setInterval(() => setCountdown(c => c - 1), 1000);
-    return () => clearInterval(timer);
+    const t = setInterval(() => setCountdown((c) => c - 1), 1000);
+    return () => clearInterval(t);
   }, [countdown]);
 
-  /** 发送验证码 */
   const handleSendCode = async () => {
-    if (!method) {
-      setError('请选择验证方式');
-      return;
-    }
-    if (!identifier) {
-      setError('请输入邮箱或手机号');
-      return;
-    }
-
-    setError('');
+    if (!method || !identifier) return setError('请填写完整信息');
     setLoading(true);
+    setError('');
 
     try {
       const body =
-        method === 'email'
-          ? { email: identifier }
-          : { phone: identifier };
+        method === 'email' ? { email: identifier } : { phone: identifier };
 
       const res = await fetch(API.auth.forgotPassword, {
         method: 'POST',
@@ -60,15 +44,11 @@ export default function ForgotPassword() {
         body: JSON.stringify(body),
       });
 
-      if (!res.ok) {
-        throw new Error('验证码发送失败');
-      }
+      if (!res.ok) throw new Error('发送失败');
 
-      // 后端即使用户不存在也返回成功
       setCodeSent(true);
       setCountdown(60);
       setShowToast(true);
-
       setTimeout(() => setShowToast(false), 1800);
     } catch (e: any) {
       setError(e.message || '发送失败');
@@ -77,25 +57,14 @@ export default function ForgotPassword() {
     }
   };
 
-  /** 重置密码 */
-  const handleResetPassword = async () => {
-    if (!verificationCode || !newPassword || !confirmPassword) {
-      setError('请填写完整信息');
-      return;
-    }
+  const handleReset = async () => {
+    if (!verificationCode || !newPassword || !confirmPassword)
+      return setError('请填写完整信息');
+    if (newPassword !== confirmPassword)
+      return setError('两次密码不一致');
 
-    if (newPassword.length < 8) {
-      setError('密码长度不能少于 8 位');
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setError('两次密码不一致');
-      return;
-    }
-
-    setError('');
     setLoading(true);
+    setError('');
 
     try {
       const res = await fetch(API.auth.resetPassword, {
@@ -108,13 +77,10 @@ export default function ForgotPassword() {
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || '重置失败');
-      }
+      if (!res.ok) throw new Error('重置失败');
 
       setShowSuccess(true);
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/login'), 1800);
     } catch (e: any) {
       setError(e.message || '重置失败');
     } finally {
@@ -123,21 +89,15 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 bg-cover"
-      style={{ backgroundImage: 'url("/images/login-bg.avif")' }}
-    >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl px-8 py-10">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          忘记密码
-        </h2>
-        <p className="text-gray-500 mb-6">
-          通过验证码重置密码
+    <div className="w-full max-w-2xl px-4">
+      <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
+        <h1 className="text-3xl font-semibold mb-2 text-center">重置密码</h1>
+        <p className="text-white/70 mb-10 text-center">
+          通过验证码设置新密码
         </p>
 
-        {/* 选择方式 */}
         <select
-          className="w-full mb-3 px-4 py-3 border rounded-lg"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           value={method}
           onChange={(e) => {
             setMethod(e.target.value as VerifyMethod);
@@ -145,98 +105,86 @@ export default function ForgotPassword() {
             setCodeSent(false);
           }}
         >
-          <option value="" disabled >请选择验证方式</option>
+          <option value="">请选择验证方式</option>
           <option value="phone">手机号</option>
           <option value="email">邮箱</option>
         </select>
 
-        {/* 输入邮箱/手机号 */}
         <input
           disabled={!method}
-          className="w-full mb-3 px-4 py-3 border rounded-lg disabled:bg-gray-100"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder={method === 'email' ? '请输入邮箱' : '请输入手机号'}
           value={identifier}
-          onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
+          onChange={(e) =>
+            setIdentifier(e.currentTarget.value.replace(/\s/g, ''))
+          }
         />
 
-        {/* 验证码 */}
-        <div className="flex gap-3 mb-3">
+        <div className="flex gap-3 mb-4">
           <input
             disabled={!codeSent}
-            className="flex-1 px-4 py-3 border rounded-lg disabled:bg-gray-100"
-            placeholder="6 位验证码"
+            className="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+            placeholder="验证码"
             value={verificationCode}
-            onChange={(e) => setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))}
+            onChange={(e) =>
+              setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))
+            }
           />
           <button
-            type="button"
-            disabled={!identifier || countdown > 0}
+            disabled={!method || !identifier || countdown > 0}
             onClick={handleSendCode}
-            className={`px-4 rounded-lg text-sm ${
+            className={`px-4 rounded-xl ${
               countdown > 0
-                ? 'bg-gray-300 text-gray-500'
-                : 'bg-blue-500 text-white hover:bg-blue-600'
+                ? 'bg-white/30'
+                : 'bg-indigo-500 hover:bg-indigo-400'
             }`}
           >
             {countdown > 0 ? `${countdown}s` : '发送验证码'}
           </button>
         </div>
 
-        {/* 新密码 */}
         <input
           disabled={!codeSent}
           type="password"
-          className="w-full mb-3 px-4 py-3 border rounded-lg disabled:bg-gray-100"
-          placeholder="新密码（不少于 8 位）"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          placeholder="新密码"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.currentTarget.value.replace(/\s/g, ''))}
+          onChange={(e) =>
+            setNewPassword(e.currentTarget.value.replace(/\s/g, ''))
+          }
         />
 
         <input
           disabled={!codeSent}
           type="password"
-          className="w-full mb-4 px-4 py-3 border rounded-lg disabled:bg-gray-100"
+          className="w-full mb-6 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder="确认新密码"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
+          onChange={(e) =>
+            setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))
+          }
         />
 
-        {error && (
-          <div className="text-red-500 text-sm mb-3">
-            {error}
-          </div>
-        )}
+        {error && <div className="text-red-300 text-sm mb-4">{error}</div>}
 
         <button
-          onClick={handleResetPassword}
+          onClick={handleReset}
           disabled={!codeSent || loading}
-          className="
-            w-full flex items-center justify-center gap-2
-            rounded-xl py-4 text-lg font-semibold
-            bg-blue-500 text-white hover:bg-blue-600
-            transition disabled:bg-gray-300
-          "
+          className="w-full h-14 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition"
         >
-          <PaperAirplaneIcon className="w-6 h-6" />
-          {loading ? '提交中...' : '重置密码'}
+          {loading ? '提交中…' : '重置密码'}
         </button>
 
-        <div className="mt-4 text-sm text-center text-gray-600">
-          想起密码了？
-          <Link to="/login" className="text-blue-600 ml-1">
-            返回登录
-          </Link>
+        <div className="mt-8 text-sm text-white/70 text-center">
+          <Link to="/login">返回登录</Link>
         </div>
       </div>
 
-      {/* 验证码已发送 */}
       <SuccessToastModal
         open={showToast}
         title="验证码已发送"
         description="有效期为 5 分钟"
       />
-
-      {/* 重置成功 */}
       <SuccessToastModal
         open={showSuccess}
         title="密码重置成功"

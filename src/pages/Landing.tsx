@@ -37,13 +37,14 @@ export default function Landing() {
   const features = useReveal();
   const belief = useReveal();
 
-  /** 点击按钮 → 页面淡出 → 跳转 */
   const handleStart = () => {
     setLeaving(true);
     setTimeout(() => {
       navigate('/login');
     }, 400);
   };
+
+
 
   return (
     <div
