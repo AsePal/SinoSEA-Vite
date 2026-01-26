@@ -15,20 +15,18 @@ import { HomeBackground } from '../../landing';
 import API, { apiRequest } from '../../../shared/api/config';
 import { parseJwt } from '../../../shared/utils/jwt';
 
-/* ---------- 主组件 ---------- */
-
 export default function Chat() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  // ⭐ Sidebar 状态
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
-  //接管用户更新头像的弹窗
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-  /* ---------- 获取用户信息（权威逻辑） ---------- */
 
   function fetchUserInfo() {
     const token = localStorage.getItem('auth_token');
@@ -37,13 +35,12 @@ export default function Chat() {
       return;
     }
 
-    // 🔹 token 里的用户名作为备用
     const payload = parseJwt(token);
     const fallbackNickname = payload?.username ?? '星洲用户';
 
     apiRequest(API.user.info)
       .then((res) => {
-        if (!res.ok) throw new Error('fetch user info failed');
+        if (!res.ok) throw new Error();
         return res.json();
       })
       .then((data) => {
@@ -53,7 +50,6 @@ export default function Chat() {
         });
       })
       .catch(() => {
-        // ❗ 接口失败才整体回退
         setUser({
           nickname: fallbackNickname,
           avatar: DEFAULT_AVATAR,
@@ -61,13 +57,9 @@ export default function Chat() {
       });
   }
 
-  /* ---------- 页面初始化 ---------- */
-
   useEffect(() => {
     fetchUserInfo();
   }, []);
-
-  /* ---------- 新对话 ---------- */
 
   function handleNewChat() {
     setResetKey((k) => k + 1);
@@ -75,62 +67,66 @@ export default function Chat() {
 
   return (
     <HomeBackground>
-      <div className="h-screen flex flex-col">
+      <div className="h-screen flex flex-col animate-fade-in">
         <TopNav
           user={user}
           onNewChat={handleNewChat}
           onLogout={() => setShowLogoutModal(true)}
           onEditAvatar={() => setShowAvatarEditor(true)}
+          onToggleSidebar={() => setSidebarOpen((v) => !v)} // ⭐ toggle
         />
 
-        <div className="flex flex-1 overflow-hidden">
-          {/* 桌面显示，手机隐藏 */}
-          <div className="hidden md:block">
-            <Sidebar />
+        <div className="flex flex-1 overflow-hidden relative">
+          {/* Backdrop */}
+          <div
+            className={`
+            fixed top-[70px] left-0 right-0 bottom-0 z-40
+           bg-black/20
+            transition-opacity duration-300
+            ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+          `}
+            onClick={() => setSidebarOpen(false)}
+          />
+
+          {/* Sidebar */}
+          <div
+            className={`
+              fixed top-[70px] left-0 bottom-0 z-50
+              transition-transform duration-300 ease-out
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}
+          >
+            <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
 
+          {/* 主聊天区 */}
           <main className="flex-1 flex justify-center overflow-hidden">
-            <div
-              className="
-              w-full
-              max-w-[1100px]
-              h-full
-              px-3 md:px-6
-              py-4 md:py-8
-              animate-fade-in
-             "
-            >
+            <div className="w-full max-w-[1100px] h-full px-3 md:px-6 py-4 md:py-8">
               <ChatWindow key={resetKey} userAvatar={user?.avatar} userId={user?.nickname} />
             </div>
           </main>
         </div>
 
-        {/* 退出登录 */}
         <LogoutConfirmModal
           open={showLogoutModal}
           onCancel={() => setShowLogoutModal(false)}
           onConfirm={() => {
             localStorage.removeItem('auth_token');
-            setUser(null);
-            setShowLogoutModal(false);
             navigate('/login');
           }}
         />
 
-        {/* 修改头像 */}
         <AvatarEditorModal
           open={showAvatarEditor}
           currentAvatar={user?.avatar || DEFAULT_AVATAR}
           onClose={() => setShowAvatarEditor(false)}
           onSuccess={() => {
-            fetchUserInfo(); // 头像立即刷新
-            setShowSuccessToast(true); // ⭐ 显示成功提示
-
-            setTimeout(() => {
-              setShowSuccessToast(false);
-            }, 1800);
+            fetchUserInfo();
+            setShowSuccessToast(true);
+            setTimeout(() => setShowSuccessToast(false), 1800);
           }}
         />
+
         <SuccessToastModal
           open={showSuccessToast}
           title="头像更新成功"

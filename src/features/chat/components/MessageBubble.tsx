@@ -33,21 +33,21 @@ export default function MessageBubble({
         {/* 气泡 */}
         <div
           className={`
-            rounded-xl px-4 py-3
-            leading-relaxed break-words
-            ${
-              isUser
-                ? 'bg-blue-500/20 border border-blue-500/30'
-                : 'bg-orange-500/20 border border-orange-500/30'
-            }
+            rounded-2xl
+            px-5 py-3.5
+            leading-relaxed
+            break-words
+            text-[15px] md:text-[16px]
+            shadow-sm
+            ${isUser ? 'bg-blue-500 text-white' : 'bg-green-500 text-white'}
           `}
         >
-          <div className="prose prose-invert max-w-none">
+          <div className="prose max-w-none prose-p:my-1 prose-li:my-1 text-white">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
           </div>
         </div>
 
-        {/* 复制按钮（AI + 用户通用） */}
+        {/* 复制按钮 */}
         <button
           onClick={handleCopy}
           className={`
@@ -58,19 +58,18 @@ export default function MessageBubble({
             px-3 py-1.5
             rounded-lg
             text-sm
-            text-gray-200
-            backdrop-blur
-            ${isUser ? 'bg-blue-500/60 hover:bg-blue-500/80' : 'bg-black/60 hover:bg-black/80'}
+            text-white
+            ${isUser ? 'bg-blue-600/80 hover:bg-blue-600' : 'bg-green-600/80 hover:bg-green-600'}
           `}
         >
           {copied ? (
             <>
-              <CheckIcon className="w-5 h-3" />
+              <CheckIcon className="w-4 h-4" />
               已复制
             </>
           ) : (
             <>
-              <ClipboardIcon className="w-5 h-3" />
+              <ClipboardIcon className="w-4 h-4" />
               复制
             </>
           )}

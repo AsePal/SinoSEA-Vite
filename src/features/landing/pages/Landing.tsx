@@ -89,11 +89,10 @@ export default function Landing() {
         {/* 点阵（星点感，呼应“星洲”） */}
         <div
           className="
-      absolute inset-0
-      bg-[radial-gradient(circle,_rgba(59,130,246,0.15)_1px,_transparent_1px)]
-      [background-size:28px_28px]
-      opacity-[0.15]
-      "
+        absolute inset-0
+        bg-\[radial-gradient\(circle\,_rgba\(59\,130\,246\,0\.15\)_1px\,_transparent_1px\)\]
+        pacity-[0.15]
+        "
         />
       </div>
       <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
