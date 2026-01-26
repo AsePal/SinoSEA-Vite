@@ -1,17 +1,6 @@
-import {
-  PolicyHeader,
-  PolicySection,
-  PolicyTable,
-  BackSection,
-  Footer
-} from '../components'
+import { PolicyHeader, PolicySection, PolicyTable, BackSection, Footer } from '../components';
 
-import {
-  lastUpdated,
-  policySections,
-  usageTable,
-  rightsTable
-} from '../data/policyContent'
+import { lastUpdated, policySections, usageTable, rightsTable } from '../data/policyContent';
 
 export default function PrivacyPolicy() {
   return (
@@ -35,7 +24,7 @@ export default function PrivacyPolicy() {
 
           {/* 条款主体 */}
           <div className="bg-white/95 backdrop-blur rounded-xl shadow-xl p-8">
-            {policySections.map(section => (
+            {policySections.map((section) => (
               <PolicySection key={section.id} {...section} />
             ))}
 
@@ -49,5 +38,5 @@ export default function PrivacyPolicy() {
         <Footer />
       </div>
     </div>
-  )
+  );
 }

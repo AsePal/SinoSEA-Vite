@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 export default function PolicyHeader() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white">
@@ -13,13 +13,9 @@ export default function PolicyHeader() {
           ← 返回
         </button>
 
-        <h1 className="text-2xl font-bold text-center">
-          星洲智能助手隐私政策
-        </h1>
-        <p className="text-center text-white/90 mt-2 text-sm">
-          我们致力于保护您的个人信息安全
-        </p>
+        <h1 className="text-2xl font-bold text-center">星洲智能助手隐私政策</h1>
+        <p className="text-center text-white/90 mt-2 text-sm">我们致力于保护您的个人信息安全</p>
       </div>
     </header>
-  )
+  );
 }

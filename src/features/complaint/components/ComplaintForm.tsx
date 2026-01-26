@@ -3,9 +3,6 @@ import { PencilSquareIcon } from '@heroicons/react/24/solid';
 import { CloudArrowUpIcon } from '@heroicons/react/24/solid';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-
-
-
 export default function ComplaintForm() {
   const [type, setType] = useState('');
   const [content, setContent] = useState('');
@@ -47,13 +44,11 @@ export default function ComplaintForm() {
     >
       {/* 标题 */}
       <div className="flex items-center gap-3 mb-6">
-      <div className="p-2 rounded-lg bg-orange-500/20">
-      <PencilSquareIcon className="w-6 h-6 text-orange-400" />
+        <div className="p-2 rounded-lg bg-orange-500/20">
+          <PencilSquareIcon className="w-6 h-6 text-orange-400" />
         </div>
 
-          <h2 className="text-2xl font-bold text-orange-300">
-        提交投诉 / 反馈
-        </h2>
+        <h2 className="text-2xl font-bold text-orange-300">提交投诉 / 反馈</h2>
       </div>
 
       {/*投诉类型*/}
@@ -69,11 +64,21 @@ export default function ComplaintForm() {
           transition
           "
         >
-          <option value=""  disabled className="bg-black/90 text-white/50">请选择投诉类型</option>
-          <option value="bug" className="bg-black/90 text-orange-400">功能异常</option>
-          <option value="content" className="bg-black/90 text-orange-400">内容问题</option>
-          <option value="experience" className="bg-black/90 text-orange-400">体验问题</option>
-          <option value="other" className="bg-black/90 text-orange-400">其他</option>
+          <option value="" disabled className="bg-black/90 text-white/50">
+            请选择投诉类型
+          </option>
+          <option value="bug" className="bg-black/90 text-orange-400">
+            功能异常
+          </option>
+          <option value="content" className="bg-black/90 text-orange-400">
+            内容问题
+          </option>
+          <option value="experience" className="bg-black/90 text-orange-400">
+            体验问题
+          </option>
+          <option value="other" className="bg-black/90 text-orange-400">
+            其他
+          </option>
         </select>
       </div>
 
@@ -117,13 +122,11 @@ export default function ComplaintForm() {
 
       {/*附件上传 */}
       <div className="space-y-2">
-  <label className="text-xl text-gray-200">
-    附件上传
-  </label>
+        <label className="text-xl text-gray-200">附件上传</label>
 
-  <label
-    htmlFor="attachment"
-    className="
+        <label
+          htmlFor="attachment"
+          className="
       flex flex-col items-center justify-center gap-3
       w-full h-32
       rounded-xl
@@ -133,26 +136,16 @@ export default function ComplaintForm() {
       hover:bg-orange-500/20
       transition
     "
-  >
-    <CloudArrowUpIcon className="w-8 h-8 text-orange-400" />
+        >
+          <CloudArrowUpIcon className="w-8 h-8 text-orange-400" />
 
-    <span className="text-sm text-orange-300">
-      点击上传截图或文件
-    </span>
+          <span className="text-sm text-orange-300">点击上传截图或文件</span>
 
-    <span className="text-xs text-gray-400">
-      支持图片、PDF、Word、文本文件
-    </span>
+          <span className="text-xs text-gray-400">支持图片、PDF、Word、文本文件</span>
 
-    <input
-      id="attachment"
-      type="file"
-      multiple
-      className="hidden"
-    />
-  </label>
-</div>
-
+          <input id="attachment" type="file" multiple className="hidden" />
+        </label>
+      </div>
 
       {/* 提交按钮 */}
       <div className="pt-4 flex justify-end">
@@ -163,7 +156,7 @@ export default function ComplaintForm() {
          text-black font-semibold hover:opacity-90 transition
           "
         >
-           <PaperAirplaneIcon className="w-5 h-5" />
+          <PaperAirplaneIcon className="w-5 h-5" />
           提交投诉
         </button>
       </div>

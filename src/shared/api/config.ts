@@ -3,7 +3,6 @@ import { API_BASE } from '../utils/env';
 const BASE = API_BASE ?? 'https://api.sionsea-ai.cn';
 const TOKEN_KEY = 'auth_token';
 
-
 type Endpoints = {
   base: string;
   auth: {
@@ -24,7 +23,7 @@ type Endpoints = {
   chat: {
     send: string;
     history: string;
-    stream:string;
+    stream: string;
   };
 };
 
@@ -61,9 +60,7 @@ export const API: Endpoints = {
     history: `${BASE}/chat/history`,
     // ⭐ SSE 流式接口
     stream: `${BASE}/chat/stream`,
-
   },
-
 };
 
 export function withParam(url: string, params: Record<string, string | number>) {
@@ -82,7 +79,7 @@ export async function apiRequest(
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
     body?: any;
     headers?: Record<string, string>;
-  } = {}
+  } = {},
 ) {
   const token = localStorage.getItem(TOKEN_KEY);
 
@@ -109,4 +106,3 @@ export async function apiRequest(
 
   return res;
 }
-

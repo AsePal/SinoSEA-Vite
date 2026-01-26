@@ -15,7 +15,6 @@ export default function ComplaintPage() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-
   const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
@@ -29,11 +28,11 @@ export default function ComplaintPage() {
 
     // 先尝试主方案：user/info
     apiRequest(API.user.info)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setUser({
           nickname: data.username,
           avatar: data.avatarUrl || '/userlogo.ico',
@@ -49,8 +48,6 @@ export default function ComplaintPage() {
         });
       });
   }, [navigate]);
-
-
 
   return (
     <HomeBackground>
@@ -73,10 +70,8 @@ export default function ComplaintPage() {
           // ✅ 正式退出逻辑
           localStorage.removeItem('auth_token');
           navigate('/login');
-
         }}
       />
-
     </HomeBackground>
   );
 }

@@ -1,6 +1,6 @@
-import AboutHeader from '../components/AboutHeader'
-import AboutContent from '../components/AboutContent'
-import AboutFooter from '../components/AboutFooter'
+import AboutHeader from '../components/AboutHeader';
+import AboutContent from '../components/AboutContent';
+import AboutFooter from '../components/AboutFooter';
 
 export default function AboutUsPage() {
   return (
@@ -10,5 +10,5 @@ export default function AboutUsPage() {
       <AboutContent />
       <AboutFooter />
     </div>
-  )
+  );
 }

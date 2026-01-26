@@ -5,7 +5,11 @@ import type { UserInfo } from '../../../shared/types/user.types';
 import TopNav from '../components/TopNav';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
-import { LogoutConfirmModal, AvatarEditorModal, SuccessToastModal } from '../../../shared/components';
+import {
+  LogoutConfirmModal,
+  AvatarEditorModal,
+  SuccessToastModal,
+} from '../../../shared/components';
 import { HomeBackground } from '../../landing';
 
 import API, { apiRequest } from '../../../shared/api/config';
@@ -23,8 +27,6 @@ export default function Chat() {
   const navigate = useNavigate();
   //接管用户更新头像的弹窗
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-
 
   /* ---------- 获取用户信息（权威逻辑） ---------- */
 
@@ -45,12 +47,9 @@ export default function Chat() {
         return res.json();
       })
       .then((data) => {
-        
         setUser({
           nickname: data.userName || fallbackNickname,
-          avatar: data.avatarUrl
-            ? `${data.avatarUrl}?t=${Date.now()}`
-            : DEFAULT_AVATAR,
+          avatar: data.avatarUrl ? `${data.avatarUrl}?t=${Date.now()}` : DEFAULT_AVATAR,
         });
       })
       .catch(() => {
@@ -101,15 +100,10 @@ export default function Chat() {
               animate-fade-in
              "
             >
-              <ChatWindow
-                key={resetKey}
-                userAvatar={user?.avatar}
-                userId={user?.nickname}
-              />
+              <ChatWindow key={resetKey} userAvatar={user?.avatar} userId={user?.nickname} />
             </div>
           </main>
         </div>
-
 
         {/* 退出登录 */}
         <LogoutConfirmModal
@@ -129,7 +123,7 @@ export default function Chat() {
           currentAvatar={user?.avatar || DEFAULT_AVATAR}
           onClose={() => setShowAvatarEditor(false)}
           onSuccess={() => {
-            fetchUserInfo();          // 头像立即刷新
+            fetchUserInfo(); // 头像立即刷新
             setShowSuccessToast(true); // ⭐ 显示成功提示
 
             setTimeout(() => {
@@ -142,9 +136,6 @@ export default function Chat() {
           title="头像更新成功"
           description="你的新头像已生效"
         />
-
-
-
       </div>
     </HomeBackground>
   );

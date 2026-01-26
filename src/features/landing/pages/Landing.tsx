@@ -19,7 +19,7 @@ function useReveal() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(ref.current);
@@ -44,8 +44,6 @@ export default function Landing() {
     }, 400);
   };
 
-
-
   return (
     <div
       className={`
@@ -57,7 +55,6 @@ export default function Landing() {
       {/* ===== Hero 首屏 ===== */}
       {/* ===== 背景层 ===== */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
         {/* 渐变光晕（保留 + 微调） */}
         <div className="absolute -top-40 -left-40 w-[520px] h-[520px] bg-sky-200/40 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -right-40 w-[480px] h-[480px] bg-blue-200/40 rounded-full blur-3xl" />
@@ -100,7 +97,6 @@ export default function Landing() {
         />
       </div>
       <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-
         <h1
           className="text-5xl md:text-6xl font-semibold tracking-tight text-blue-600 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY}s` }}
@@ -153,10 +149,7 @@ export default function Landing() {
       </section>
 
       {/* ===== Section 1：问题共鸣 ===== */}
-      <section
-        ref={problem.ref}
-        className="py-28 px-6 bg-white"
-      >
+      <section ref={problem.ref} className="py-28 px-6 bg-white">
         <div
           className={`
             max-w-4xl mx-auto text-center space-y-6
@@ -167,8 +160,7 @@ export default function Landing() {
             来到一个陌生的国家，本就不该独自摸索
           </h2>
           <p className="text-lg text-slate-600 leading-relaxed">
-            语言差异、制度不熟悉、校园环境陌生，
-            都可能在无形中增加压力。
+            语言差异、制度不熟悉、校园环境陌生， 都可能在无形中增加压力。
             <br />
             我们希望，把这些不确定，变成可以被理解的事情。
           </p>
@@ -176,19 +168,14 @@ export default function Landing() {
       </section>
 
       {/* ===== Section 2：功能 ===== */}
-      <section
-        ref={features.ref}
-        className="py-28 px-6 bg-slate-50"
-      >
+      <section ref={features.ref} className="py-28 px-6 bg-slate-50">
         <div
           className={`
             max-w-6xl mx-auto
             ${features.visible ? 'animate-slide-up' : 'opacity-0'}
           `}
         >
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-14">
-            我们能为你做什么
-          </h2>
+          <h2 className="text-3xl font-bold text-center text-slate-900 mb-14">我们能为你做什么</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
@@ -201,12 +188,8 @@ export default function Landing() {
                 key={title}
                 className="bg-white rounded-xl p-8 shadow hover:shadow-lg transition"
               >
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">
-                  {title}
-                </h3>
-                <p className="text-slate-600 leading-relaxed">
-                  {desc}
-                </p>
+                <h3 className="text-xl font-semibold text-slate-800 mb-3">{title}</h3>
+                <p className="text-slate-600 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -214,10 +197,7 @@ export default function Landing() {
       </section>
 
       {/* ===== Section 3：理念 ===== */}
-      <section
-        ref={belief.ref}
-        className="py-24 px-6 bg-white"
-      >
+      <section ref={belief.ref} className="py-24 px-6 bg-white">
         <div
           className={`
             max-w-3xl mx-auto text-center

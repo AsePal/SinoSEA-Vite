@@ -6,11 +6,7 @@ type Props = {
   description?: string;
 };
 
-export default function SuccessToastModal({
-  open,
-  title = '操作成功',
-  description = '',
-}: Props) {
+export default function SuccessToastModal({ open, title = '操作成功', description = '' }: Props) {
   return (
     <AnimatePresence>
       {open && (
@@ -43,11 +39,7 @@ export default function SuccessToastModal({
           >
             {/* 手绘成功图标 */}
             <div className="flex justify-center mb-4">
-              <svg
-                className="w-16 h-16"
-                viewBox="0 0 52 52"
-                fill="none"
-              >
+              <svg className="w-16 h-16" viewBox="0 0 52 52" fill="none">
                 <circle
                   cx="26"
                   cy="26"
@@ -69,15 +61,9 @@ export default function SuccessToastModal({
             </div>
 
             {/* 文案 */}
-            <h2 className="text-xl font-semibold mb-2">
-              {title}
-            </h2>
+            <h2 className="text-xl font-semibold mb-2">{title}</h2>
 
-            {description && (
-              <p className="text-sm text-white/80">
-                {description}
-              </p>
-            )}
+            {description && <p className="text-sm text-white/80">{description}</p>}
           </motion.div>
         </motion.div>
       )}

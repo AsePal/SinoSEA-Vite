@@ -28,7 +28,6 @@ export default function AboutContent() {
 
   return (
     <main className="flex-1 text-slate-800">
-
       {/* 英雄区域 */}
       <section className="bg-slate-900 text-white py-16 text-center px-6">
         <h2 className="text-4xl font-bold mb-3">智为渡舟，暖心为岸</h2>
@@ -39,18 +38,14 @@ export default function AboutContent() {
 
       {/* 关于我们 */}
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">
-          关于我们
-        </h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">关于我们</h2>
         <p className="text-center text-slate-600 max-w-3xl mx-auto mb-12">
           我们是一支来自计应专业背景的学生团队，因对人工智能和校园服务的共同兴趣而聚集在一起，
           致力于开发解决校园实际问题的智能应用。
         </p>
 
         <div className="bg-white rounded-xl shadow p-8">
-          <h3 className="text-2xl font-semibold mb-4 text-center text-slate-900">
-            我们的使命
-          </h3>
+          <h3 className="text-2xl font-semibold mb-4 text-center text-slate-900">我们的使命</h3>
           <p className="mb-4 leading-7">
             通过技术创新，为师生提供更加智能、便捷的校园服务体验。
             我们相信技术应该服务于人，而校园正是技术应用的理想场所。
@@ -64,9 +59,7 @@ export default function AboutContent() {
 
       {/* 团队成员 */}
       <section className="bg-slate-100 py-16 px-6">
-        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">
-          团队成员
-        </h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">团队成员</h2>
         <p className="text-center text-slate-600 mb-12">
           我们团队的每位成员都拥有独特的技能和专长，共同推动项目的开发与实施
         </p>
@@ -95,18 +88,14 @@ export default function AboutContent() {
 
       {/* 项目介绍 */}
       <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">
-          项目介绍
-        </h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">项目介绍</h2>
         <p className="text-center text-slate-600 mb-12">
           校园智能助手是一款集多种功能于一体的 Web 应用，旨在提升校园生活的智能化水平
         </p>
 
         <div className="bg-white rounded-xl shadow p-8 space-y-10">
           <div>
-            <h3 className="text-2xl font-semibold mb-4 text-center">
-              校园智能助手功能特点
-            </h3>
+            <h3 className="text-2xl font-semibold mb-4 text-center">校园智能助手功能特点</h3>
             <p className="text-center text-slate-600 mb-6">
               我们的应用整合了校园学习、生活、社交等多方面需求，通过智能化的方式提供一站式服务。
             </p>
@@ -141,8 +130,7 @@ export default function AboutContent() {
             <p className="text-slate-700">
               第一版已完成多语言与核心模型训练并上线运营。
               <br />
-              第二版正在开发网页聊天室、微信小程序与移动端 App，
-              预计后半年开启内测阶段。
+              第二版正在开发网页聊天室、微信小程序与移动端 App， 预计后半年开启内测阶段。
             </p>
           </div>
         </div>

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import API from '../../../shared/api/config';
 import { SuccessToastModal } from '../../../shared/components';
 
-
 const MOCK_SMS_CODE = '114514';
 
 export default function Register() {
@@ -15,8 +14,6 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreed, setAgreed] = useState(false);
-
-
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,8 +33,7 @@ export default function Register() {
     if (!name || !phone || !smsCode || !password || !confirmPassword)
       return setError('请填写完整信息');
     if (password.length < 8) return setError('密码不少于 8 位');
-    if (password !== confirmPassword)
-      return setError('两次密码不一致');
+    if (password !== confirmPassword) return setError('两次密码不一致');
     if (smsCode !== MOCK_SMS_CODE) return setError('验证码错误');
 
     setLoading(true);
@@ -62,12 +58,8 @@ export default function Register() {
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
-        <h1 className="text-3xl font-semibold mb-2 text-center">
-          用户注册
-        </h1>
-        <p className="text-white/70 mb-10 text-center">
-          使用手机号完成注册
-        </p>
+        <h1 className="text-3xl font-semibold mb-2 text-center">用户注册</h1>
+        <p className="text-white/70 mb-10 text-center">使用手机号完成注册</p>
 
         <input
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
@@ -87,9 +79,7 @@ export default function Register() {
             className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
             placeholder="短信验证码"
             value={smsCode}
-            onChange={(e) =>
-              setSmsCode(e.currentTarget.value.replace(/\s/g, ''))
-            }
+            onChange={(e) => setSmsCode(e.currentTarget.value.replace(/\s/g, ''))}
           />
 
           <button
@@ -101,27 +91,23 @@ export default function Register() {
             rounded-xl
             whitespace-nowrap
             transition
-            ${canSendCode
+            ${
+              canSendCode
                 ? 'bg-indigo-500 hover:bg-indigo-400'
                 : 'bg-white/30 text-white/50 cursor-not-allowed'
-              }
+            }
           `}
           >
             {countdown > 0 ? `${countdown}s` : '获取验证码'}
           </button>
-
         </div>
-
-
 
         <input
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder="密码"
           value={password}
-          onChange={(e) =>
-            setPassword(e.currentTarget.value.replace(/\s/g, ''))
-          }
+          onChange={(e) => setPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         <input
@@ -129,9 +115,7 @@ export default function Register() {
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder="确认密码"
           value={confirmPassword}
-          onChange={(e) =>
-            setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))
-          }
+          onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         {error && <div className="text-red-300 text-sm mb-4">{error}</div>}
@@ -145,11 +129,7 @@ export default function Register() {
         </button>
 
         <label className="mt-5 flex items-start gap-2 text-xs text-white/70">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-          />
+          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
           我已阅读并同意相关条款
         </label>
 
@@ -157,12 +137,7 @@ export default function Register() {
           已有账号？<Link to="/login">去登录</Link>
         </div>
       </div>
-      <SuccessToastModal
-        open={showSuccess}
-        title="注册成功"
-        description="即将跳转登录"
-      />
-
+      <SuccessToastModal open={showSuccess} title="注册成功" description="即将跳转登录" />
     </div>
   );
 }

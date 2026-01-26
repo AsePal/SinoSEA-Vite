@@ -1,8 +1,8 @@
 {
-    "name": "sinosea-web",
-    "compatibility_date": "2026-01-25",
-    "assets": {
-        "directory": "./dist",
-        "not_found_handling": "single-page-application"
-    }
+  "name": "sinosea-web",
+  "compatibility_date": "2026-01-25",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
 }

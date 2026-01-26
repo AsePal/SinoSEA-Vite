@@ -1,10 +1,6 @@
 import type { ReactNode } from 'react';
 
-export default function HomeBackground({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function HomeBackground({ children }: { children: ReactNode }) {
   return (
     <div
       className="

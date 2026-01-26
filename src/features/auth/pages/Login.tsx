@@ -23,15 +23,14 @@ export default function Login() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-  requestAnimationFrame(() => {
-    setReady(true);
-  });
-}, []);
+    requestAnimationFrame(() => {
+      setReady(true);
+    });
+  }, []);
 
   /* CapsLock 检测 */
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) =>
-      setCapsLockOn(e.getModifierState('CapsLock'));
+    const handleKey = (e: KeyboardEvent) => setCapsLockOn(e.getModifierState('CapsLock'));
 
     window.addEventListener('keydown', handleKey);
     window.addEventListener('keyup', handleKey);
@@ -53,8 +52,7 @@ export default function Login() {
   const handleLogin = async () => {
     if (!agreed) return setError('请先阅读并同意相关条款');
     if (!account || !password) return setError('请输入账号和密码');
-    if (/\s/.test(account) || /\s/.test(password))
-      return setError('账号或密码不能包含空格');
+    if (/\s/.test(account) || /\s/.test(password)) return setError('账号或密码不能包含空格');
 
     setLoading(true);
     setError('');
@@ -78,7 +76,7 @@ export default function Login() {
       }
 
       setLoginAnim('success');
-      
+
       setTimeout(() => navigate('/chat'), 350);
     } catch (e: any) {
       setError(e.message || '登录失败');
@@ -103,9 +101,7 @@ export default function Login() {
         `}
       >
         <h1 className="text-3xl font-semibold mb-2 text-center">欢迎登录</h1>
-        <p className="text-white/70 mb-10 text-center">
-          校园智能助手服务平台
-        </p>
+        <p className="text-white/70 mb-10 text-center">校园智能助手服务平台</p>
 
         <input
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60"
@@ -122,9 +118,7 @@ export default function Login() {
             value={password}
             onFocus={() => setPasswordFocused(true)}
             onBlur={() => setPasswordFocused(false)}
-            onChange={(e) =>
-              setPassword(e.currentTarget.value.replace(/\s/g, ''))
-            }
+            onChange={(e) => setPassword(e.currentTarget.value.replace(/\s/g, ''))}
           />
           <button
             type="button"
@@ -142,8 +136,9 @@ export default function Login() {
 
         <div className="h-[20px] mb-3">
           <div
-            className={`text-amber-300 text-sm transition-opacity ${passwordFocused && capsLockOn ? 'opacity-100' : 'opacity-0'
-              }`}
+            className={`text-amber-300 text-sm transition-opacity ${
+              passwordFocused && capsLockOn ? 'opacity-100' : 'opacity-0'
+            }`}
           >
             ⚠️ 大写锁定已开启（Caps Lock）
           </div>
@@ -157,18 +152,16 @@ export default function Login() {
             flex items-center justify-center gap-2
             transition overflow-hidden
             ${loginAnim === 'error' ? 'animate-shake' : ''}
-            ${loading || !agreed
-              ? 'bg-white/30 text-white/60'
-              : 'bg-indigo-500 hover:bg-indigo-400'
+            ${
+              loading || !agreed ? 'bg-white/30 text-white/60' : 'bg-indigo-500 hover:bg-indigo-400'
             }
           `}
         >
           <span>{loading ? '登录中…' : '登录'}</span>
           <PaperAirplaneIcon
-            className={`w-5 h-5 transition-all duration-500 ${loginAnim === 'success'
-              ? 'translate-x-32 opacity-0 scale-90'
-              : ''
-              }`}
+            className={`w-5 h-5 transition-all duration-500 ${
+              loginAnim === 'success' ? 'translate-x-32 opacity-0 scale-90' : ''
+            }`}
           />
         </button>
 
@@ -182,11 +175,7 @@ export default function Login() {
         </label>
 
         <label className="mt-4 flex items-start gap-2 text-xs text-white/70">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-          />
+          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
           <span>
             我已阅读并同意
             <Link to="/privacy" className="underline ml-1">

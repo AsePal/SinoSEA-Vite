@@ -6,13 +6,9 @@ export default function Footer() {
 
       {/* 页脚内容 */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-8 text-center text-white">
-        <p className="text-sm opacity-90">
-          © 2026 星洲智能助手 版权所有 | 校园智能助手服务平台
-        </p>
-        <p className="text-sm opacity-90">
-          字体：MiSans
-        </p>
+        <p className="text-sm opacity-90">© 2026 星洲智能助手 版权所有 | 校园智能助手服务平台</p>
+        <p className="text-sm opacity-90">字体：MiSans</p>
       </div>
     </footer>
-  )
+  );
 }

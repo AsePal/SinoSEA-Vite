@@ -23,7 +23,6 @@ export default function ForgotPassword() {
   const [showToast, setShowToast] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
-  
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -37,8 +36,7 @@ export default function ForgotPassword() {
     setError('');
 
     try {
-      const body =
-        method === 'email' ? { email: identifier } : { phone: identifier };
+      const body = method === 'email' ? { email: identifier } : { phone: identifier };
 
       const res = await fetch(API.auth.forgotPassword, {
         method: 'POST',
@@ -60,10 +58,8 @@ export default function ForgotPassword() {
   };
 
   const handleReset = async () => {
-    if (!verificationCode || !newPassword || !confirmPassword)
-      return setError('请填写完整信息');
-    if (newPassword !== confirmPassword)
-      return setError('两次密码不一致');
+    if (!verificationCode || !newPassword || !confirmPassword) return setError('请填写完整信息');
+    if (newPassword !== confirmPassword) return setError('两次密码不一致');
 
     setLoading(true);
     setError('');
@@ -94,15 +90,13 @@ export default function ForgotPassword() {
     <div className="w-full max-w-2xl px-4">
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
         <h1 className="text-3xl font-semibold mb-2 text-center">重置密码</h1>
-        <p className="text-white/70 mb-10 text-center">
-          通过验证码设置新密码
-        </p>
+        <p className="text-white/70 mb-10 text-center">通过验证码设置新密码</p>
 
         <div className="relative mb-4">
           {/* 触发按钮 */}
           <button
             type="button"
-            onClick={() => setMethodOpen(v => !v)}
+            onClick={() => setMethodOpen((v) => !v)}
             className="
       w-full px-4 py-3 rounded-xl
       bg-white/20 border border-white/30
@@ -112,11 +106,7 @@ export default function ForgotPassword() {
     "
           >
             <span className={method ? 'text-white' : 'text-white/60'}>
-              {method === 'phone'
-                ? '手机号'
-                : method === 'email'
-                  ? '邮箱'
-                  : '请选择验证方式'}
+              {method === 'phone' ? '手机号' : method === 'email' ? '邮箱' : '请选择验证方式'}
             </span>
             <span className="text-white/60">▾</span>
           </button>
@@ -167,15 +157,12 @@ export default function ForgotPassword() {
           )}
         </div>
 
-
         <input
           disabled={!method}
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder={method === 'email' ? '请输入邮箱' : '请输入手机号'}
           value={identifier}
-          onChange={(e) =>
-            setIdentifier(e.currentTarget.value.replace(/\s/g, ''))
-          }
+          onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -184,9 +171,7 @@ export default function ForgotPassword() {
             className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
             placeholder="验证码"
             value={verificationCode}
-            onChange={(e) =>
-              setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))
-            }
+            onChange={(e) => setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))}
           />
 
           <button
@@ -198,9 +183,10 @@ export default function ForgotPassword() {
               rounded-xl
               whitespace-nowrap
               transition
-              ${countdown > 0
-                ? 'bg-white/30 text-white/50 cursor-not-allowed'
-                : 'bg-indigo-500 hover:bg-indigo-400'
+              ${
+                countdown > 0
+                  ? 'bg-white/30 text-white/50 cursor-not-allowed'
+                  : 'bg-indigo-500 hover:bg-indigo-400'
               }
             `}
           >
@@ -208,16 +194,13 @@ export default function ForgotPassword() {
           </button>
         </div>
 
-
         <input
           disabled={!codeSent}
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder="新密码"
           value={newPassword}
-          onChange={(e) =>
-            setNewPassword(e.currentTarget.value.replace(/\s/g, ''))
-          }
+          onChange={(e) => setNewPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         <input
@@ -226,9 +209,7 @@ export default function ForgotPassword() {
           className="w-full mb-6 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder="确认新密码"
           value={confirmPassword}
-          onChange={(e) =>
-            setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))
-          }
+          onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         {error && <div className="text-red-300 text-sm mb-4">{error}</div>}
@@ -246,16 +227,8 @@ export default function ForgotPassword() {
         </div>
       </div>
 
-      <SuccessToastModal
-        open={showToast}
-        title="验证码已发送"
-        description="有效期为 5 分钟"
-      />
-      <SuccessToastModal
-        open={showSuccess}
-        title="密码重置成功"
-        description="请使用新密码登录"
-      />
+      <SuccessToastModal open={showToast} title="验证码已发送" description="有效期为 5 分钟" />
+      <SuccessToastModal open={showSuccess} title="密码重置成功" description="请使用新密码登录" />
     </div>
   );
 }

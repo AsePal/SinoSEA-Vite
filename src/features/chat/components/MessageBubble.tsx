@@ -25,11 +25,7 @@ export default function MessageBubble({
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}>
       {/* AI 头像 */}
       {!isUser && (
-        <img
-          src="/public/sionsealogo.ico"
-          alt="AI"
-          className="w-8 h-8 rounded-full shrink-0 mt-1"
-        />
+        <img src="/sionsealogo.ico" alt="AI" className="w-8 h-8 rounded-full shrink-0 mt-1" />
       )}
 
       {/* 消息容器 */}
@@ -39,15 +35,15 @@ export default function MessageBubble({
           className={`
             rounded-xl px-4 py-3
             leading-relaxed break-words
-            ${isUser
-              ? 'bg-blue-500/20 border border-blue-500/30'
-              : 'bg-orange-500/20 border border-orange-500/30'}
+            ${
+              isUser
+                ? 'bg-blue-500/20 border border-blue-500/30'
+                : 'bg-orange-500/20 border border-orange-500/30'
+            }
           `}
         >
           <div className="prose prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {message.content}
-            </ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
           </div>
         </div>
 
@@ -64,9 +60,7 @@ export default function MessageBubble({
             text-sm
             text-gray-200
             backdrop-blur
-            ${isUser
-              ? 'bg-blue-500/60 hover:bg-blue-500/80'
-              : 'bg-black/60 hover:bg-black/80'}
+            ${isUser ? 'bg-blue-500/60 hover:bg-blue-500/80' : 'bg-black/60 hover:bg-black/80'}
           `}
         >
           {copied ? (
@@ -85,11 +79,7 @@ export default function MessageBubble({
 
       {/* 用户头像 */}
       {isUser && userAvatar && (
-        <img
-          src={userAvatar}
-          alt="avatar"
-          className="w-8 h-8 rounded-full object-cover shrink-0"
-        />
+        <img src={userAvatar} alt="avatar" className="w-8 h-8 rounded-full object-cover shrink-0" />
       )}
     </div>
   );

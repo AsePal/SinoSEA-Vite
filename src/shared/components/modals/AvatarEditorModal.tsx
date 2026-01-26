@@ -3,15 +3,7 @@ import { useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 //校验用户上传头像的类型
-const ALLOWED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-] as const;
-
-
-
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
 
 type Props = {
   open: boolean;
@@ -20,24 +12,16 @@ type Props = {
   onSuccess: (newAvatarUrl: string) => void;
 };
 
-export default function AvatarEditorModal({
-  open,
-  currentAvatar,
-  onClose,
-  onSuccess,
-}: Props) {
+export default function AvatarEditorModal({ open, currentAvatar, onClose, onSuccess }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string>(currentAvatar);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  
-
   useEffect(() => {
     setPreview(currentAvatar);
     setSelectedFile(null);
   }, [currentAvatar]);
-
 
   function triggerFileSelect() {
     fileInputRef.current?.click();
@@ -104,7 +88,6 @@ export default function AvatarEditorModal({
     }
   }
 
-
   return (
     <AnimatePresence>
       {open && (
@@ -129,9 +112,7 @@ export default function AvatarEditorModal({
             "
           >
             {/* 标题 */}
-            <h2 className="text-lg font-semibold text-gray-800 mb-6 text-center">
-              修改头像
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-6 text-center">修改头像</h2>
 
             {/* 头像区域 */}
             <div className="flex flex-col items-center gap-3">
@@ -146,27 +127,24 @@ export default function AvatarEditorModal({
                   transition
                 "
               >
-                <img
-                  src={preview}
-                  className="w-full h-full object-cover"
-                />
+                <img src={preview} className="w-full h-full object-cover" />
 
                 {/* hover 遮罩 */}
-                <div className="
+                <div
+                  className="
                   absolute inset-0
                   bg-black/40 opacity-0
                   group-hover:opacity-100
                   flex items-center justify-center
                   text-white text-sm
                   transition
-                ">
+                "
+                >
                   点击更换
                 </div>
               </button>
 
-              <p className="text-sm text-gray-500">
-                仅支持 JPG / PNG / GIF / WebP ≤ 5MB
-              </p>
+              <p className="text-sm text-gray-500">仅支持 JPG / PNG / GIF / WebP ≤ 5MB</p>
             </div>
 
             {/* 底部按钮 */}

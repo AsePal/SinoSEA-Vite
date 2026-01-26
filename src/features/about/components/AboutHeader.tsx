@@ -1,11 +1,8 @@
-import { useNavigate } from 'react-router-dom'
-import {
-  CpuChipIcon,
-  ArrowRightOnRectangleIcon,
-} from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom';
+import { CpuChipIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 export default function AboutHeader() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <header
@@ -17,24 +14,18 @@ export default function AboutHeader() {
       "
     >
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-
         {/* 左侧：图标 + 标题 */}
         <div className="flex items-center gap-4 text-white">
-            <CpuChipIcon className="w-9 h-9 text-sky-400 shrink-0" />
+          <CpuChipIcon className="w-9 h-9 text-sky-400 shrink-0" />
 
-            <div className="flex flex-col leading-tight">
-                {/* 主标题 */}
-                <span className="text-2xl font-bold tracking-wide">
-                星洲智能科技
-                </span>
+          <div className="flex flex-col leading-tight">
+            {/* 主标题 */}
+            <span className="text-2xl font-bold tracking-wide">星洲智能科技</span>
 
-                {/* 副标题 */}
-                <span className="text-sm text-white/60 mt-0.5">
-                让技术，终于抵达人心
-                </span>
-            </div>
-            </div>
-
+            {/* 副标题 */}
+            <span className="text-sm text-white/60 mt-0.5">让技术，终于抵达人心</span>
+          </div>
+        </div>
 
         {/* 右侧：退出按钮 */}
         <button
@@ -55,5 +46,5 @@ export default function AboutHeader() {
         </button>
       </div>
     </header>
-  )
+  );
 }

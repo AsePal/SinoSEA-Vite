@@ -7,7 +7,7 @@ export async function sendChatSSE(
     conversationId?: string;
     userId?: string;
   },
-  onEvent: (event: SSEEvent) => void
+  onEvent: (event: SSEEvent) => void,
 ) {
   const controller = new AbortController();
 

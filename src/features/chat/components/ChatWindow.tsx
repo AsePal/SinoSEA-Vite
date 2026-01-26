@@ -10,8 +10,6 @@ export function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-
-
 export default function ChatWindow({
   userAvatar,
   userId,
@@ -23,11 +21,6 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
 
-
-
-
-
-
   // ⚠️ 只用于按钮 / 输入框，不参与消息逻辑
   const [loading, setLoading] = useState(false);
 
@@ -36,8 +29,6 @@ export default function ChatWindow({
 
   type SendPhase = 'idle' | 'out' | 'reset' | 'return';
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
-
-
 
   /*------------小飞机✈️图标触发逻辑------------ */
   function handleSend() {
@@ -71,8 +62,6 @@ export default function ChatWindow({
       setSendPhase('idle');
     }, 900);
   }
-
-
 
   /* ---------------- 输入框高度 ---------------- */
 
@@ -156,16 +145,13 @@ export default function ChatWindow({
         },
         (event: SSEEvent) => {
           switch (event.type) {
-
             case 'delta': {
               assistantText += event.text;
 
               setMessages((prev) =>
                 prev.map((msg) =>
-                  msg.messageId === assistantMessageId
-                    ? { ...msg, content: assistantText }
-                    : msg
-                )
+                  msg.messageId === assistantMessageId ? { ...msg, content: assistantText } : msg,
+                ),
               );
               break;
             }
@@ -177,7 +163,7 @@ export default function ChatWindow({
               break;
             }
           }
-        }
+        },
       );
       // ⭐ 兜底判断：只有“完全没生成内容”才覆盖为错误
       if (!endReceived) {
@@ -186,8 +172,7 @@ export default function ChatWindow({
             if (msg.messageId !== assistantMessageId) return msg;
 
             const alreadyHasText =
-              assistantText.trim().length > 0 &&
-              msg.content !== '星洲正在思考⌛️';
+              assistantText.trim().length > 0 && msg.content !== '星洲正在思考⌛️';
 
             // ✅ 已经有内容了：保留内容，只在末尾轻提示
             if (alreadyHasText) {
@@ -202,7 +187,7 @@ export default function ChatWindow({
               ...msg,
               content: '❌ 出现了点问题，请稍后再试。',
             };
-          })
+          }),
         );
         setLoading(false);
       }
@@ -212,8 +197,7 @@ export default function ChatWindow({
           if (msg.messageId !== assistantMessageId) return msg;
 
           const alreadyHasText =
-            assistantText.trim().length > 0 &&
-            msg.content !== '星洲正在思考⌛️';
+            assistantText.trim().length > 0 && msg.content !== '星洲正在思考⌛️';
 
           if (alreadyHasText) {
             return {
@@ -226,39 +210,34 @@ export default function ChatWindow({
             ...msg,
             content: '❌ 出现了点问题😢，请稍后再试。',
           };
-        })
+        }),
       );
       setLoading(false);
     }
-
   }
-
-
-
-
 
   /* ---------------- UI ---------------- */
 
   return (
-    <div className=" w-full h-full bg-black/50 backdrop-blur
+    <div
+      className=" w-full h-full bg-black/50 backdrop-blur
     rounded-lg md:rounded-xl
     border border-white/10
     flex flex-col
    "
     >
       {/* Header */}
-      <div className=" p-3 md:p-4
+      <div
+        className=" p-3 md:p-4
           border-b border-white/10
          text-orange-300
           text-sm md:text-base
           font-semibold
-        ">
-
+        "
+      >
         SionSEA-AI
         {conversationId && (
-          <span className="ml-2 text-xs text-gray-400">
-            会话 {conversationId.slice(0, 8)}…
-          </span>
+          <span className="ml-2 text-xs text-gray-400">会话 {conversationId.slice(0, 8)}…</span>
         )}
       </div>
 
@@ -304,24 +283,24 @@ export default function ChatWindow({
           <PaperAirplaneIcon
             className={` absolute w-5 h-5 text-white
 
-            ${sendPhase === 'reset'
+            ${
+              sendPhase === 'reset'
                 ? 'transition-none -translate-x-16 opacity-0'
                 : 'transition-all duration-500 ease-in-out'
-              }
+            }
 
-             ${sendPhase === 'out'
-                ? 'translate-x-32 opacity-0'
-                : sendPhase === 'return'
-                  ? 'translate-x-0 opacity-100'
-                  : sendPhase === 'idle'
-                    ? 'translate-x-0 opacity-100'
-                    : ''
-              }
+             ${
+               sendPhase === 'out'
+                 ? 'translate-x-32 opacity-0'
+                 : sendPhase === 'return'
+                   ? 'translate-x-0 opacity-100'
+                   : sendPhase === 'idle'
+                     ? 'translate-x-0 opacity-100'
+                     : ''
+             }
             `}
           />
         </button>
-
-
       </div>
     </div>
   );
