@@ -6,6 +6,9 @@ import MessageBubble from './MessageBubble';
 import type { ChatMessage, SSEEvent } from '../pages/Chat';
 import { sendChatSSE } from '../utils/chatSSE';
 
+export function generateId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 
 
@@ -20,7 +23,7 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
 
-  
+
 
 
 
