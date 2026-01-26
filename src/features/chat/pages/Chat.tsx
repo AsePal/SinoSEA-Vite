@@ -17,7 +17,6 @@ import { parseJwt } from '../../../shared/utils/jwt';
 
 export default function Chat() {
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [resetKey, setResetKey] = useState(0);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -61,16 +60,11 @@ export default function Chat() {
     fetchUserInfo();
   }, []);
 
-  function handleNewChat() {
-    setResetKey((k) => k + 1);
-  }
-
   return (
     <HomeBackground>
       <div className="h-screen flex flex-col animate-fade-in">
         <TopNav
           user={user}
-          onNewChat={handleNewChat}
           onLogout={() => setShowLogoutModal(true)}
           onEditAvatar={() => setShowAvatarEditor(true)}
           onToggleSidebar={() => setSidebarOpen((v) => !v)} // ⭐ toggle
@@ -101,8 +95,8 @@ export default function Chat() {
 
           {/* 主聊天区 */}
           <main className="flex-1 flex justify-center overflow-hidden">
-            <div className="w-full max-w-[1100px] h-full px-3 md:px-6 py-4 md:py-8">
-              <ChatWindow key={resetKey} userAvatar={user?.avatar} userId={user?.nickname} />
+            <div className="w-full max-w-[1100px] h-full px-3 md:px-6 py-4 md:py-8 bg-transparent">
+              <ChatWindow userAvatar={user?.avatar} userId={user?.nickname} />
             </div>
           </main>
         </div>

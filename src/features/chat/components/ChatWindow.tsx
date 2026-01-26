@@ -27,13 +27,33 @@ export default function ChatWindow({
 
   type SendPhase = 'idle' | 'out' | 'reset' | 'return';
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
+  const MAX_TEXTAREA_HEIGHT = 180; // ≈ 7~8 行，可自行调
 
-  /* ------------ 逻辑完全未改 ------------ */
+  /* ------------ ------------ */
+
+  function initConversation() {
+    setMessages([
+      {
+        role: 'assistant',
+        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
+      },
+    ]);
+  }
+
+  function handleNewChat() {
+    setMessages([]);
+    setConversationId(null);
+    initConversation();
+  }
 
   function handleSend() {
-    if (loading || !input.trim()) return;
+    if (loading) return;
+
+    const value = input.trim();
+    if (!value) return;
+
     triggerSendAnimation();
-    sendMessage();
+    sendMessage(value);
   }
 
   function triggerSendAnimation() {
@@ -44,11 +64,13 @@ export default function ChatWindow({
     setTimeout(() => setSendPhase('idle'), 900);
   }
 
-  function autoResizeTextarea() {
-    const el = textareaRef.current;
-    if (!el) return;
+  function resizeTextarea(el: HTMLTextAreaElement) {
     el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
+
+    const newHeight = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT);
+    el.style.height = newHeight + 'px';
+
+    el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
   }
 
   function resetTextareaHeight() {
@@ -64,6 +86,7 @@ export default function ChatWindow({
         content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
       },
     ]);
+    initConversation();
   }, []);
 
   useEffect(() => {
@@ -76,27 +99,36 @@ export default function ChatWindow({
     return () => clearTimeout(t);
   }, []);
 
-  async function sendMessage() {
+  async function sendMessage(content: string) {
     let endReceived = false;
     let assistantText = '';
-    const content = input.trim();
-    if (!content || loading) return;
+
+    const trimmed = content.trim();
+    if (!trimmed || loading) return;
 
     setLoading(true);
     setInput('');
     requestAnimationFrame(resetTextareaHeight);
 
-    setMessages((prev) => [...prev, { role: 'user', content }]);
+    setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
 
     const assistantMessageId = crypto.randomUUID();
     setMessages((prev) => [
       ...prev,
-      { role: 'assistant', content: '星洲正在思考⌛️', messageId: assistantMessageId },
+      {
+        role: 'assistant',
+        content: '星洲正在思考⌛️',
+        messageId: assistantMessageId,
+      },
     ]);
 
     try {
       await sendChatSSE(
-        { message: content, conversationId: conversationId ?? undefined, userId },
+        {
+          message: trimmed,
+          conversationId: conversationId ?? undefined,
+          userId,
+        },
         (event: SSEEvent) => {
           if (event.type === 'delta') {
             assistantText += event.text;
@@ -106,6 +138,7 @@ export default function ChatWindow({
               ),
             );
           }
+
           if (event.type === 'end') {
             endReceived = true;
             setConversationId(event.conversationId);
@@ -113,6 +146,7 @@ export default function ChatWindow({
           }
         },
       );
+
       if (!endReceived) setLoading(false);
     } catch {
       setLoading(false);
@@ -124,92 +158,121 @@ export default function ChatWindow({
   return (
     <div
       className="
-        w-full h-full
-        rounded-xl
-        bg-[linear-gradient(#fafafa,#f6f6f6)]
-        backdrop-blur-sm
-        shadow-[0_8px_30px_rgba(0,0,0,0.15)]
-        flex flex-col
-      "
+    w-full h-full
+    rounded-2xl
+    bg-[#1c1c1e]
+    backdrop-blur-xl
+    border border-white/10
+    shadow-[0_30px_80px_rgba(0,0,0,0.6)]
+    flex flex-col
+    text-gray-100
+  "
     >
-      {/* Header：功能白 */}
+      {/* Header */}
       <div
         className="
-          px-4 py-4
-          bg-white/80
-          backdrop-blur
-          text-gray-700
-          text-sm font-semibold
-          border-b border-gray-200/60
-        "
+        px-4 py-4
+        text-sm font-semibold
+       text-gray-300
+        border-b border-white/10
+      "
       >
         SionSEA-AI
         {conversationId && (
-          <span className="ml-2 text-xs text-gray-400">会话 {conversationId.slice(0, 8)}…</span>
+          <span className="ml-2 text-xs text-gray-400">当前会话 {conversationId.slice(0, 8)}…</span>
         )}
       </div>
 
       {/* Messages：主内容白 */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
         {messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
         ))}
         <div ref={bottomRef} />
       </div>
-
-      {/* Input Area：功能白 */}
-      <div
-        className="
-          px-4 py-3
-          bg-gray-90
-          backdrop-blur
-          border-t border-gray-200/60
-          flex gap-3
-          items-end
-        "
-      >
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-            autoResizeTextarea();
-          }}
-          rows={1}
-          placeholder="（Enter 发送，Shift+Enter 换行）"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              handleSend();
-            }
-          }}
+      {/* ChatGPT 风格 Input Area */}
+      <div className="px-4 py-3">
+        <div
           className="
-            flex-1 resize-none
-            rounded-lg
-            bg-white/90
-            border border-gray-300/60
-            p-3
-            text-gray-900
-            placeholder-gray-400
-            min-h-\[44px\] max-h-40
-            focus:outline-none
-            focus:ring-2 focus:ring-blue-500
-          "
-        />
-
-        <button
-          onClick={handleSend}
-          disabled={loading || !input.trim()}
-          className="
-            relative w-11 h-11
-            rounded-full
-            bg-blue-600 hover:bg-blue-500
-            flex items-center justify-center
-            disabled:opacity-40
-          "
+    flex items-start gap-3
+    rounded-2xl
+    bg-[#2b2b2e]
+    border border-white/10
+    px-3 py-2
+    shadow-inner
+  "
         >
-          <PaperAirplaneIcon className="w-5 h-5 text-white" />
-        </button>
+          {/* 新对话（加号） */}
+          <div className="self-end">
+            <button
+              type="button"
+              onClick={handleNewChat}
+              title="新对话"
+              className="
+      w-9 h-9
+      rounded-full
+      flex items-center justify-center
+      bg-white/10 hover:bg-white/20
+      text-white text-lg
+      transition
+    "
+            >
+              +
+            </button>
+          </div>
+
+          {/* 输入框（无边框、无背景） */}
+          <textarea
+            rows={1}
+            ref={textareaRef}
+            value={input}
+            placeholder="有问题，尽管问"
+            onChange={(e) => setInput(e.target.value)}
+            onInput={(e) => resizeTextarea(e.currentTarget)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const value = e.currentTarget.value.trim();
+                if (!value) return;
+                sendMessage(value);
+              }
+            }}
+            className="
+            flex-1
+            resize-none
+            bg-transparent
+            border-none
+            outline-none
+           text-gray-100
+           placeholder-gray-400
+            leading-relaxed
+            max-h-40
+            overflow-y-auto
+            chat-scroll
+          "
+          />
+
+          {/* 发送按钮 */}
+          <div className="self-end">
+            <button
+              onClick={handleSend}
+              disabled={loading || !input.trim()}
+              className="
+      w-9 h-9
+      rounded-full
+      flex items-center justify-center
+      bg-blue-600 hover:bg-blue-500
+      disabled:opacity-40
+      transition
+    "
+            >
+              <PaperAirplaneIcon className="w-4 h-4 text-white" />
+            </button>
+          </div>
+        </div>
+
+        {/* 底部提示文案（ChatGPT 同款位置） */}
+        <p className="mt-2 text-xs text-gray-400 text-center">星洲也可能会犯错，请核查重要信息。</p>
       </div>
     </div>
   );

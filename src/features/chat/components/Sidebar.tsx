@@ -1,72 +1,115 @@
 import { ChatBubbleLeftRightIcon, CpuChipIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 
-export default function Sidebar({ onClose }: { onClose?: () => void }) {
+type SidebarProps = {
+  onClose?: () => void;
+};
+
+export default function Sidebar({ onClose }: SidebarProps) {
   const navigate = useNavigate();
+
+  function go(path: string) {
+    navigate(path);
+    onClose?.(); // ✅ 用掉 onClose，顺便实现“跳转后自动收起”
+  }
 
   return (
     <aside
       className="
         w-72 h-full
         flex flex-col
-        bg-white/80
-        backdrop-blur-sm
-        shadow-[4px_0_16px_rgba(0,0,0,0.06)]
+        bg-[#232324]
+        border-r border-white/20
+        shadow-[8px_0_24px_rgba(0,0,0,0.4)]
+        text-gray-200
       "
     >
       {/* 主导航区 */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        <h2 className="mb-4 text-center text-lg font-semibold text-gray-900">功能导航</h2>
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
+        <h2 className="mb-5 text-center text-sm font-semibold tracking-widest text-gray-200">
+          功能导航
+        </h2>
 
-        <MenuItem icon={CpuChipIcon} active>
+        <MenuItem
+          icon={CpuChipIcon}
+          active
+          onClick={() => {
+            // 如果你未来有明确路由（比如 /chat），可以改成 go('/chat')
+            onClose?.();
+          }}
+        >
           询问星洲
         </MenuItem>
 
-        <MenuItem icon={ChatBubbleLeftRightIcon}>聊天室（敬请期待）</MenuItem>
+        <MenuItem icon={ChatBubbleLeftRightIcon} disabled>
+          聊天室（敬请期待）
+        </MenuItem>
       </div>
 
-      {/* 底部功能区：结构白 */}
-      <div className="px-4 py-3 bg-white/60 border-t border-gray-200/60 text-sm text-gray-600">
-        <button
-          onClick={() => navigate('/about')}
-          className="
-            px-4 py-2 rounded-lg
-            hover:bg-gray-100/70
-            w-full text-left
-            transition
-          "
-        >
-          关于我们
-        </button>
-        <button
-          onClick={() => navigate('/complaint')}
-          className="
-            px-4 py-2 rounded-lg
-            hover:bg-gray-100/70
-            w-full text-left
-            transition
-          "
-        >
-          投诉反馈
-        </button>
+      {/* 底部功能区 */}
+      <div className="px-4 py-4 border-t border-white/10 text-sm">
+        <FooterButton onClick={() => go('/about')}>关于我们</FooterButton>
+        <FooterButton onClick={() => go('/complaint')}>投诉反馈</FooterButton>
       </div>
     </aside>
   );
 }
 
-function MenuItem({ icon: Icon, active, children }: any) {
+function MenuItem({
+  icon: Icon,
+  active,
+  disabled,
+  onClick,
+  children,
+}: {
+  icon: any;
+  active?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div
+      onClick={disabled ? undefined : onClick}
       className={`
         flex items-center gap-3
-        px-4 py-3 rounded-lg cursor-pointer
-        text-base
+        px-4 py-3 rounded-xl
+        text-sm
         transition
-        ${active ? 'bg-blue-50/80 text-blue-600' : 'hover:bg-gray-100/70 text-gray-800'}
+        ${
+          active
+            ? 'bg-white/10 text-white'
+            : disabled
+              ? 'text-gray-500 cursor-not-allowed'
+              : 'hover:bg-white/5 hover:text-white cursor-pointer'
+        }
       `}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      onKeyDown={(e) => {
+        if (disabled) return;
+        if (e.key === 'Enter' || e.key === ' ') onClick?.();
+      }}
     >
-      <Icon className="w-5 h-5" />
+      <Icon className="w-5 h-5 shrink-0" />
       <span>{children}</span>
     </div>
+  );
+}
+
+function FooterButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="
+        w-full text-left
+        px-4 py-2 rounded-lg
+        text-gray-400
+        hover:bg-white/5 hover:text-gray-200
+        transition
+      "
+    >
+      {children}
+    </button>
   );
 }

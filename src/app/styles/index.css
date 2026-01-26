@@ -47,14 +47,19 @@ body {
 }
 
 .chat-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  transition: background-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
-/* hover 时更明显 */
 .chat-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.38);
+}
+
+/* Firefox */
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
 }
 
 /* Firefox */
@@ -267,4 +272,11 @@ input[type='password']::-webkit-textfield-decoration-container {
   transform: translateY(120px);
   opacity: 0;
   filter: blur(16px);
+}
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full bg-[#252527];
+  }
 }

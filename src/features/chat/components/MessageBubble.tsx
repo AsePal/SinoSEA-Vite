@@ -39,7 +39,7 @@ export default function MessageBubble({
             break-words
             text-[15px] md:text-[16px]
             shadow-sm
-            ${isUser ? 'bg-blue-500 text-white' : 'bg-green-500 text-white'}
+            ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-800 text-white'}
           `}
         >
           <div className="prose max-w-none prose-p:my-1 prose-li:my-1 text-white">
@@ -59,7 +59,7 @@ export default function MessageBubble({
             rounded-lg
             text-sm
             text-white
-            ${isUser ? 'bg-blue-600/80 hover:bg-blue-600' : 'bg-green-600/80 hover:bg-green-600'}
+            ${isUser ? 'bg-blue-600/80 hover:bg-blue-600' : 'bg-gray-600/80 hover:bg-gray-600'}
           `}
         >
           {copied ? (

@@ -3,23 +3,23 @@ import type { ReactNode } from 'react';
 export default function HomeBackground({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* 背景渐变层 */}
+      {/* 背景图片（清晰层） */}
       <div
-        className="
-          fixed inset-0 z-0
-          bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(59,130,246,0.18),transparent),
-              radial-gradient(1000px_500px_at_80%_110%,rgba(147,197,253,0.18),transparent),
-              linear-gradient(180deg,#f8fbff,#ffffff)]
-        "
+        className="fixed inset-0 z-0 bg-center bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: "url('/images/landingbg.avif')",
+        }}
       />
 
-      {/* 极轻雾层，统一质感 */}
+      {/* 高斯模糊层（关键） */}
       <div
-        className="
-          fixed inset-0 z-10
-          bg-white/10
-          backdrop-blur-[2px]
-        "
+        className="fixed inset-0 z-[1] bg-center bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: "url('/images/landingbg.avif')",
+          filter: 'blur(1px)',
+          transform: 'scale(1.08)', // 防止 blur 边缘露白
+          opacity: 0.6,
+        }}
       />
 
       {/* 前景内容 */}

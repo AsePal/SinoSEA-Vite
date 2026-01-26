@@ -4,41 +4,39 @@ import { Bars3Icon } from '@heroicons/react/24/outline';
 
 type TopNavProps = {
   user: UserInfo | null;
-  onNewChat: () => void;
   onLogout: () => void;
   onEditAvatar: () => void;
   onToggleSidebar: () => void;
 };
 
-export default function TopNav({
-  user,
-  onNewChat,
-  onLogout,
-  onEditAvatar,
-  onToggleSidebar,
-}: TopNavProps) {
+export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
   return (
     <header
       className="
         h-[70px]
-        bg-white/80
-        backdrop-blur-sm
-        border-b border-gray-200/60
-        shadow-[0_4px_12px_rgba(0,0,0,0.06)]
-
+        bg-[#121216]/90
+        backdrop-blur-md
+        border-b border-white/10
+        shadow-[0_6px_20px_rgba(0,0,0,0.45)]
         px-6
         flex items-center
         z-50
       "
     >
-      {/* 左侧：保持原样不动 */}
-      <div className="flex items-center gap-3 text-gray-900 font-semibold">
-        <button onClick={onToggleSidebar} className="p-2 rounded-lg hover:bg-gray-100">
-          <Bars3Icon className="w-6 h-6 text-gray-800" />
+      {/* 左侧：菜单 + 用户 */}
+      <div className="flex items-center gap-3 text-gray-100 font-semibold">
+        <button
+          onClick={onToggleSidebar}
+          className="
+            p-2 rounded-lg
+            text-gray-300
+            hover:bg-white/10 hover:text-white
+            transition
+          "
+        >
+          <Bars3Icon className="w-6 h-6" />
         </button>
 
-        {/* 用户昵称在 UserAvatarMenu 内部显示，
-            这里通过外层 text-gray-900 font-semibold 统一加粗 */}
         <UserAvatarMenu
           user={{
             nickname: user?.nickname || '星洲用户',
@@ -50,32 +48,20 @@ export default function TopNav({
 
       {/* 中间标题 */}
       <div className="flex-1 text-center pointer-events-none">
-        <h1 className="text-xl font-bold text-gray-900">欢迎！</h1>
+        <h1 className="text-lg font-semibold text-gray-200 tracking-wide"></h1>
       </div>
 
-      {/* 右侧：两个按钮加边框 + 阴影 */}
+      {/* 右侧操作区 */}
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onNewChat}
-          className="
-            btn-primary hidden sm:inline-flex
-            text-white
-            border border-blue-500/30
-            shadow-sm
-          "
-        >
-          新对话
-        </button>
-
         <button
           type="button"
           onClick={onLogout}
           className="
-            rounded-full px-4 py-1.5
-            bg-red-500 text-white hover:bg-red-600
-            border border-red-600/30
-            shadow-sm
+            px-4 py-1.5 rounded-full
+            bg-red-500/80 hover:bg-red-500
+            text-white text-sm font-medium
+            border border-red-400/30
+            shadow-[0_0_0_1px_rgba(255,255,255,0.05)]
             transition
           "
         >
