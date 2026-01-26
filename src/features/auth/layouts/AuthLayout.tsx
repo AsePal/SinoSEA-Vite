@@ -29,7 +29,7 @@ export default function AuthLayout() {
       {/* 背景 */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url("/images/login-bg2.jpg")' }}
+        style={{ backgroundImage: 'url("/images/login-bg2.webp")' }}
       />
       <div className="absolute inset-0 bg-black/50" />
 
