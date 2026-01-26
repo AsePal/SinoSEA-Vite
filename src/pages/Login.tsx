@@ -20,7 +20,6 @@ export default function Login() {
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [loginAnim, setLoginAnim] = useState<LoginAnim>('idle');
-  const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -28,14 +27,6 @@ export default function Login() {
     setReady(true);
   });
 }, []);
-
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 120);
-    return () => clearTimeout(t);
-  }, []);
-
-
 
   /* CapsLock 检测 */
   useEffect(() => {

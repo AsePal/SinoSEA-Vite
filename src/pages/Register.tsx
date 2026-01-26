@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../utils/apiConfig';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import SuccessToastModal from '../components/SuccessToastModal';
 
 
