@@ -18,7 +18,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       className="
         w-72 h-full
         flex flex-col
-        bg-[#232324]
+        bg-[#c4d0da]
         border-r border-white/20
         shadow-[8px_0_24px_rgba(0,0,0,0.4)]
         text-gray-200

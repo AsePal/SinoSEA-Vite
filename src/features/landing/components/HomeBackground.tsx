@@ -2,28 +2,36 @@ import type { ReactNode } from 'react';
 
 export default function HomeBackground({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* 背景图片（清晰层） */}
+    <>
+      {/* 背景图片（基础层，清晰） */}
       <div
-        className="fixed inset-0 z-0 bg-center bg-cover bg-no-repeat"
+        className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/images/landingbg.avif')",
+          backgroundImage: "url('/images/login-bg2.jpg')",
         }}
       />
 
-      {/* 高斯模糊层（关键） */}
+      {/* 全局渐变遮罩（决定整体氛围，重点） */}
       <div
-        className="fixed inset-0 z-[1] bg-center bg-cover bg-no-repeat"
+        className="
+          fixed inset-0 z-[1]
+          bg-gradient-to-b
+          from-white/50
+          via-white/30
+          to-white/20
+        "
+      />
+
+      {/* 轻雾化层（可选：只做柔化，不当主效果） */}
+      <div
+        className="fixed inset-0 z-[2]"
         style={{
-          backgroundImage: "url('/images/landingbg.avif')",
-          filter: 'blur(1px)',
-          transform: 'scale(1.08)', // 防止 blur 边缘露白
-          opacity: 0.6,
+          backdropFilter: 'blur(2px)', // 👈 轻微即可，可调
         }}
       />
 
-      {/* 前景内容 */}
-      <div className="relative z-20 min-h-screen">{children}</div>
-    </div>
+      {/* 前景应用画布（不再参与背景逻辑） */}
+      <div className="relative z-10 h-screen w-screen overflow-hidden">{children}</div>
+    </>
   );
 }

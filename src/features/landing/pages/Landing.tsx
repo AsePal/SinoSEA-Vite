@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
 const BASE_DELAY = 0.1;
 const STEP = 0.2;
+
+type FeatureItem = {
+  title: string;
+  desc: string;
+};
 
 /** 滚动进入动画 Hook */
 function useReveal() {
@@ -31,6 +38,7 @@ function useReveal() {
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { t } = useTranslation('landing');
   const [leaving, setLeaving] = useState(false);
 
   const problem = useReveal();
@@ -44,6 +52,9 @@ export default function Landing() {
     }, 400);
   };
 
+  // ✅ 安全获取 features.items
+  const featureItems = (t('features.items', { returnObjects: true }) as FeatureItem[]) ?? [];
+
   return (
     <div
       className={`
@@ -52,49 +63,7 @@ export default function Landing() {
         ${leaving ? 'animate-fade-out-down' : ''}
       `}
     >
-      {/* ===== Hero 首屏 ===== */}
-      {/* ===== 背景层 ===== */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* 渐变光晕（保留 + 微调） */}
-        <div className="absolute -top-40 -left-40 w-[520px] h-[520px] bg-sky-200/40 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -right-40 w-[480px] h-[480px] bg-blue-200/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-[420px] h-[420px] bg-cyan-200/30 rounded-full blur-3xl" />
-
-        {/* 流动线条（极弱存在感） */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-[0.08]"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#06b6d4" />
-            </linearGradient>
-          </defs>
-
-          <path
-            d="M0,200 C300,100 600,300 1200,180"
-            fill="none"
-            stroke="url(#lineGradient)"
-            strokeWidth="2"
-          />
-          <path
-            d="M0,420 C400,320 800,520 1200,380"
-            fill="none"
-            stroke="url(#lineGradient)"
-            strokeWidth="1.5"
-          />
-        </svg>
-
-        {/* 点阵（星点感，呼应“星洲”） */}
-        <div
-          className="
-        absolute inset-0
-        bg-\[radial-gradient\(circle\,_rgba\(59\,130\,246\,0\.15\)_1px\,_transparent_1px\)\]
-        pacity-[0.15]
-        "
-        />
-      </div>
+      {/* ===== Hero ===== */}
       <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
         <h1
           className="text-5xl md:text-6xl font-semibold tracking-tight text-blue-600 animate-slide-up"
@@ -107,33 +76,34 @@ export default function Landing() {
           className="mt-4 text-xl text-slate-700 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP}s` }}
         >
-          星洲智能助手
+          {t('hero.subtitle')}
         </p>
 
         <p
           className="mt-10 text-lg text-slate-600 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 2}s` }}
         >
-          为来到中国的东盟留学生
+          {t('hero.line1')}
         </p>
 
         <p
           className="text-lg text-slate-600 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 3}s` }}
         >
-          提供制度指引、校园适应与心理陪伴
+          {t('hero.line2')}
         </p>
 
         <p
           className="text-lg text-slate-600 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 4}s` }}
         >
-          的智能助手
+          {t('hero.line3')}
         </p>
 
-        <button
-          onClick={handleStart}
-          className="
+        <div className="flex flex-col items-center gap-4 mt-3">
+          <button
+            onClick={handleStart}
+            className="
             mt-12 px-10 py-4 rounded-full
             bg-blue-600 text-white text-lg font-medium
             shadow-lg shadow-blue-300/40
@@ -141,13 +111,17 @@ export default function Landing() {
             transition-all
             animate-slide-up
           "
-          style={{ animationDelay: `${BASE_DELAY + STEP * 6}s` }}
-        >
-          让我们开始吧 →
-        </button>
+            style={{ animationDelay: `${BASE_DELAY + STEP * 6}s` }}
+          >
+            {t('hero.start')}
+          </button>
+          <div className="animate-slide-up" style={{ animationDelay: `${BASE_DELAY + STEP * 7}s` }}>
+            <LanguageSwitcher />
+          </div>
+        </div>
       </section>
 
-      {/* ===== Section 1：问题共鸣 ===== */}
+      {/* ===== 问题共鸣 ===== */}
       <section ref={problem.ref} className="py-28 px-6 bg-white">
         <div
           className={`
@@ -155,18 +129,16 @@ export default function Landing() {
             ${problem.visible ? 'animate-slide-up' : 'opacity-0'}
           `}
         >
-          <h2 className="text-3xl font-bold text-slate-900">
-            来到一个陌生的国家，本就不该独自摸索
-          </h2>
+          <h2 className="text-3xl font-bold text-slate-900">{t('problem.title')}</h2>
           <p className="text-lg text-slate-600 leading-relaxed">
-            语言差异、制度不熟悉、校园环境陌生， 都可能在无形中增加压力。
+            {t('problem.desc1')}
             <br />
-            我们希望，把这些不确定，变成可以被理解的事情。
+            {t('problem.desc2')}
           </p>
         </div>
       </section>
 
-      {/* ===== Section 2：功能 ===== */}
+      {/* ===== 功能 ===== */}
       <section ref={features.ref} className="py-28 px-6 bg-slate-50">
         <div
           className={`
@@ -174,28 +146,26 @@ export default function Landing() {
             ${features.visible ? 'animate-slide-up' : 'opacity-0'}
           `}
         >
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-14">我们能为你做什么</h2>
+          <h2 className="text-3xl font-bold text-center text-slate-900 mb-14">
+            {t('features.title')}
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              ['规章制度智能解答', '用你熟悉的语言理解规则'],
-              ['校园与周边生活推荐', '一步步熟悉你所在的城市'],
-              ['心理支持与陪伴', '当你感到焦虑与孤独时'],
-              ['多语言智能问答', '更贴合东盟留学生背景'],
-            ].map(([title, desc]) => (
-              <div
-                key={title}
-                className="bg-white rounded-xl p-8 shadow hover:shadow-lg transition"
-              >
-                <h3 className="text-xl font-semibold text-slate-800 mb-3">{title}</h3>
-                <p className="text-slate-600 leading-relaxed">{desc}</p>
-              </div>
-            ))}
+            {Array.isArray(featureItems) &&
+              featureItems.map((item) => (
+                <div
+                  key={item.title}
+                  className="bg-white rounded-xl p-8 shadow hover:shadow-lg transition"
+                >
+                  <h3 className="text-xl font-semibold text-slate-800 mb-3">{item.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
           </div>
         </div>
       </section>
 
-      {/* ===== Section 3：理念 ===== */}
+      {/* ===== 理念 ===== */}
       <section ref={belief.ref} className="py-24 px-6 bg-white">
         <div
           className={`
@@ -204,9 +174,9 @@ export default function Landing() {
           `}
         >
           <p className="text-xl font-medium text-slate-800">
-            我们相信，技术不只是工具，
+            {t('belief.line1')}
             <br />
-            而是在陌生环境中，给予人安全感的陪伴。
+            {t('belief.line2')}
           </p>
         </div>
       </section>

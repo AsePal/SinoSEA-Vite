@@ -39,7 +39,7 @@ export default function MessageBubble({
             break-words
             text-[15px] md:text-[16px]
             shadow-sm
-            ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-800 text-white'}
+            ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-800 text-black'}
           `}
         >
           <div className="prose max-w-none prose-p:my-1 prose-li:my-1 text-white">

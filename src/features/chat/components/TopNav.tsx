@@ -13,24 +13,21 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
   return (
     <header
       className="
-        h-[70px]
-        bg-[#121216]/90
-        backdrop-blur-md
-        border-b border-white/10
-        shadow-[0_6px_20px_rgba(0,0,0,0.45)]
-        px-6
+        h-[64px]
         flex items-center
-        z-50
+        px-4 md:px-6
+        relative z-20  
+        bg-transparent  
       "
     >
       {/* 左侧：菜单 + 用户 */}
-      <div className="flex items-center gap-3 text-gray-100 font-semibold">
+      <div className="flex items-center gap-3 text-gray-900 font-medium">
         <button
           onClick={onToggleSidebar}
           className="
             p-2 rounded-lg
-            text-gray-300
-            hover:bg-white/10 hover:text-white
+            text-gray-700
+            hover:bg-black/10
             transition
           "
         >
@@ -39,29 +36,28 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
 
         <UserAvatarMenu
           user={{
-            nickname: user?.nickname || '星洲用户',
+            nickname: user?.nickname || '需要登录',
             avatar: user?.avatar,
           }}
           onEditAvatar={onEditAvatar}
         />
       </div>
 
-      {/* 中间标题 */}
-      <div className="flex-1 text-center pointer-events-none">
-        <h1 className="text-lg font-semibold text-gray-200 tracking-wide"></h1>
-      </div>
+      <div className="flex-1" />
 
       {/* 右侧操作区 */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onLogout}
           className="
-            px-4 py-1.5 rounded-full
-            bg-red-500/80 hover:bg-red-500
-            text-white text-sm font-medium
+            px-3 py-1.5 rounded-full
+            text-sm font-medium text-white
+
+            bg-red-500/70
+            hover:bg-red-500/90
+
             border border-red-400/30
-            shadow-[0_0_0_1px_rgba(255,255,255,0.05)]
             transition
           "
         >

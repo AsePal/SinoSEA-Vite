@@ -27,15 +27,23 @@ export default function Chat() {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
 
+  /**
+   * 获取用户信息
+   * 现在支持「匿名态」
+   */
   function fetchUserInfo() {
     const token = localStorage.getItem('auth_token');
+
+    // ✅ 第一阶段核心改动：
+    // 没有 token = 匿名用户
+    // 允许继续渲染 Chat，不做跳转
     if (!token) {
-      navigate('/login');
+      setUser(null);
       return;
     }
 
     const payload = parseJwt(token);
-    const fallbackNickname = payload?.username ?? '星洲用户';
+    const fallbackNickname = payload?.username ?? '需要登录';
 
     apiRequest(API.user.info)
       .then((res) => {
@@ -49,6 +57,7 @@ export default function Chat() {
         });
       })
       .catch(() => {
+        // token 存在但接口失败 → 降级为“已登录但信息不完整”
         setUser({
           nickname: fallbackNickname,
           avatar: DEFAULT_AVATAR,
@@ -67,18 +76,17 @@ export default function Chat() {
           user={user}
           onLogout={() => setShowLogoutModal(true)}
           onEditAvatar={() => setShowAvatarEditor(true)}
-          onToggleSidebar={() => setSidebarOpen((v) => !v)} // ⭐ toggle
+          onToggleSidebar={() => setSidebarOpen((v) => !v)}
         />
 
         <div className="flex flex-1 overflow-hidden relative">
           {/* Backdrop */}
           <div
             className={`
-            fixed top-[70px] left-0 right-0 bottom-0 z-40
-           bg-black/20
-            transition-opacity duration-300
-            ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-          `}
+              fixed top-[70px] left-0 right-0 bottom-0 z-40
+              bg-black/20 transition-opacity duration-300
+              ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            `}
             onClick={() => setSidebarOpen(false)}
           />
 
@@ -94,8 +102,8 @@ export default function Chat() {
           </div>
 
           {/* 主聊天区 */}
-          <main className="flex-1 flex justify-center overflow-hidden">
-            <div className="w-full max-w-[1100px] h-full px-3 md:px-6 py-4 md:py-8 bg-transparent">
+          <main className="flex-1 flex  overflow-hidden">
+            <div className="w-full h-full flex">
               <ChatWindow userAvatar={user?.avatar} userId={user?.nickname} />
             </div>
           </main>

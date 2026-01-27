@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import API, { apiRequest } from '../../../shared/api/config';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
@@ -7,6 +8,7 @@ type LoginAnim = 'idle' | 'success' | 'error';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
 
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
@@ -23,12 +25,9 @@ export default function Login() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      setReady(true);
-    });
+    requestAnimationFrame(() => setReady(true));
   }, []);
 
-  /* CapsLock 检测 */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => setCapsLockOn(e.getModifierState('CapsLock'));
 
@@ -40,7 +39,6 @@ export default function Login() {
     };
   }, []);
 
-  /* 记住账号 */
   useEffect(() => {
     const saved = localStorage.getItem('remember_account');
     if (saved) {
@@ -50,9 +48,9 @@ export default function Login() {
   }, []);
 
   const handleLogin = async () => {
-    if (!agreed) return setError('请先阅读并同意相关条款');
-    if (!account || !password) return setError('请输入账号和密码');
-    if (/\s/.test(account) || /\s/.test(password)) return setError('账号或密码不能包含空格');
+    if (!agreed) return setError(t('error.needAgree'));
+    if (!account || !password) return setError(t('error.empty'));
+    if (/\s/.test(account) || /\s/.test(password)) return setError(t('error.space'));
 
     setLoading(true);
     setError('');
@@ -63,8 +61,8 @@ export default function Login() {
         body: { identifier: account, password },
       });
 
-      if (res.status === 401) throw new Error('用户名或密码错误');
-      if (!res.ok) throw new Error('登录失败');
+      if (res.status === 401) throw new Error('unauthorized');
+      if (!res.ok) throw new Error('failed');
 
       const data = await res.json();
       localStorage.setItem('auth_token', data.accessToken);
@@ -77,9 +75,21 @@ export default function Login() {
 
       setLoginAnim('success');
 
-      setTimeout(() => navigate('/chat'), 350);
+      // ✅ 关键闭环逻辑：检查是否有待发送的消息
+      const pendingMessage = sessionStorage.getItem('pending_chat_message');
+
+      setTimeout(() => {
+        if (pendingMessage) {
+          // 不在这里发送，只负责回到 Chat
+          navigate('/chat', { replace: true });
+        } else {
+          // 普通登录行为保持不变
+          navigate('/chat');
+        }
+      }, 350);
     } catch (e: any) {
-      setError(e.message || '登录失败');
+      const key = e.message === 'unauthorized' ? 'unauthorized' : 'failed';
+      setError(t(`error.${key}`));
       setLoginAnim('error');
       setTimeout(() => setLoginAnim('idle'), 500);
     } finally {
@@ -100,12 +110,12 @@ export default function Login() {
           ${ready ? 'backdrop-blur-lg' : 'backdrop-blur-none'}
         `}
       >
-        <h1 className="text-3xl font-semibold mb-2 text-center">欢迎登录</h1>
-        <p className="text-white/70 mb-10 text-center">校园智能助手服务平台</p>
+        <h1 className="text-3xl font-semibold mb-2 text-center">{t('title')}</h1>
+        <p className="text-white/70 mb-10 text-center">{t('subtitle')}</p>
 
         <input
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60"
-          placeholder="手机号 / 用户名"
+          placeholder={t('placeholder.account')}
           value={account}
           onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
         />
@@ -114,7 +124,7 @@ export default function Login() {
           <input
             type={showPassword ? 'text' : 'password'}
             className="w-full px-4 py-3 pr-12 rounded-xl bg-white/20 border border-white/30 placeholder-white/60"
-            placeholder="密码"
+            placeholder={t('placeholder.password')}
             value={password}
             onFocus={() => setPasswordFocused(true)}
             onBlur={() => setPasswordFocused(false)}
@@ -140,7 +150,7 @@ export default function Login() {
               passwordFocused && capsLockOn ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            ⚠️ 大写锁定已开启（Caps Lock）
+            {t('capsLock')}
           </div>
         </div>
 
@@ -157,7 +167,7 @@ export default function Login() {
             }
           `}
         >
-          <span>{loading ? '登录中…' : '登录'}</span>
+          <span>{loading ? t('action.loggingIn') : t('action.login')}</span>
           <PaperAirplaneIcon
             className={`w-5 h-5 transition-all duration-500 ${
               loginAnim === 'success' ? 'translate-x-32 opacity-0 scale-90' : ''
@@ -171,26 +181,26 @@ export default function Login() {
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
           />
-          记住我
+          {t('option.rememberMe')}
         </label>
 
         <label className="mt-4 flex items-start gap-2 text-xs text-white/70">
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
           <span>
-            我已阅读并同意
+            {t('agreement.prefix')}
             <Link to="/privacy" className="underline ml-1">
-              《隐私条款》
+              {t('agreement.privacy')}
             </Link>
-            和
+            {t('agreement.and', { defaultValue: ' 和 ' })}
             <Link to="/terms" className="underline ml-1">
-              《使用条款》
+              {t('agreement.terms')}
             </Link>
           </span>
         </label>
 
         <div className="mt-6 flex justify-between text-sm text-white/70">
-          <Link to="/register">用户注册</Link>
-          <Link to="/forgot-password">忘记密码？</Link>
+          <Link to="/register">{t('link.register')}</Link>
+          <Link to="/forgot-password">{t('link.forgot')}</Link>
         </div>
       </div>
     </div>
