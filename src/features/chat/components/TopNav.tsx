@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../../shared/types/user.types';
 import { UserAvatarMenu } from '../../../shared/components';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import { div } from 'framer-motion/client';
 
 type TopNavProps = {
   user: UserInfo | null;

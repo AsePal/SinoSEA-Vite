@@ -39,7 +39,7 @@ export default function MessageBubble({
             leading-relaxed
             break-words
             text-[15px] md:text-[16px]
-            ${isUser ? 'bg-neutral-900 text-white' : 'bg-white/90 text-gray-800'}
+            ${isUser ? 'bg-neutral-800 text-white' : 'bg-white/90 text-gray-800'}
           `}
         >
           <div

@@ -10,23 +10,26 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
   function go(path: string) {
     navigate(path);
-    onClose?.(); // ✅ 用掉 onClose，顺便实现“跳转后自动收起”
+    onClose?.();
   }
 
   return (
     <aside
       className="
-        w-72 h-full
+        h-full
+        w-[260px]
         flex flex-col
-        bg-[#c4d0da]
-        border-r border-white/20
-        shadow-[8px_0_24px_rgba(0,0,0,0.4)]
-        text-gray-200
+        bg-white/80
+        backdrop-blur-xl
+        border-r border-white/30
+        shadow-lg
+        rounded-tr-2xl rounded-br-2xl
+        text-gray-700
       "
     >
       {/* 主导航区 */}
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
-        <h2 className="mb-5 text-center text-sm font-semibold tracking-widest text-gray-200">
+        <h2 className="mb-4 text-center text-xl font-semibold tracking-widest text-gray-500">
           功能导航
         </h2>
 
@@ -34,7 +37,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
           icon={CpuChipIcon}
           active
           onClick={() => {
-            // 如果你未来有明确路由（比如 /chat），可以改成 go('/chat')
             onClose?.();
           }}
         >
@@ -47,7 +49,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* 底部功能区 */}
-      <div className="px-4 py-4 border-t border-white/10 text-sm">
+      <div className="px-4 py-4 border-t border-black/5 text-sm">
         <FooterButton onClick={() => go('/about')}>关于我们</FooterButton>
         <FooterButton onClick={() => go('/complaint')}>投诉反馈</FooterButton>
       </div>
@@ -73,15 +75,15 @@ function MenuItem({
       onClick={disabled ? undefined : onClick}
       className={`
         flex items-center gap-3
-        px-4 py-3 rounded-xl
+        px-4 py-2.5 rounded-xl
         text-sm
         transition
         ${
           active
-            ? 'bg-white/10 text-white'
+            ? 'bg-white/60 text-gray-900'
             : disabled
-              ? 'text-gray-500 cursor-not-allowed'
-              : 'hover:bg-white/5 hover:text-white cursor-pointer'
+              ? 'text-gray-400 cursor-not-allowed'
+              : 'hover:bg-white/50 hover:text-gray-900 cursor-pointer'
         }
       `}
       role="button"
@@ -91,7 +93,7 @@ function MenuItem({
         if (e.key === 'Enter' || e.key === ' ') onClick?.();
       }}
     >
-      <Icon className="w-5 h-5 shrink-0" />
+      <Icon className="w-5 h-5 shrink-0 opacity-80" />
       <span>{children}</span>
     </div>
   );
@@ -104,8 +106,8 @@ function FooterButton({ children, onClick }: { children: React.ReactNode; onClic
       className="
         w-full text-left
         px-4 py-2 rounded-lg
-        text-gray-400
-        hover:bg-white/5 hover:text-gray-200
+        text-gray-500
+        hover:bg-white/50 hover:text-gray-800
         transition
       "
     >

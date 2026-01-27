@@ -168,7 +168,7 @@ export default function ChatWindow({
     <>
       <div className="w-full h-full flex flex-col">
         {/* Header */}
-        <div className="px-4 py-4 text-base font-semibold text-black/60 border-b border-white/20 ">
+        <div className="px-4 py-4 text-sm font-semibold text-black/80 border-b border-white/20 ">
           SionSEA-AI
         </div>
 
@@ -191,7 +191,7 @@ export default function ChatWindow({
               rows={1}
               ref={textareaRef}
               value={input}
-              placeholder="有问题，尽管问"
+              placeholder="Enter发送,Shift+Enter换行"
               onChange={(e) => setInput(e.target.value)}
               onInput={(e) => resizeTextarea(e.currentTarget)}
               onKeyDown={(e) => {

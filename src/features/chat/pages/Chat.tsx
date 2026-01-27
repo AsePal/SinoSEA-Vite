@@ -85,10 +85,10 @@ export default function Chat() {
 
           <div
             className={`
-              fixed top-[70px] left-0 bottom-0 z-50
-              transition-transform duration-300 ease-out
-              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}
+            fixed top-[70px] left-0 bottom-0 z-50
+            transition-transform duration-300 ease-out
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-[260px]'}
+          `}
           >
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
