@@ -39,6 +39,27 @@ export default function ChatWindow({
   const MAX_TEXTAREA_HEIGHT = 180;
 
   const disabled = loading || !input.trim() || !isAuthed();
+  const [isFlying, setIsFlying] = useState(false);
+
+  // 飞机触发动画✈️
+  function handleSend() {
+    if (disabled) return;
+
+    const value = input.trim();
+
+    if (!isAuthed()) {
+      blockAndAskLogin(value);
+      return;
+    }
+
+    setIsFlying(true); //起飞✈️
+    triggerSendAnimation();
+    sendMessage(value);
+
+    setTimeout(() => {
+      setIsFlying(false); //飞回来
+    }, 1800);
+  }
 
   /* -------------------- 核心工具函数 -------------------- */
 
@@ -203,44 +224,26 @@ export default function ChatWindow({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  const value = e.currentTarget.value.trim();
-                  if (!value) return;
-
-                  if (!isAuthed()) {
-                    blockAndAskLogin(value);
-                    return;
-                  }
-
-                  triggerSendAnimation();
-                  sendMessage(value);
+                  handleSend();
                 }
               }}
               className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-\[40px\] leading-\[40px\] py-0"
             />
             <div className="relative group self-end overflow-visible">
               <button
-                onClick={() => {
-                  const value = input.trim();
-                  if (!value) return;
-
-                  if (!isAuthed()) {
-                    blockAndAskLogin(value);
-                    return;
-                  }
-
-                  triggerSendAnimation();
-                  sendMessage(value);
-                }}
-                disabled={loading}
-                className={` w-9 h-9 rounded-full flex items-center justify-center transition
+                onClick={handleSend}
+                disabled={disabled}
+                className={`relative w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition
                 ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
               `}
               >
-                <PaperAirplaneIcon
-                  className={` w-4 h-4 -rotate-90 transition
+                <div className={isFlying ? 'animate-plane-fly' : ''}>
+                  <PaperAirplaneIcon
+                    className={` w-4 h-4 -rotate-90 transition
                   ${disabled ? 'text-gray-300' : 'text-white'}
                 `}
-                />
+                  />
+                </div>
               </button>
             </div>
           </div>

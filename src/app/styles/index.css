@@ -280,3 +280,31 @@ input[type='password']::-webkit-textfield-decoration-container {
     @apply h-full bg-[#252527];
   }
 }
+/* 纸飞机动画（主页输入框） */
+@keyframes plane-fly {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translateY(-30px) scale(0.6);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateY(30px) scale(0.6);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .animate-plane-fly {
+    animation: plane-fly 1.8s ease-in-out forwards;
+  }
+}
