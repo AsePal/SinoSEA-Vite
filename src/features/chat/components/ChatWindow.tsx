@@ -38,6 +38,8 @@ export default function ChatWindow({
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
   const MAX_TEXTAREA_HEIGHT = 180;
 
+  const disabled = loading || !input.trim() || !isAuthed();
+
   /* -------------------- 核心工具函数 -------------------- */
 
   function initConversation() {
@@ -169,7 +171,7 @@ export default function ChatWindow({
       <div className="w-full h-full flex flex-col">
         {/* Header */}
         <div className="px-4 py-4 text-sm font-semibold text-black/80 border-b border-white/20 ">
-          SionSEA-AI
+          asepal-AI
         </div>
 
         {/* Messages */}
@@ -181,17 +183,21 @@ export default function ChatWindow({
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 ">
-          <div className="flex items-start gap-3 rounded-2xl  border border-white/10 px-3 py-2 bg-black/50 ">
+        <div className="px-4 py-3 chat-scroll">
+          <div
+            className={` flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-2 transition-colors
+            ${disabled ? 'bg-black/30' : 'bg-black/50'}
+          `}
+          >
             {/* 👇 就加在这里 */}
             {!isAuthed() && (
-              <p className="mt-2 text-xs text-gray-500 text-center">🔒 登录以使用对话</p>
+              <p className="mt-2 text-xs text-gray-500 text-center">🔒会话功能需要登录使用</p>
             )}
             <textarea
               rows={1}
               ref={textareaRef}
               value={input}
-              placeholder="Enter发送,Shift+Enter换行"
+              placeholder={isAuthed() ? 'Enter发送，Shift+Enter换行' : ''}
               onChange={(e) => setInput(e.target.value)}
               onInput={(e) => resizeTextarea(e.currentTarget)}
               onKeyDown={(e) => {
@@ -209,10 +215,9 @@ export default function ChatWindow({
                   sendMessage(value);
                 }
               }}
-              className="flex-1 resize-none bg-transparent outline-none text-gray-100"
+              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-\[40px\] leading-\[40px\] py-0"
             />
-
-            <div className="relative group self-end overflow-visible ">
+            <div className="relative group self-end overflow-visible">
               <button
                 onClick={() => {
                   const value = input.trim();
@@ -226,32 +231,17 @@ export default function ChatWindow({
                   triggerSendAnimation();
                   sendMessage(value);
                 }}
-                disabled={loading || !input.trim()}
-                className="w-9 h-9 rounded-full flex items-center justify-center bg-blue-600 disabled:opacity-40"
+                disabled={loading}
+                className={` w-9 h-9 rounded-full flex items-center justify-center transition
+                ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
+              `}
               >
-                <PaperAirplaneIcon className="w-4 h-4 text-white" />
+                <PaperAirplaneIcon
+                  className={` w-4 h-4 -rotate-90 transition
+                  ${disabled ? 'text-gray-300' : 'text-white'}
+                `}
+                />
               </button>
-
-              {/* 👇 未登录 hover 提示 */}
-              {!isAuthed() && (
-                <div
-                  className="
-        pointer-events-none
-        absolute bottom-full left-1/2 -translate-x-1/2
-        mb-2
-        whitespace-nowrap
-        rounded-md
-        bg-black/80
-        px-2 py-1
-        text-xs text-white
-        opacity-0
-        group-hover:opacity-100
-        transition-opacity
-      "
-                >
-                  登录后可发送消息
-                </div>
-              )}
             </div>
           </div>
         </div>
