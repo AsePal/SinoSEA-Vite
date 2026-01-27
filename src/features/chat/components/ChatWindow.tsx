@@ -10,6 +10,12 @@ import LoginErrorModal from '../../auth/components/LoginErrorModal';
 import type { ChatMessage, SSEEvent } from '../types/chat.types';
 import { sendChatSSE } from '../../../shared/api/chatSSE';
 
+// 定义默认回复内容的时间间隔
+type WelcomeStep = {
+  content: string;
+  delay: number; // ms
+};
+
 export function generateId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
@@ -40,27 +46,46 @@ export default function ChatWindow({
 
   const disabled = loading || !input.trim() || !isAuthed();
   const [isFlying, setIsFlying] = useState(false);
-  // 欢迎语
-  function getWelcomeMessages(authed: boolean): ChatMessage[] {
-    if (authed) {
-      return [
-        {
-          role: 'assistant',
-          content: '你好呀！我是 **星洲智能助手** 🌟',
-        },
-      ];
-    }
+  const welcomePlayedRef = useRef(false);
 
-    return [
-      {
-        role: 'assistant',
-        content: '你好呀！我是 **星洲智能助手** 🌟',
-      },
-      {
-        role: 'assistant',
-        content: '我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师',
-      },
-    ];
+  // 定义欢迎语样式1（未登录状态）
+  const GUEST_WELCOME_STEPS: WelcomeStep[] = [
+    {
+      content: '你好呀！我是 **星洲智能助手** 🌟',
+      delay: 0,
+    },
+    {
+      content: '我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师',
+      delay: 1500,
+    },
+  ];
+  //样式2（已登录状态）
+  const AUTHED_WELCOME_STEPS: WelcomeStep[] = [
+    {
+      content: '你好呀！我是 **星洲智能助手** 🌟',
+      delay: 0,
+    },
+  ];
+
+  // 欢迎语
+  function playWelcomeSteps(steps: WelcomeStep[]) {
+    setMessages([]); // 清空当前对话（新会话）
+
+    let totalDelay = 0;
+
+    steps.forEach((step) => {
+      totalDelay += step.delay;
+
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: step.content,
+          },
+        ]);
+      }, totalDelay);
+    });
   }
 
   // 飞机触发动画✈️
@@ -86,7 +111,15 @@ export default function ChatWindow({
   /* -------------------- 核心工具函数 -------------------- */
 
   function initConversation() {
-    setMessages(getWelcomeMessages(isAuthed()));
+    if (welcomePlayedRef.current) return;
+
+    welcomePlayedRef.current = true;
+
+    if (isAuthed()) {
+      playWelcomeSteps(AUTHED_WELCOME_STEPS);
+    } else {
+      playWelcomeSteps(GUEST_WELCOME_STEPS);
+    }
   }
 
   function isAuthed() {
@@ -129,22 +162,6 @@ export default function ChatWindow({
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  /* -------------------- 🔥 登录后自动发送闭环 -------------------- */
-
-  useEffect(() => {
-    if (!isAuthed()) return;
-
-    const pending = sessionStorage.getItem('pending_chat_message');
-    if (!pending) return;
-
-    // 清理，防止重复
-    sessionStorage.removeItem('pending_chat_message');
-
-    // 触发自动发送
-    triggerSendAnimation();
-    sendMessage(pending);
-  }, [userId]); // userId 出现，意味着登录态已就绪
 
   /* -------------------- 发送逻辑 -------------------- */
 
@@ -244,7 +261,7 @@ export default function ChatWindow({
                   handleSend();
                 }
               }}
-              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-\[40px\] leading-\[40px\] py-0"
+              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-[40px] leading-[40px] py-0"
             />
             <div className="relative group self-end overflow-visible">
               <button
