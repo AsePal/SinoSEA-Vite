@@ -7,7 +7,7 @@ export default function HomeBackground({ children }: { children: ReactNode }) {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/images/login-bg2.jpg')",
+          backgroundImage: "url('/images/login-bg2.webp')",
         }}
       />
 

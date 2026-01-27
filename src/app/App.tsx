@@ -9,6 +9,7 @@ import { ComplaintPage } from '../features/complaint';
 import { AboutUs } from '../features/about';
 
 export default function App() {
+  const token = localStorage.getItem('auth_token');
   return (
     <Routes>
       {/* ✅ 首次进入：直接进入 Chat */}
@@ -25,7 +26,7 @@ export default function App() {
       </Route>
 
       {/* 主功能页（允许匿名） */}
-      <Route path="/chat" element={<Chat />} />
+      <Route path="/chat" element={<Chat key={token ?? 'guest'} />} />
 
       {/* 信息页 */}
       <Route path="/privacy" element={<PrivacyPolicy />} />

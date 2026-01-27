@@ -182,7 +182,7 @@ export default function ChatWindow({
 
         {/* Input */}
         <div className="px-4 py-3 ">
-          <div className="flex items-start gap-3 rounded-2xl  border border-white/10 px-3 py-2 bg-white/70">
+          <div className="flex items-start gap-3 rounded-2xl  border border-white/10 px-3 py-2 bg-black/50 ">
             {/* 👇 就加在这里 */}
             {!isAuthed() && (
               <p className="mt-2 text-xs text-gray-500 text-center">🔒 登录以使用对话</p>

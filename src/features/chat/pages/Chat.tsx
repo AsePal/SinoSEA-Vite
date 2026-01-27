@@ -21,22 +21,17 @@ export default function Chat() {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
-  // ⭐ Sidebar 状态
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // ✅ 你的本地默认头像（public/imges/userlogo.ico）
   const DEFAULT_AVATAR = '/userlogo.ico';
+
   const navigate = useNavigate();
 
-  /**
-   * 获取用户信息
-   * 现在支持「匿名态」
-   */
   function fetchUserInfo() {
     const token = localStorage.getItem('auth_token');
 
-    // ✅ 第一阶段核心改动：
-    // 没有 token = 匿名用户
-    // 允许继续渲染 Chat，不做跳转
+    // ✅ 未登录：保持匿名语义（user === null）
     if (!token) {
       setUser(null);
       return;
@@ -57,11 +52,10 @@ export default function Chat() {
         });
       })
       .catch(() => {
-        // token 存在但接口失败 → 降级为“已登录但信息不完整”
-        setUser({
-          nickname: fallbackNickname,
-          avatar: DEFAULT_AVATAR,
-        });
+        // token 有，但接口失败 → 这里你可以选择降级为“匿名”，避免伪登录菜单
+        setUser(null);
+        // 如果你更希望显示昵称但不允许菜单，请用 TopNav 的 token 判定来控制菜单渲染
+        // setUser({ nickname: fallbackNickname, avatar: DEFAULT_AVATAR });
       });
   }
 
@@ -80,7 +74,6 @@ export default function Chat() {
         />
 
         <div className="flex flex-1 overflow-hidden relative">
-          {/* Backdrop */}
           <div
             className={`
               fixed top-[70px] left-0 right-0 bottom-0 z-40
@@ -90,7 +83,6 @@ export default function Chat() {
             onClick={() => setSidebarOpen(false)}
           />
 
-          {/* Sidebar */}
           <div
             className={`
               fixed top-[70px] left-0 bottom-0 z-50
@@ -101,8 +93,7 @@ export default function Chat() {
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
 
-          {/* 主聊天区 */}
-          <main className="flex-1 flex  overflow-hidden">
+          <main className="flex-1 flex overflow-hidden">
             <div className="w-full h-full flex">
               <ChatWindow userAvatar={user?.avatar} userId={user?.nickname} />
             </div>
@@ -114,6 +105,7 @@ export default function Chat() {
           onCancel={() => setShowLogoutModal(false)}
           onConfirm={() => {
             localStorage.removeItem('auth_token');
+            setUser(null); // ✅ 立刻回到匿名语义
             navigate('/login');
           }}
         />

@@ -33,16 +33,22 @@ export default function MessageBubble({
         {/* 气泡 */}
         <div
           className={`
-            rounded-2xl
-            px-5 py-3.5
+            max-w-full
+            rounded-[24px]
+            px-6 py-2.5
             leading-relaxed
             break-words
             text-[15px] md:text-[16px]
-            shadow-sm
-            ${isUser ? 'bg-blue-500 text-white' : 'bg-gray-800 text-black'}
+            ${isUser ? 'bg-neutral-900 text-white' : 'bg-white/90 text-gray-800'}
           `}
         >
-          <div className="prose max-w-none prose-p:my-1 prose-li:my-1 text-white">
+          <div
+            className={`
+              prose max-w-none
+              prose-p:my-0.5 prose-li:my-0.5
+              ${isUser ? 'text-white' : 'text-gray-800'}
+            `}
+          >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
           </div>
         </div>
@@ -58,8 +64,11 @@ export default function MessageBubble({
             px-3 py-1.5
             rounded-lg
             text-sm
-            text-white
-            ${isUser ? 'bg-blue-600/80 hover:bg-blue-600' : 'bg-gray-600/80 hover:bg-gray-600'}
+            ${
+              isUser
+                ? 'bg-neutral-800 text-white hover:bg-neutral-700'
+                : 'bg-white/70 text-gray-600 hover:bg-white'
+            }
           `}
         >
           {copied ? (
