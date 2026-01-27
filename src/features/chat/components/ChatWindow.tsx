@@ -28,6 +28,7 @@ export default function ChatWindow({
   userId?: string;
 }) {
   const navigate = useNavigate();
+  const abortRef = useRef<AbortController | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -154,6 +155,12 @@ export default function ChatWindow({
   }
 
   /* -------------------- 初始化 -------------------- */
+  // 组件卸载时中断 SSE
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   useEffect(() => {
     initConversation();
@@ -164,13 +171,16 @@ export default function ChatWindow({
   }, [messages]);
 
   /* -------------------- 发送逻辑 -------------------- */
-
   async function sendMessage(content: string) {
-    let endReceived = false;
     let assistantText = '';
 
     const trimmed = content.trim();
     if (!trimmed || loading) return;
+
+    // 🔒 中断上一条未完成的 SSE（防止并发卡死）
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     setLoading(true);
     setInput('');
@@ -206,16 +216,29 @@ export default function ChatWindow({
           }
 
           if (event.type === 'end') {
-            endReceived = true;
             setConversationId(event.conversationId);
-            setLoading(false);
           }
         },
+        {
+          signal: controller.signal, // ⭐ 关键：把 abort 传进去
+        },
       );
-
-      if (!endReceived) setLoading(false);
-    } catch {
+    } catch (err) {
+      // ❗️任何异常，都给一个“不中断对话”的提示
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.messageId === assistantMessageId
+            ? {
+                ...msg,
+                content: assistantText || '⚠️ 回复中断（网络异常或超时），你可以继续提问。',
+              }
+            : msg,
+        ),
+      );
+    } finally {
+      // 🔥 灵魂所在：无论成功 / 失败 / 超时，都必须解锁
       setLoading(false);
+      abortRef.current = null;
     }
   }
 
