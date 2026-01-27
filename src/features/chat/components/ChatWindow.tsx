@@ -40,6 +40,28 @@ export default function ChatWindow({
 
   const disabled = loading || !input.trim() || !isAuthed();
   const [isFlying, setIsFlying] = useState(false);
+  // 欢迎语
+  function getWelcomeMessages(authed: boolean): ChatMessage[] {
+    if (authed) {
+      return [
+        {
+          role: 'assistant',
+          content: '你好呀！我是 **星洲智能助手** 🌟',
+        },
+      ];
+    }
+
+    return [
+      {
+        role: 'assistant',
+        content: '你好呀！我是 **星洲智能助手** 🌟',
+      },
+      {
+        role: 'assistant',
+        content: '我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师',
+      },
+    ];
+  }
 
   // 飞机触发动画✈️
   function handleSend() {
@@ -64,12 +86,7 @@ export default function ChatWindow({
   /* -------------------- 核心工具函数 -------------------- */
 
   function initConversation() {
-    setMessages([
-      {
-        role: 'assistant',
-        content: '你好呀！我是 **星洲智能助手** 🌟 有问题尽管问我 😎',
-      },
-    ]);
+    setMessages(getWelcomeMessages(isAuthed()));
   }
 
   function isAuthed() {
@@ -107,7 +124,7 @@ export default function ChatWindow({
 
   useEffect(() => {
     initConversation();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
