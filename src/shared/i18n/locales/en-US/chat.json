@@ -1,11 +1,11 @@
 {
   "welcome": {
     "guest": {
-      "line1": "hi！我是 星洲智能助手 🌟",
-      "line2": "我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师。"
+      "line1": "Hello there! I am Xingzhou Smart Assistant 🌟",
+      "line2": "I can help you understand campus rules and regulations, provide information about life around the campus, and also serve as your friendly little mental wellness guide."
     },
     "authed": {
-      "line1": "hello！我是 星洲智能助手 🌟"
+      "line1": "Welcome back! How can I help you today? 🌟"
     }
   },
 

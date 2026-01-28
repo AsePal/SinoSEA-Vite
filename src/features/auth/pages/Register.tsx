@@ -6,7 +6,7 @@ import { SuccessToastModal } from '../../../shared/components';
 
 type VerifyMethod = 'phone' | 'email';
 
-export default function ForgotPassword() {
+export default function Register() {
   const navigate = useNavigate();
   const { t } = useTranslation('auth');
 
@@ -33,7 +33,7 @@ export default function ForgotPassword() {
   }, [countdown]);
 
   const handleSendCode = async () => {
-    if (!method || !identifier) return setError(t('forgot.error.incomplete'));
+    if (!method || !identifier) return setError(t('register.error.incomplete'));
 
     setLoading(true);
     setError('');
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
       setShowToast(true);
       setTimeout(() => setShowToast(false), 1800);
     } catch {
-      setError(t('forgot.error.sendFailed'));
+      setError(t('register.error.sendFailed'));
     } finally {
       setLoading(false);
     }
@@ -62,9 +62,9 @@ export default function ForgotPassword() {
 
   const handleReset = async () => {
     if (!verificationCode || !newPassword || !confirmPassword)
-      return setError(t('forgot.error.incomplete'));
+      return setError(t('register.error.incomplete'));
 
-    if (newPassword !== confirmPassword) return setError(t('forgot.error.mismatch'));
+    if (newPassword !== confirmPassword) return setError(t('register.error.mismatch'));
 
     setLoading(true);
     setError('');
@@ -85,7 +85,7 @@ export default function ForgotPassword() {
       setShowSuccess(true);
       setTimeout(() => navigate('/login'), 1800);
     } catch {
-      setError(t('forgot.error.resetFailed'));
+      setError(t('register.error.resetFailed'));
     } finally {
       setLoading(false);
     }
@@ -94,8 +94,8 @@ export default function ForgotPassword() {
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
-        <h1 className="text-3xl font-semibold mb-2 text-center">{t('forgot.title')}</h1>
-        <p className="text-white/70 mb-10 text-center">{t('forgot.subtitle')}</p>
+        <h1 className="text-3xl font-semibold mb-2 text-center">{t('register.title')}</h1>
+        <p className="text-white/70 mb-10 text-center">{t('register.subtitle')}</p>
 
         {/* 验证方式选择 */}
         <div className="relative mb-4">
@@ -106,10 +106,10 @@ export default function ForgotPassword() {
           >
             <span className={method ? 'text-white' : 'text-white/60'}>
               {method === 'phone'
-                ? t('forgot.method.phone')
+                ? t('register.method.phone')
                 : method === 'email'
-                  ? t('forgot.method.email')
-                  : t('forgot.method.label')}
+                  ? t('register.method.email')
+                  : t('register.method.label')}
             </span>
             <span className="text-white/60">▾</span>
           </button>
@@ -126,7 +126,7 @@ export default function ForgotPassword() {
                 }}
                 className="w-full px-4 py-3 text-left hover:bg-white/10"
               >
-                {t('forgot.method.phone')}
+                {t('register.method.phone')}
               </button>
 
               <button
@@ -139,7 +139,7 @@ export default function ForgotPassword() {
                 }}
                 className="w-full px-4 py-3 text-left hover:bg-white/10"
               >
-                {t('forgot.method.email')}
+                {t('register.method.email')}
               </button>
             </div>
           )}
@@ -150,8 +150,8 @@ export default function ForgotPassword() {
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder={
             method === 'email'
-              ? t('forgot.placeholder.identifier_email')
-              : t('forgot.placeholder.identifier_phone')
+              ? t('register.placeholder.identifier_email')
+              : t('register.placeholder.identifier_phone')
           }
           value={identifier}
           onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
@@ -161,7 +161,7 @@ export default function ForgotPassword() {
           <input
             disabled={!codeSent}
             className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-            placeholder={t('forgot.placeholder.code')}
+            placeholder={t('register.placeholder.code')}
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))}
           />
@@ -173,7 +173,7 @@ export default function ForgotPassword() {
               countdown > 0 ? 'bg-white/30 text-white/50' : 'bg-indigo-500 hover:bg-indigo-400'
             }`}
           >
-            {countdown > 0 ? `${countdown}s` : t('forgot.action.sendCode')}
+            {countdown > 0 ? `${countdown}s` : t('register.action.sendCode')}
           </button>
         </div>
 
@@ -181,7 +181,7 @@ export default function ForgotPassword() {
           disabled={!codeSent}
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          placeholder={t('forgot.placeholder.newPassword')}
+          placeholder={t('register.placeholder.password')}
           value={newPassword}
           onChange={(e) => setNewPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
@@ -190,7 +190,7 @@ export default function ForgotPassword() {
           disabled={!codeSent}
           type="password"
           className="w-full mb-6 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          placeholder={t('forgot.placeholder.confirmPassword')}
+          placeholder={t('register.placeholder.confirmPassword')}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
@@ -202,23 +202,23 @@ export default function ForgotPassword() {
           disabled={!codeSent || loading}
           className="w-full h-14 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition"
         >
-          {loading ? t('forgot.action.submitting') : t('forgot.action.reset')}
+          {loading ? t('register.action.submitting') : t('register.action.submit')}
         </button>
 
         <div className="mt-8 text-sm text-white/70 text-center">
-          <Link to="/login">{t('forgot.action.back')}</Link>
+          <Link to="/login">{t('register.action.back')}</Link>
         </div>
       </div>
 
       <SuccessToastModal
         open={showToast}
-        title={t('forgot.toast.codeSentTitle')}
-        description={t('forgot.toast.codeSentDesc')}
+        title={t('register.toast.codeSentTitle')}
+        description={t('register.toast.codeSentDesc')}
       />
       <SuccessToastModal
         open={showSuccess}
-        title={t('forgot.toast.resetSuccessTitle')}
-        description={t('forgot.toast.resetSuccessDesc')}
+        title={t('register.toast.resetSuccessTitle')}
+        description={t('register.toast.resetSuccessDesc')}
       />
     </div>
   );

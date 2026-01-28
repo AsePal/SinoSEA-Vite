@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../../../shared/api/config';
 import { SuccessToastModal } from '../../../shared/components';
+import { useTranslation } from 'react-i18next';
 
 type VerifyMethod = 'phone' | 'email';
 
@@ -23,6 +24,7 @@ export default function ForgotPassword() {
   const [showToast, setShowToast] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
+  const { t } = useTranslation('auth');
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -43,23 +45,26 @@ export default function ForgotPassword() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-
-      if (!res.ok) throw new Error('发送失败');
+      //发送失败
+      if (!res.ok) throw new Error(t('forgot.error.sendFailed'));
 
       setCodeSent(true);
       setCountdown(60);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 1800);
     } catch (e: any) {
-      setError(e.message || '发送失败');
+      // 发送失败
+      setError(e.message || t('forgot.error.sendFailed'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleReset = async () => {
-    if (!verificationCode || !newPassword || !confirmPassword) return setError('请填写完整信息');
-    if (newPassword !== confirmPassword) return setError('两次密码不一致');
+    // 请填写完整信息
+    if (!verificationCode || !newPassword || !confirmPassword) return setError('');
+    // 两次密码不一致
+    if (newPassword !== confirmPassword) return setError('');
 
     setLoading(true);
     setError('');
@@ -74,13 +79,13 @@ export default function ForgotPassword() {
           newPassword,
         }),
       });
-
-      if (!res.ok) throw new Error('重置失败');
+      // 重置失败提示
+      if (!res.ok) throw new Error(t('forgot.error.sendFailed'));
 
       setShowSuccess(true);
       setTimeout(() => navigate('/login'), 1800);
     } catch (e: any) {
-      setError(e.message || '重置失败');
+      setError(e.message || t('forgot.error.sendFailed'));
     } finally {
       setLoading(false);
     }
@@ -89,8 +94,10 @@ export default function ForgotPassword() {
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
-        <h1 className="text-3xl font-semibold mb-2 text-center">重置密码</h1>
-        <p className="text-white/70 mb-10 text-center">通过验证码设置新密码</p>
+        {/* 重置密码 */}
+        <h1 className="text-3xl font-semibold mb-2 text-center">{t('forgot.title')}</h1>
+        {/* 通过验证码设置新密码 */}
+        <p className="text-white/70 mb-10 text-center">{t('forgot.subtitle')}</p>
 
         <div className="relative mb-4">
           {/* 触发按钮 */}
@@ -106,7 +113,12 @@ export default function ForgotPassword() {
     "
           >
             <span className={method ? 'text-white' : 'text-white/60'}>
-              {method === 'phone' ? '手机号' : method === 'email' ? '邮箱' : '请选择验证方式'}
+              {/* 验证方式 */}
+              {method === 'phone'
+                ? t('forgot.method.phone')
+                : method === 'email'
+                  ? t('forgot.method.email')
+                  : t('forgot.method.placeholder')}
             </span>
             <span className="text-white/60">▾</span>
           </button>
@@ -122,6 +134,7 @@ export default function ForgotPassword() {
         shadow-xl
       "
             >
+              {/* 手机号 */}
               <button
                 type="button"
                 onClick={() => {
@@ -135,9 +148,10 @@ export default function ForgotPassword() {
           hover:bg-white/10 transition
         "
               >
-                手机号
+                {t('forgot.method.phone')}
               </button>
 
+              {/* 邮箱 */}
               <button
                 type="button"
                 onClick={() => {
@@ -151,29 +165,34 @@ export default function ForgotPassword() {
           hover:bg-white/10 transition
         "
               >
-                邮箱
+                {t('forgot.method.email')}
               </button>
             </div>
           )}
         </div>
-
+        {/* 请输入手机号/邮箱 */}
         <input
           disabled={!method}
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          placeholder={method === 'email' ? '请输入邮箱' : '请输入手机号'}
+          placeholder={
+            method === 'email'
+              ? t('forgot.placeholder.identifier_email')
+              : t('forgot.placeholder.identifier_phone')
+          }
           value={identifier}
           onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          {/* 验证码 */}
           <input
             disabled={!codeSent}
             className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-            placeholder="验证码"
+            placeholder={t('forgot.placeholder.code')}
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))}
           />
-
+          {/* 发送验证码 */}
           <button
             disabled={!method || !identifier || countdown > 0}
             onClick={handleSendCode}
@@ -190,45 +209,54 @@ export default function ForgotPassword() {
               }
             `}
           >
-            {countdown > 0 ? `${countdown}s` : '发送验证码'}
+            {countdown > 0 ? `${countdown}s` : t('forgot.action.sendCode')}
           </button>
         </div>
-
+        {/* 新密码 */}
         <input
           disabled={!codeSent}
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          placeholder="新密码"
+          placeholder={t('forgot.placeholder.newPassword')}
           value={newPassword}
           onChange={(e) => setNewPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
-
+        {/* 确认新密码 */}
         <input
           disabled={!codeSent}
           type="password"
           className="w-full mb-6 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
-          placeholder="确认新密码"
+          placeholder={t('forgot.placeholder.confirmPassword')}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         {error && <div className="text-red-300 text-sm mb-4">{error}</div>}
-
+        {/* 提交中/重置密码 */}
         <button
           onClick={handleReset}
           disabled={!codeSent || loading}
           className="w-full h-14 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition"
         >
-          {loading ? '提交中…' : '重置密码'}
+          {loading ? t('forgot.action.submitting') : t('forgot.action.submit')}
         </button>
-
+        {/* 返回登录 */}
         <div className="mt-8 text-sm text-white/70 text-center">
-          <Link to="/login">返回登录</Link>
+          <Link to="/login">{t('forgot.action.back')}</Link>
         </div>
       </div>
-
-      <SuccessToastModal open={showToast} title="验证码已发送" description="有效期为 5 分钟" />
-      <SuccessToastModal open={showSuccess} title="密码重置成功" description="请使用新密码登录" />
+      {/* 验证码已发送/有效期5分钟 */}
+      <SuccessToastModal
+        open={showToast}
+        title={t('forgot.toast.codeSentTitle')}
+        description={t('forgot.toast.codeSentDesc')}
+      />
+      {/* 密码重置成功/请使用新的密码登录 */}
+      <SuccessToastModal
+        open={showSuccess}
+        title={t('forgot.toast.successTitle')}
+        description={t('forgot.toast.successDesc')}
+      />
     </div>
   );
 }
