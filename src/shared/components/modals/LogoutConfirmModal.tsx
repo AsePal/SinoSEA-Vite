@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type LogoutConfirmModalProps = {
   open: boolean;
@@ -7,6 +8,8 @@ type LogoutConfirmModalProps = {
 };
 
 export default function LogoutConfirmModal({ open, onConfirm, onCancel }: LogoutConfirmModalProps) {
+  const { t } = useTranslation('common');
+
   type EmojiState = '😯' | '👻' | '😨';
 
   const [emoji, setEmoji] = useState<EmojiState>('😯');
@@ -25,13 +28,14 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
         {/* emoji + 文案 */}
         <div className="flex flex-col items-center text-center mb-8 space-y-4">
           <div className="text-6xl transition-transform duration-200">{emoji}</div>
-
-          <p className="text-lg font-medium text-white">你真的要退出吗？</p>
+          {/* 你真的要退出吗？ */}
+          <p className="text-lg font-medium text-white">{t('modal.logoutConfirm.title')}</p>
         </div>
 
         {/* 操作按钮 */}
         <div className="flex justify-between items-center">
           {/* 取消（左侧 / 蓝色） */}
+          {/* 取消按钮 */}
           <button
             type="button"
             onClick={onCancel}
@@ -48,7 +52,7 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
               transition-colors
             "
           >
-            取消
+            {t('modal.action.cancel')}
           </button>
 
           {/* 确认退出（右侧 / 危险） */}
@@ -66,7 +70,7 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
               transition-colors
             "
           >
-            确认退出
+            {t('modal.logoutConfirm.confirm')}
           </button>
         </div>
       </div>

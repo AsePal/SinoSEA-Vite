@@ -1,0 +1,11 @@
+{
+  "modal": {
+    "logoutConfirm": {
+      "title": "你真的要退出吗？",
+      "confirm": "确认退出"
+    },
+    "action": {
+      "cancel": "取消"
+    }
+  }
+}
