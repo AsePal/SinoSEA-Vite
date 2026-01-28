@@ -14,8 +14,6 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
   const authed = Boolean(localStorage.getItem('auth_token'));
-
-  console.log('[TopNav] user =', user);
   return (
     <header className="h-[64px] flex items-center px-4 md:px-6 relative z-20">
       <div className="flex items-center gap-3">

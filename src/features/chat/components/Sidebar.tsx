@@ -1,4 +1,9 @@
-import { ChatBubbleLeftRightIcon, CpuChipIcon } from '@heroicons/react/24/outline';
+import {
+  ChatBubbleLeftRightIcon,
+  CpuChipIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/24/outline';
+
 import { useNavigate } from 'react-router-dom';
 
 type SidebarProps = {
@@ -33,14 +38,12 @@ export default function Sidebar({ onClose }: SidebarProps) {
           功能导航
         </h2>
 
-        <MenuItem
-          icon={CpuChipIcon}
-          active
-          onClick={() => {
-            onClose?.();
-          }}
-        >
+        <MenuItem icon={CpuChipIcon} active onClick={() => go('/chat')}>
           询问星洲
+        </MenuItem>
+
+        <MenuItem icon={InformationCircleIcon} onClick={() => go('/landing')}>
+          关于星洲
         </MenuItem>
 
         <MenuItem icon={ChatBubbleLeftRightIcon} disabled>

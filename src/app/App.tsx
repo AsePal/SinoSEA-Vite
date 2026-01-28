@@ -8,33 +8,36 @@ import { TermsOfUse } from '../features/terms';
 import { ComplaintPage } from '../features/complaint';
 import { AboutUs } from '../features/about';
 
+import MainLayout from './layouts/MainLayout';
+
 export default function App() {
   const token = localStorage.getItem('auth_token');
+
   return (
     <Routes>
-      {/* ✅ 首次进入：直接进入 Chat */}
       <Route path="/" element={<Navigate to="/chat" replace />} />
 
-      {/* Landing 仍然保留为显式入口 */}
       <Route path="/landing" element={<Landing />} />
 
-      {/* Auth 页面 */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
 
-      {/* 主功能页（允许匿名） */}
-      <Route path="/chat" element={<Chat key={token ?? 'guest'} />} />
+      {/* ✅ 只有 /chat 使用 MainLayout */}
+      <Route path="/chat" element={<MainLayout key={token ?? 'guest'} />}>
+        <Route index element={<Chat />} />
+      </Route>
 
-      {/* 信息页 */}
+      {/* ✅ 这些页面保持独立（不复用 MainLayout） */}
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfUse />} />
-      <Route path="/complaint" element={<ComplaintPage />} />
       <Route path="/about" element={<AboutUs />} />
 
-      {/* 🧹 兜底：未知路由也回到 Chat */}
+      {/* 投诉反馈暂时先不迁移（仍然独立） */}
+      <Route path="/complaint" element={<ComplaintPage />} />
+
       <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>
   );
