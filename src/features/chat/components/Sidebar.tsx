@@ -6,12 +6,15 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 
+import { useTranslation } from 'react-i18next';
+
 type SidebarProps = {
   onClose?: () => void;
 };
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation('chat');
 
   function go(path: string) {
     navigate(path);
@@ -34,27 +37,31 @@ export default function Sidebar({ onClose }: SidebarProps) {
     >
       {/* 主导航区 */}
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
+        {/* 功能导航 */}
         <h2 className="mb-4 text-center text-xl font-semibold tracking-widest text-gray-500">
-          功能导航
+          {t('sidebar.title')}
         </h2>
-
+        {/* 询问星洲 */}
         <MenuItem icon={CpuChipIcon} active onClick={() => go('/chat')}>
-          询问星洲
+          {t('sidebar.ask')}
         </MenuItem>
-
+        {/* 关于星洲 */}
         <MenuItem icon={InformationCircleIcon} onClick={() => go('/landing')}>
-          关于星洲
+          {t('sidebar.about')}
         </MenuItem>
-
+        {/* 聊天室（敬请期待） */}
         <MenuItem icon={ChatBubbleLeftRightIcon} disabled>
-          聊天室（敬请期待）
+          {t('sidebar.chatroom')}
+          <span className="ml-1 text-xs opacity-70">{t('sidebar.comingSoon')}</span>
         </MenuItem>
       </div>
 
       {/* 底部功能区 */}
       <div className="px-4 py-4 border-t border-black/5 text-sm">
-        <FooterButton onClick={() => go('/about')}>关于我们</FooterButton>
-        <FooterButton onClick={() => go('/complaint')}>投诉反馈</FooterButton>
+        {/* 关于我们 */}
+        <FooterButton onClick={() => go('/about')}>{t('sidebar.aboutUs')}</FooterButton>
+        {/* 投诉反馈 */}
+        <FooterButton onClick={() => go('/complaint')}>{t('sidebar.feedback')}</FooterButton>
       </div>
     </aside>
   );

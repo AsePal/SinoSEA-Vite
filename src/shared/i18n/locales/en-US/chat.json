@@ -28,11 +28,12 @@
 
   "sidebar": {
     "title": "Navigation",
-    "chat": "Ask SionSEA",
-    "coming_soon": "Chat Room (Coming Soon)",
+    "ask": "Ask SionSEA",
+    "chatroom": "Chat Room",
+    "comingSoon": "(Coming Soon)",
     "about": "About SionSEA",
-    "about_us": "About Us",
-    "complaint": "Feedback & Complaints"
+    "aboutUs": "About Us",
+    "feedback": "Feedback & Complaints"
   },
 
   "message": {
