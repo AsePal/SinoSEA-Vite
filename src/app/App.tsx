@@ -11,8 +11,6 @@ import { AboutUs } from '../features/about';
 import MainLayout from './layouts/MainLayout';
 
 export default function App() {
-  const token = localStorage.getItem('auth_token');
-
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/chat" replace />} />
@@ -26,7 +24,7 @@ export default function App() {
       </Route>
 
       {/* ✅ 只有 /chat 使用 MainLayout */}
-      <Route path="/chat" element={<MainLayout key={token ?? 'guest'} />}>
+      <Route path="/chat" element={<MainLayout />}>
         <Route index element={<Chat />} />
       </Route>
 

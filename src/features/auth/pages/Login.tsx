@@ -202,6 +202,16 @@ export default function Login() {
           <Link to="/register">{t('link.register')}</Link>
           <Link to="/forgot-password">{t('link.forgot')}</Link>
         </div>
+        {/* 不登录直接进入 Chat */}
+        <div className="mt-6 pt-4 border-t border-white/10 text-center">
+          <button
+            type="button"
+            onClick={() => navigate('/chat')}
+            className=" text-sm tracking-wide text-white/60 hover:text-white transition"
+          >
+            返回主页
+          </button>
+        </div>
       </div>
     </div>
   );

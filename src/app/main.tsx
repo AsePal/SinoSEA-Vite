@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './styles/index.css';
 import App from './App';
-import '../shared/i18n';
 import i18n from '../shared/i18n';
 
 const storedLang = localStorage.getItem('lang');

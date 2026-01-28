@@ -10,6 +10,28 @@ import LoginErrorModal from '../../auth/components/LoginErrorModal';
 // SSE
 import type { ChatMessage, SSEEvent } from '../types/chat.types';
 import { sendChatSSE } from '../../../shared/api/chatSSE';
+import type { TFunction } from 'i18next';
+function getWelcomeSteps(t: TFunction, authed: boolean): WelcomeStep[] {
+  if (authed) {
+    return [
+      {
+        content: t('welcome.authed.line1'),
+        delay: 0,
+      },
+    ];
+  }
+
+  return [
+    {
+      content: t('welcome.guest.line1'),
+      delay: 0,
+    },
+    {
+      content: t('welcome.guest.line2'),
+      delay: 1500,
+    },
+  ];
+}
 
 type WelcomeStep = {
   content: string;
@@ -23,12 +45,13 @@ export default function ChatWindow({
   userAvatar?: string;
   userId?: string;
 }) {
-  const { t } = useTranslation('chat');
+  const { t, i18n } = useTranslation('chat');
   const navigate = useNavigate();
 
   const abortRef = useRef<AbortController | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const hasUserChatted = messages.some((m) => m.role === 'user');
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,27 +72,7 @@ export default function ChatWindow({
   const welcomePlayedRef = useRef(false);
 
   const lastAuthedRef = useRef<boolean | null>(null);
-
-  const GUEST_WELCOME_STEPS: WelcomeStep[] = [
-    { content: '', delay: 0 },
-    { content: '', delay: 1500 },
-  ];
-
-  const AUTHED_WELCOME_STEPS: WelcomeStep[] = [{ content: '', delay: 0 }];
-  const guestTexts = t('welcome.guest', { returnObjects: true }) as string[];
-  const authedTexts = t('welcome.authed', { returnObjects: true }) as string[];
-
-  guestTexts.forEach((text, i) => {
-    if (GUEST_WELCOME_STEPS[i]) {
-      GUEST_WELCOME_STEPS[i].content = text;
-    }
-  });
-
-  authedTexts.forEach((text, i) => {
-    if (AUTHED_WELCOME_STEPS[i]) {
-      AUTHED_WELCOME_STEPS[i].content = text;
-    }
-  });
+  const lastLangRef = useRef<string | null>(null);
 
   /* -------------------- 鉴权 -------------------- */
 
@@ -93,19 +96,25 @@ export default function ChatWindow({
   }
 
   function initConversation() {
+    console.log('initConversation called');
     const authed = isAuthed();
-    if (welcomePlayedRef.current && lastAuthedRef.current === authed) {
+    const currentLang = i18n.resolvedLanguage || i18n.language;
+
+    // 🚫 如果已经播过，并且「登录状态 + 语言」都没变，就不重播
+    if (
+      welcomePlayedRef.current &&
+      lastAuthedRef.current === authed &&
+      lastLangRef.current === currentLang
+    ) {
       return;
     }
 
     lastAuthedRef.current = authed;
+    lastLangRef.current = currentLang;
     welcomePlayedRef.current = true;
 
-    if (authed) {
-      playWelcomeSteps(AUTHED_WELCOME_STEPS);
-    } else {
-      playWelcomeSteps(GUEST_WELCOME_STEPS);
-    }
+    const steps = getWelcomeSteps(t, authed);
+    playWelcomeSteps(steps);
   }
 
   /* -------------------- 输入区工具 -------------------- */
@@ -213,7 +222,17 @@ export default function ChatWindow({
 
   /* -------------------- 生命周期 -------------------- */
 
-  useEffect(() => initConversation(), [userId, t]);
+  useEffect(() => {
+    console.log('🔥 ChatWindow mounted');
+    return () => console.log('💀 ChatWindow unmounted');
+  }, []);
+
+  useEffect(() => {
+    if (!hasUserChatted) {
+      initConversation();
+    }
+  }, [userId, i18n.resolvedLanguage, hasUserChatted]);
+
   useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
   useEffect(() => () => abortRef.current?.abort(), []);
 

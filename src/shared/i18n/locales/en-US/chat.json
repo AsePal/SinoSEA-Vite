@@ -1,13 +1,12 @@
 {
   "welcome": {
-    "guest": [
-      "Hi! I’m **SionSEA Intelligent Assistant** 🌟",
-      "I can help you understand campus regulations, daily life around campus, and also be your supportive companion."
-    ],
-    "authed": [
-      "Hi! I’m **SionSEA Intelligent Assistant** 🌟",
-      "Nice to see you again. How can I help you today?"
-    ]
+    "guest": {
+      "line1": "hi！我是 星洲智能助手 🌟",
+      "line2": "我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师。"
+    },
+    "authed": {
+      "line1": "hello！我是 星洲智能助手 🌟"
+    }
   },
 
   "input": {

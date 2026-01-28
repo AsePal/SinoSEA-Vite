@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../../shared/types/user.types';
 import { UserAvatarMenu } from '../../../shared/components';
 import { Bars3Icon } from '@heroicons/react/24/outline';
+import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
 type TopNavProps = {
   user: UserInfo | null;
@@ -53,6 +54,8 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
             <span className="text-sm text-gray-700 font-medium">登录 / 注册</span>
           </button>
         )}
+        {/* 🌍 语言切换（就在头像右侧） */}
+        <LanguageSwitcher variant="dark" />
       </div>
 
       <div className="flex-1" />

@@ -1,6 +1,5 @@
 import { Outlet, useLocation, useNavigationType } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
 export default function AuthLayout() {
   const location = useLocation();
@@ -33,11 +32,6 @@ export default function AuthLayout() {
         style={{ backgroundImage: 'url("/images/login-bg2.webp")' }}
       />
       <div className="absolute inset-0 bg-black/50" />
-      {/* 语言切换（右上角，不参与动画） */}
-      <div className="absolute top-6 right-6 z-20">
-        <LanguageSwitcher variant="dark" />
-      </div>
-
       {/* 内容 */}
       <div className="relative z-10 min-h-screen flex items-center justify-center">
         <div
