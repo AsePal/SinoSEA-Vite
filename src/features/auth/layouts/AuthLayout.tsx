@@ -35,7 +35,7 @@ export default function AuthLayout() {
       <div className="absolute inset-0 bg-black/50" />
       {/* 语言切换（右上角，不参与动画） */}
       <div className="absolute top-6 right-6 z-20">
-        <LanguageSwitcher />
+        <LanguageSwitcher variant="dark" />
       </div>
 
       {/* 内容 */}

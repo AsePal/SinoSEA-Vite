@@ -1,0 +1,40 @@
+{
+  "welcome": {
+    "guest": [
+      "你好呀！我是 **星洲智能助手** 🌟",
+      "我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师。"
+    ],
+    "authed": ["你好呀！我是 **星洲智能助手** 🌟", "很高兴再次见到你，有什么可以帮你的吗？"]
+  },
+
+  "input": {
+    "placeholder": "请输入你的问题",
+    "placeholder_authed": "Enter 发送，Shift + Enter 换行",
+    "login_required": " 当前功能需要登录后使用"
+  },
+
+  "system": {
+    "thinking": "星洲正在思考中…",
+    "timeout": "⚠️ 回复中断（可能是网络异常或超时），你可以继续提问。",
+    "error": "⚠️ 出现了一点问题，请稍后再试。"
+  },
+
+  "topnav": {
+    "login": "登录 / 注册",
+    "logout": "退出登录"
+  },
+
+  "sidebar": {
+    "title": "功能导航",
+    "chat": "询问星洲",
+    "coming_soon": "聊天室（敬请期待）",
+    "about": "关于星洲",
+    "about_us": "关于我们",
+    "complaint": "投诉反馈"
+  },
+
+  "message": {
+    "copy": "复制",
+    "copied": "已复制"
+  }
+}

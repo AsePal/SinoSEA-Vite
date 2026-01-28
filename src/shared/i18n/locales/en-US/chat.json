@@ -1,0 +1,43 @@
+{
+  "welcome": {
+    "guest": [
+      "Hi! I’m **SionSEA Intelligent Assistant** 🌟",
+      "I can help you understand campus regulations, daily life around campus, and also be your supportive companion."
+    ],
+    "authed": [
+      "Hi! I’m **SionSEA Intelligent Assistant** 🌟",
+      "Nice to see you again. How can I help you today?"
+    ]
+  },
+
+  "input": {
+    "placeholder": "Ask me anything",
+    "placeholder_authed": "Press Enter to send, Shift + Enter for a new line",
+    "login_required": " Please sign in to use this feature"
+  },
+
+  "system": {
+    "thinking": "SionSEA is thinking…",
+    "timeout": "⚠️ The response was interrupted (network issue or timeout). You can try again.",
+    "error": "⚠️ Something went wrong. Please try again later."
+  },
+
+  "topnav": {
+    "login": "Sign in / Register",
+    "logout": "Sign out"
+  },
+
+  "sidebar": {
+    "title": "Navigation",
+    "chat": "Ask SionSEA",
+    "coming_soon": "Chat Room (Coming Soon)",
+    "about": "About SionSEA",
+    "about_us": "About Us",
+    "complaint": "Feedback & Complaints"
+  },
+
+  "message": {
+    "copy": "Copy",
+    "copied": "Copied"
+  }
+}

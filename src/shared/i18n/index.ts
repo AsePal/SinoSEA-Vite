@@ -6,6 +6,9 @@ import enLanding from './locales/en-US/landing.json';
 import zhAuth from './locales/zh-CN/auth.json';
 import enAuth from './locales/en-US/auth.json';
 
+import chatZh from './locales/zh-CN/chat.json';
+import chatEn from './locales/en-US/chat.json';
+
 // ✅ 只在“第一次初始化”时读取 localStorage
 const savedLang = localStorage.getItem('lang');
 
@@ -18,10 +21,12 @@ if (!i18n.isInitialized) {
       'zh-CN': {
         landing: zhLanding,
         auth: zhAuth,
+        chat: chatZh,
       },
       'en-US': {
         landing: enLanding,
         auth: enAuth,
+        chat: chatEn,
       },
     },
     interpolation: {

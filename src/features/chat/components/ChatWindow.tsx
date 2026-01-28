@@ -1,24 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import MessageBubble from './MessageBubble';
 
-// ✅ 复用遗留弹窗
+// 复用遗留弹窗
 import LoginErrorModal from '../../auth/components/LoginErrorModal';
 
-/// 引入 SSE
+// SSE
 import type { ChatMessage, SSEEvent } from '../types/chat.types';
 import { sendChatSSE } from '../../../shared/api/chatSSE';
 
-// 定义默认回复内容的时间间隔
 type WelcomeStep = {
   content: string;
-  delay: number; // ms
+  delay: number;
 };
-
-export function generateId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
 
 export default function ChatWindow({
   userAvatar,
@@ -27,7 +23,9 @@ export default function ChatWindow({
   userAvatar?: string;
   userId?: string;
 }) {
+  const { t } = useTranslation('chat');
   const navigate = useNavigate();
+
   const abortRef = useRef<AbortController | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -36,91 +34,72 @@ export default function ChatWindow({
   const [loading, setLoading] = useState(false);
 
   const [showLoginError, setShowLoginError] = useState(false);
-  const [pendingToSend, setPendingToSend] = useState<string>('');
+  const [pendingToSend, setPendingToSend] = useState('');
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   type SendPhase = 'idle' | 'out' | 'reset' | 'return';
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
-  const MAX_TEXTAREA_HEIGHT = 180;
 
+  const MAX_TEXTAREA_HEIGHT = 180;
   const disabled = loading || !input.trim();
   const [isFlying, setIsFlying] = useState(false);
+
   const welcomePlayedRef = useRef(false);
-  // 记录上一次登录状态
+
   const lastAuthedRef = useRef<boolean | null>(null);
 
-  // 定义欢迎语样式1（未登录状态）
   const GUEST_WELCOME_STEPS: WelcomeStep[] = [
-    {
-      content: '你好呀！我是 **星洲智能助手** 🌟',
-      delay: 0,
-    },
-    {
-      content: '我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师',
-      delay: 1500,
-    },
-  ];
-  //样式2（已登录状态）
-  const AUTHED_WELCOME_STEPS: WelcomeStep[] = [
-    {
-      content: '你好呀！我是 **星洲智能助手** 🌟',
-      delay: 0,
-    },
+    { content: '', delay: 0 },
+    { content: '', delay: 1500 },
   ];
 
-  // 欢迎语
+  const AUTHED_WELCOME_STEPS: WelcomeStep[] = [{ content: '', delay: 0 }];
+  const guestTexts = t('welcome.guest', { returnObjects: true }) as string[];
+  const authedTexts = t('welcome.authed', { returnObjects: true }) as string[];
+
+  guestTexts.forEach((text, i) => {
+    if (GUEST_WELCOME_STEPS[i]) {
+      GUEST_WELCOME_STEPS[i].content = text;
+    }
+  });
+
+  authedTexts.forEach((text, i) => {
+    if (AUTHED_WELCOME_STEPS[i]) {
+      AUTHED_WELCOME_STEPS[i].content = text;
+    }
+  });
+
+  /* -------------------- 鉴权 -------------------- */
+
+  function isAuthed() {
+    const token = localStorage.getItem('auth_token');
+    return Boolean(token) && Boolean(userId);
+  }
+
+  /* -------------------- 欢迎语（i18n） -------------------- */
+
   function playWelcomeSteps(steps: WelcomeStep[]) {
-    setMessages([]); // 清空当前对话（新会话）
-
+    setMessages([]);
     let totalDelay = 0;
 
     steps.forEach((step) => {
       totalDelay += step.delay;
-
       setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: 'assistant',
-            content: step.content,
-          },
-        ]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: step.content }]);
       }, totalDelay);
     });
   }
 
-  // 飞机触发动画✈️
-  function handleSend() {
-    if (disabled) return;
-
-    const value = input.trim();
-
-    if (!isAuthed()) {
-      blockAndAskLogin(value);
+  function initConversation() {
+    const authed = isAuthed();
+    if (welcomePlayedRef.current && lastAuthedRef.current === authed) {
       return;
     }
 
-    setIsFlying(true); //起飞✈️
-    triggerSendAnimation();
-    sendMessage(value);
-
-    setTimeout(() => {
-      setIsFlying(false); //飞回来
-    }, 1800);
-  }
-
-  /* -------------------- 核心工具函数 -------------------- */
-
-  function initConversation() {
-    const authed = isAuthed();
-
-    // 登录状态没变 → 不重复播
-    if (lastAuthedRef.current === authed) return;
-
     lastAuthedRef.current = authed;
-    welcomePlayedRef.current = false;
+    welcomePlayedRef.current = true;
 
     if (authed) {
       playWelcomeSteps(AUTHED_WELCOME_STEPS);
@@ -129,14 +108,17 @@ export default function ChatWindow({
     }
   }
 
-  function isAuthed() {
-    const token = localStorage.getItem('auth_token');
-    return Boolean(token) && Boolean(userId);
+  /* -------------------- 输入区工具 -------------------- */
+
+  function resizeTextarea(el: HTMLTextAreaElement) {
+    el.style.height = 'auto';
+    const h = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT);
+    el.style.height = h + 'px';
+    el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
   }
 
-  function blockAndAskLogin(content: string) {
-    setPendingToSend(content);
-    setShowLoginError(true);
+  function resetTextareaHeight() {
+    textareaRef.current && (textareaRef.current.style.height = 'auto');
   }
 
   function triggerSendAnimation() {
@@ -147,57 +129,33 @@ export default function ChatWindow({
     setTimeout(() => setSendPhase('idle'), 900);
   }
 
-  function resizeTextarea(el: HTMLTextAreaElement) {
-    el.style.height = 'auto';
-    const newHeight = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT);
-    el.style.height = newHeight + 'px';
-    el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
+  function blockAndAskLogin(content: string) {
+    setPendingToSend(content);
+    setShowLoginError(true);
   }
 
-  function resetTextareaHeight() {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
+  /* -------------------- 发送 -------------------- */
+
+  function handleSend() {
+    if (disabled) return;
+
+    const value = input.trim();
+    if (!isAuthed()) {
+      blockAndAskLogin(value);
+      return;
+    }
+
+    setIsFlying(true);
+    triggerSendAnimation();
+    sendMessage(value);
+
+    setTimeout(() => setIsFlying(false), 1800);
   }
-  // 初始化信息
-  useEffect(() => {
-    if (!isAuthed()) return;
 
-    const pending = sessionStorage.getItem('pending_chat_message');
-    if (!pending) return;
-
-    sessionStorage.removeItem('pending_chat_message');
-
-    // 稍微延迟，确保欢迎语 / UI 已 ready
-    setTimeout(() => {
-      sendMessage(pending);
-    }, 300);
-  }, [userId]);
-
-  /* -------------------- 初始化 -------------------- */
-  // 组件卸载时中断 SSE
-  useEffect(() => {
-    return () => {
-      abortRef.current?.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    initConversation();
-  }, [userId]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  /* -------------------- 发送逻辑 -------------------- */
   async function sendMessage(content: string) {
     let assistantText = '';
+    if (!content || loading) return;
 
-    const trimmed = content.trim();
-    if (!trimmed || loading) return;
-
-    // 🔒 中断上一条未完成的 SSE（防止并发卡死）
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -206,61 +164,58 @@ export default function ChatWindow({
     setInput('');
     requestAnimationFrame(resetTextareaHeight);
 
-    setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
+    setMessages((prev) => [...prev, { role: 'user', content }]);
 
     const assistantMessageId = crypto.randomUUID();
     setMessages((prev) => [
       ...prev,
       {
         role: 'assistant',
-        content: '星洲正在思考⌛️',
+        content: t('system.thinking'),
         messageId: assistantMessageId,
       },
     ]);
 
     try {
       await sendChatSSE(
-        {
-          message: trimmed,
-          conversationId: conversationId ?? undefined,
-          userId,
-        },
+        { message: content, conversationId: conversationId ?? undefined, userId },
         (event: SSEEvent) => {
           if (event.type === 'delta') {
             assistantText += event.text;
             setMessages((prev) =>
-              prev.map((msg) =>
-                msg.messageId === assistantMessageId ? { ...msg, content: assistantText } : msg,
+              prev.map((m) =>
+                m.messageId === assistantMessageId ? { ...m, content: assistantText } : m,
               ),
             );
           }
-
           if (event.type === 'end') {
             setConversationId(event.conversationId);
           }
         },
-        {
-          signal: controller.signal, // ⭐ 关键：把 abort 传进去
-        },
+        { signal: controller.signal },
       );
-    } catch (err) {
-      // ❗️任何异常，都给一个“不中断对话”的提示
+    } catch {
       setMessages((prev) =>
-        prev.map((msg) =>
-          msg.messageId === assistantMessageId
+        prev.map((m) =>
+          m.messageId === assistantMessageId
             ? {
-                ...msg,
-                content: assistantText || '⚠️ 回复中断（网络异常或超时），你可以继续提问。',
+                ...m,
+                content: assistantText || t('system.timeout'),
               }
-            : msg,
+            : m,
         ),
       );
     } finally {
-      // 🔥 灵魂所在：无论成功 / 失败 / 超时，都必须解锁
       setLoading(false);
       abortRef.current = null;
     }
   }
+
+  /* -------------------- 生命周期 -------------------- */
+
+  useEffect(() => initConversation(), [userId, t]);
+  useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   /* -------------------- UI -------------------- */
 
@@ -268,8 +223,8 @@ export default function ChatWindow({
     <>
       <div className="w-full h-full flex flex-col">
         {/* Header */}
-        <div className="px-4 py-4 text-sm font-semibold text-black/80 border-b border-white/20 ">
-          asepal-AI
+        <div className="px-4 py-4 text-sm font-semibold text-black/80 border-b border-white/20">
+          SionSEA-AI
         </div>
 
         {/* Messages */}
@@ -281,21 +236,18 @@ export default function ChatWindow({
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 chat-scroll">
+        <div className="px-4 py-3">
           <div
-            className={` flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-2 transition-colors
-            ${disabled ? 'bg-black/30' : 'bg-black/50'}
-          `}
+            className={`flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-2
+            ${disabled ? 'bg-black/30' : 'bg-black/50'}`}
           >
-            {/* 👇 就加在这里 */}
-            {!isAuthed() && (
-              <p className="mt-2 text-xs text-gray-500 text-center">🔒会话功能需要登录使用</p>
-            )}
             <textarea
-              rows={1}
               ref={textareaRef}
+              rows={1}
               value={input}
-              placeholder={isAuthed() ? 'Enter发送，Shift+Enter换行' : ''}
+              placeholder={
+                isAuthed() ? t('input.placeholder_authed') : `🔒 ${t('input.login_required')}`
+              }
               onChange={(e) => setInput(e.target.value)}
               onInput={(e) => resizeTextarea(e.currentTarget)}
               onKeyDown={(e) => {
@@ -304,38 +256,31 @@ export default function ChatWindow({
                   handleSend();
                 }
               }}
-              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-[40px] leading-[40px] py-0"
+              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-[40px]"
             />
-            <div className="relative group self-end overflow-visible">
-              <button
-                onClick={handleSend}
-                disabled={disabled}
-                className={`relative w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition
-                ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
-              `}
-              >
-                <div className={isFlying ? 'animate-plane-fly' : ''}>
-                  <PaperAirplaneIcon
-                    className={` w-4 h-4 -rotate-90 transition
-                  ${disabled ? 'text-gray-300' : 'text-white'}
-                `}
-                  />
-                </div>
-              </button>
-            </div>
+
+            <button
+              onClick={handleSend}
+              disabled={disabled}
+              className={`w-9 h-9 rounded-full flex items-center justify-center
+              ${disabled ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'}`}
+            >
+              <div className={isFlying ? 'animate-plane-fly' : ''}>
+                <PaperAirplaneIcon
+                  className={`w-4 h-4 -rotate-90 ${disabled ? 'text-gray-300' : 'text-white'}`}
+                />
+              </div>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* 未登录弹窗 */}
       <LoginErrorModal
         open={showLoginError}
         onCancel={() => setShowLoginError(false)}
         onConfirm={() => {
           setShowLoginError(false);
-          if (pendingToSend) {
-            sessionStorage.setItem('pending_chat_message', pendingToSend);
-          }
+          pendingToSend && sessionStorage.setItem('pending_chat_message', pendingToSend);
           navigate('/login');
         }}
       />

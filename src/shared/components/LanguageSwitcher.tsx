@@ -15,6 +15,7 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
   const current = i18nFromHook.language || 'zh-CN';
 
   const isDark = variant === 'dark';
+  console.log('[LanguageSwitcher] mounted');
 
   return (
     <div className="flex items-center justify-center gap-2">
