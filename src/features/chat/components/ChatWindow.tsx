@@ -45,9 +45,11 @@ export default function ChatWindow({
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
   const MAX_TEXTAREA_HEIGHT = 180;
 
-  const disabled = loading || !input.trim() || !isAuthed();
+  const disabled = loading || !input.trim();
   const [isFlying, setIsFlying] = useState(false);
   const welcomePlayedRef = useRef(false);
+  // 记录上一次登录状态
+  const lastAuthedRef = useRef<boolean | null>(null);
 
   // 定义欢迎语样式1（未登录状态）
   const GUEST_WELCOME_STEPS: WelcomeStep[] = [
@@ -112,11 +114,15 @@ export default function ChatWindow({
   /* -------------------- 核心工具函数 -------------------- */
 
   function initConversation() {
-    if (welcomePlayedRef.current) return;
+    const authed = isAuthed();
 
-    welcomePlayedRef.current = true;
+    // 登录状态没变 → 不重复播
+    if (lastAuthedRef.current === authed) return;
 
-    if (isAuthed()) {
+    lastAuthedRef.current = authed;
+    welcomePlayedRef.current = false;
+
+    if (authed) {
       playWelcomeSteps(AUTHED_WELCOME_STEPS);
     } else {
       playWelcomeSteps(GUEST_WELCOME_STEPS);
@@ -153,6 +159,20 @@ export default function ChatWindow({
     if (!el) return;
     el.style.height = 'auto';
   }
+  // 初始化信息
+  useEffect(() => {
+    if (!isAuthed()) return;
+
+    const pending = sessionStorage.getItem('pending_chat_message');
+    if (!pending) return;
+
+    sessionStorage.removeItem('pending_chat_message');
+
+    // 稍微延迟，确保欢迎语 / UI 已 ready
+    setTimeout(() => {
+      sendMessage(pending);
+    }, 300);
+  }, [userId]);
 
   /* -------------------- 初始化 -------------------- */
   // 组件卸载时中断 SSE
