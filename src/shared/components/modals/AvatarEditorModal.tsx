@@ -2,6 +2,9 @@ import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
+
+import { useTranslation } from 'react-i18next';
+
 //校验用户上传头像的类型
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
 
@@ -17,6 +20,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
   const [preview, setPreview] = useState<string>(currentAvatar);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { t } = useTranslation('chat');
 
   useEffect(() => {
     setPreview(currentAvatar);
@@ -33,12 +37,14 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
     // 简单校验
     if (!ALLOWED_IMAGE_TYPES.includes(file.type as any)) {
-      alert('仅支持 JPG / PNG / GIF / WebP 格式的图片');
+      // 格式提示
+      alert(t('avatarModal.error.type'));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('图片大小不能超过 5MB');
+      // 大于5MB
+      alert(t('avatarModal.error.size'));
       return;
     }
 
@@ -52,7 +58,8 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
       return;
     }
     if (!ALLOWED_IMAGE_TYPES.includes(selectedFile.type as any)) {
-      alert('图片格式不支持，请重新选择');
+      // 格式不合规
+      alert(t('avatarModal.error.upload'));
       return;
     }
 
@@ -64,7 +71,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
       const token = localStorage.getItem('auth_token');
 
-      const res = await fetch('http:/10.147.20.237:3000/user/image', {
+      const res = await fetch('http://10.147.20.237:3000/user/image', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,7 +80,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
       });
 
       if (!res.ok) {
-        throw new Error('头像上传失败');
+        throw new Error(t('avatarModal.error.OutputError'));
       }
 
       const data = await res.json();
@@ -82,7 +89,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
       onSuccess(data.avatarUrl);
       onClose();
     } catch (e) {
-      alert('头像更新失败，请稍后重试');
+      alert(t('avatarModal.error.UpdatetError'));
     } finally {
       setLoading(false);
     }
@@ -112,7 +119,10 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
             "
           >
             {/* 标题 */}
-            <h2 className="text-lg font-semibold text-gray-800 mb-6 text-center">修改头像</h2>
+            {/* 修改头像 */}
+            <h2 className="text-lg font-semibold text-gray-800 mb-6 text-center">
+              {t('avatarModal.title')}
+            </h2>
 
             {/* 头像区域 */}
             <div className="flex flex-col items-center gap-3">
@@ -130,6 +140,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                 <img src={preview} className="w-full h-full object-cover" />
 
                 {/* hover 遮罩 */}
+                {/* 头像更换 */}
                 <div
                   className="
                   absolute inset-0
@@ -140,15 +151,16 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                   transition
                 "
                 >
-                  点击更换
+                  {t('avatarModal.change')}
                 </div>
               </button>
-
-              <p className="text-sm text-gray-500">仅支持 JPG / PNG / GIF / WebP ≤ 5MB</p>
+              {/* 仅支持 JPG / PNG / GIF / WebP ≤ 5MB */}
+              <p className="text-sm text-gray-500">{t('avatarModal.hint')}</p>
             </div>
 
             {/* 底部按钮 */}
             <div className="mt-8 flex justify-end gap-3">
+              {/* 取消 */}
               <button
                 type="button"
                 onClick={onClose}
@@ -158,7 +170,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                   transition
                 "
               >
-                取消
+                {t('avatarModal.cancel')}
               </button>
 
               <button
@@ -175,7 +187,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                   disabled:cursor-not-allowed
                 "
               >
-                {loading ? '保存中…' : '保存'}
+                {loading ? t('avatarModal.saving') : t('avatarModal.save')}
               </button>
             </div>
 

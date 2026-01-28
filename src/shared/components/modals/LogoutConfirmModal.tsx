@@ -7,7 +7,7 @@ type LogoutConfirmModalProps = {
 };
 
 export default function LogoutConfirmModal({ open, onConfirm, onCancel }: LogoutConfirmModalProps) {
-  type EmojiState = '😯' | '😁' | '😨';
+  type EmojiState = '😯' | '👻' | '😨';
 
   const [emoji, setEmoji] = useState<EmojiState>('😯');
 
@@ -35,7 +35,7 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
           <button
             type="button"
             onClick={onCancel}
-            onMouseEnter={() => setEmoji('😁')}
+            onMouseEnter={() => setEmoji('👻')}
             onMouseLeave={() => setEmoji('😯')}
             className="
               px-5 py-2.5

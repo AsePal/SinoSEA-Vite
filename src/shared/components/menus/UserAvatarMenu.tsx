@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { UserInfo } from '../../types/user.types';
+import { useTranslation } from 'react-i18next';
 
 export default function UserAvatarMenu({
   user,
@@ -11,6 +12,7 @@ export default function UserAvatarMenu({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation('chat');
 
   // ⛔ 只有这个组件存在时，才注册全局事件
   useEffect(() => {
@@ -56,19 +58,23 @@ export default function UserAvatarMenu({
             <div className="px-4 py-4 border-b text-center">
               <img src={user.avatar} className="w-14 h-14 mx-auto rounded-full object-cover mb-2" />
               <div className="font-semibold text-gray-800">{user.nickname}</div>
-              <div className="text-xs text-gray-500 mt-1">用户信息</div>
+              {/* 用户信息 */}
+              <div className="text-xs text-gray-500 mt-1">{t('userMenu.profile')}</div>
             </div>
 
             <div className="py-4 px-3">
+              {/* 修改头像 */}
               <MenuItem
-                label="修改头像"
+                label={t('userMenu.editAvatar')}
                 onClick={() => {
                   setOpen(false);
                   onEditAvatar();
                 }}
               />
-              <MenuItem label="修改昵称" />
-              <MenuItem label="修改手机号" />
+              {/* 修改昵称 */}
+              <MenuItem label={t('userMenu.editNickname')} />
+              {/* 修改手机号 */}
+              <MenuItem label={t('userMenu.editPhone')} />
             </div>
           </motion.div>
         )}

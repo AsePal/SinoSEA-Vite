@@ -39,5 +39,26 @@
     "comingSoon": "（敬请期待）",
     "aboutUs": "关于我们",
     "feedback": "投诉反馈"
+  },
+  "userMenu": {
+    "profile": "用户信息",
+    "editAvatar": "修改头像",
+    "editNickname": "修改昵称",
+    "editPhone": "修改手机号"
+  },
+  "avatarModal": {
+    "title": "修改头像",
+    "change": "点击更换",
+    "hint": "仅支持 JPG / PNG / GIF / WebP，大小不超过 5MB",
+    "cancel": "取消",
+    "save": "保存",
+    "saving": "保存中…",
+    "error": {
+      "type": "仅支持 JPG / PNG / GIF / WebP 格式的图片",
+      "size": "图片大小不能超过 5MB",
+      "upload": "头像更新失败，请稍后重试",
+      "OutputError": "上传失败",
+      "UpdatetError": "头像更新失败，请稍后重试"
+    }
   }
 }

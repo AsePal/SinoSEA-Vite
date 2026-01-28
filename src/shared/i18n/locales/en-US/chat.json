@@ -39,5 +39,26 @@
   "message": {
     "copy": "Copy",
     "copied": "Copied"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "editAvatar": "Change avatar",
+    "editNickname": "Edit nickname",
+    "editPhone": "Edit phone number"
+  },
+  "avatarModal": {
+    "title": "Change Avatar",
+    "change": "Click to change",
+    "hint": "Only JPG / PNG / GIF / WebP images up to 5MB are supported",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "error": {
+      "type": "Only JPG / PNG / GIF / WebP images are supported",
+      "size": "Image size must not exceed 5MB",
+      "upload": "Failed to update avatar. Please try again later",
+      "OutputError": "Upload failed",
+      "UpdatetError": "Failed to update avatar. Please try again later"
+    }
   }
 }
