@@ -8,7 +8,7 @@ type LoginAnim = 'idle' | 'success' | 'error';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { t } = useTranslation('auth');
+  const { t, i18n } = useTranslation('auth');
 
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +23,9 @@ export default function Login() {
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [loginAnim, setLoginAnim] = useState<LoginAnim>('idle');
   const [ready, setReady] = useState(false);
+
+  console.log('current lang:', i18n.language);
+  console.log('auth title:', t('title'));
 
   useEffect(() => {
     requestAnimationFrame(() => setReady(true));
@@ -191,7 +194,7 @@ export default function Login() {
             <Link to="/privacy" className="underline ml-1">
               {t('agreement.privacy')}
             </Link>
-            {t('agreement.and', { defaultValue: ' 和 ' })}
+            {t('agreement.and')}
             <Link to="/terms" className="underline ml-1">
               {t('agreement.terms')}
             </Link>
@@ -202,14 +205,14 @@ export default function Login() {
           <Link to="/register">{t('link.register')}</Link>
           <Link to="/forgot-password">{t('link.forgot')}</Link>
         </div>
-        {/* 不登录直接进入 Chat */}
+        {/* 返回首页*/}
         <div className="mt-6 pt-4 border-t border-white/10 text-center">
           <button
             type="button"
             onClick={() => navigate('/chat')}
             className=" text-sm tracking-wide text-white/60 hover:text-white transition"
           >
-            返回主页
+            {t('link.backHome')}
           </button>
         </div>
       </div>
