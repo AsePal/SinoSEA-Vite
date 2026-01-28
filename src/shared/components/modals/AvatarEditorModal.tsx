@@ -64,7 +64,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
       const token = localStorage.getItem('auth_token');
 
-      const res = await fetch('https:/api.sionsea-ai.cn/user/image', {
+      const res = await fetch('https:/172.16.35.10:3000/user/image', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

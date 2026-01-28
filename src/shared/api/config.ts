@@ -1,6 +1,6 @@
 import { API_BASE } from '../utils/env';
 
-const BASE = API_BASE ?? 'https://api.sionsea-ai.cn';
+const BASE = API_BASE ?? 'http://172.16.35.10:3000';
 const TOKEN_KEY = 'auth_token';
 
 type Endpoints = {
