@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 type LoginErrorModalProps = {
   open: boolean;
   onConfirm: () => void;
@@ -5,6 +6,7 @@ type LoginErrorModalProps = {
 };
 
 export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErrorModalProps) {
+  const { t } = useTranslation('common');
   if (!open) return null;
 
   return (
@@ -13,15 +15,16 @@ export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErro
         {/* emoji + 文案 */}
         <div className="flex flex-col items-center text-center mb-8 space-y-4">
           <div className="text-6xl">🧐</div>
-
-          <p className="text-lg font-medium text-white">你似乎还没登录</p>
-
-          <p className="text-sm text-gray-400">未能获取到你的用户信息，请重新登录后再试。</p>
+          {/* 你似乎还没有登录 */}
+          <p className="text-lg font-medium text-white">{t('modal.loginRequired.title')}</p>
+          {/* 未能获取到你的用户信息，请重新登录后再试。 */}
+          <p className="text-sm text-gray-400">{t('modal.loginRequired.description')}</p>
         </div>
 
         {/* 操作按钮 */}
         <div className="flex justify-center items-center gap-4">
           {onCancel && (
+            // 取消按钮
             <button
               type="button"
               onClick={onCancel}
@@ -35,10 +38,10 @@ export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErro
                 transition-colors
               "
             >
-              取消
+              {t('modal.action.cancel')}
             </button>
           )}
-
+          {/* 前往登录按钮 */}
           <button
             type="button"
             onClick={onConfirm}
@@ -51,7 +54,7 @@ export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErro
               transition-colors
             "
           >
-            前往登录
+            {t('modal.loginRequired.confirm')}
           </button>
         </div>
       </div>

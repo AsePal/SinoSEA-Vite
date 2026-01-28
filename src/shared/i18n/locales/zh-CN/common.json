@@ -6,6 +6,11 @@
     },
     "action": {
       "cancel": "取消"
+    },
+    "loginRequired": {
+      "title": "你似乎还没登录",
+      "description": "未能获取到你的用户信息，请重新登录后再试。",
+      "confirm": "前往登录"
     }
   }
 }

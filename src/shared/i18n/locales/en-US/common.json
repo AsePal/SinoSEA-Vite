@@ -6,6 +6,11 @@
     },
     "action": {
       "cancel": "Cancel"
+    },
+    "loginRequired": {
+      "title": "You are not signed in",
+      "description": "We couldn't retrieve your user information. Please sign in again.",
+      "confirm": "Go to sign in"
     }
   }
 }
