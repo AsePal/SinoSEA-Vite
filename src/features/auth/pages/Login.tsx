@@ -43,6 +43,20 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
+    const handleEnterKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && agreed) {
+        e.preventDefault();
+        handleLogin();
+      }
+    };
+
+    window.addEventListener('keydown', handleEnterKey);
+    return () => {
+      window.removeEventListener('keydown', handleEnterKey);
+    };
+  }, [agreed, account, password, loading]);
+
+  useEffect(() => {
     const saved = localStorage.getItem('remember_account');
     if (saved) {
       setAccount(saved);
@@ -121,6 +135,12 @@ export default function Login() {
           placeholder={t('placeholder.account')}
           value={account}
           onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleLogin();
+            }
+          }}
         />
 
         <div className="relative mb-2">
@@ -132,6 +152,12 @@ export default function Login() {
             onFocus={() => setPasswordFocused(true)}
             onBlur={() => setPasswordFocused(false)}
             onChange={(e) => setPassword(e.currentTarget.value.replace(/\s/g, ''))}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+              }
+            }}
           />
           <button
             type="button"
