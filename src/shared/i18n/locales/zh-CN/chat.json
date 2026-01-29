@@ -60,5 +60,15 @@
       "OutputError": "上传失败",
       "UpdatetError": "头像更新失败，请稍后重试"
     }
+  },
+  "userInfoModal": {
+    "title": "用户信息",
+    "close": "关闭",
+    "guestName": "未登录",
+    "unboundPhone": "未绑定手机号",
+    "editAvatar": "修改头像",
+    "editNickname": "修改昵称",
+    "editPhone": "修改手机号",
+    "logout": "退出登录"
   }
 }

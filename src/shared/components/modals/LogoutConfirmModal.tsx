@@ -24,12 +24,14 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-[92%] max-w-md rounded-2xl bg-zinc-900 px-8 py-7 shadow-xl border border-white/10">
+      <div className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700">
         {/* emoji + 文案 */}
         <div className="flex flex-col items-center text-center mb-8 space-y-4">
           <div className="text-6xl transition-transform duration-200">{emoji}</div>
           {/* 你真的要退出吗？ */}
-          <p className="text-lg font-medium text-white">{t('modal.logoutConfirm.title')}</p>
+          <p className="text-lg font-medium text-gray-900 dark:text-white">
+            {t('modal.logoutConfirm.title')}
+          </p>
         </div>
 
         {/* 操作按钮 */}

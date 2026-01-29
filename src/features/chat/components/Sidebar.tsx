@@ -12,12 +12,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import type { UserInfo } from '../../../shared/types/user.types';
 
 type SidebarProps = {
+  user?: UserInfo | null;
   onClose?: () => void;
+  onOpenUserInfo?: () => void;
 };
 
-export default function Sidebar({ onClose }: SidebarProps) {
+export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation('chat');
@@ -50,6 +53,11 @@ export default function Sidebar({ onClose }: SidebarProps) {
     localStorage.setItem('themeMode', newMode);
   }
 
+  const DEFAULT_AVATAR = '/userlogo.ico';
+  const isAuthed = Boolean(user);
+  const displayName = user?.nickname || t('topnav.login');
+  const displayPhone = user?.phone || '未绑定手机号';
+
   return (
     <aside
       className="
@@ -73,6 +81,43 @@ export default function Sidebar({ onClose }: SidebarProps) {
           ) : (
             <MoonIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           )}
+        </button>
+      </div>
+
+      {/* 侧栏用户信息 */}
+      <div className="px-4 pt-4">
+        <button
+          type="button"
+          onClick={() => {
+            if (isAuthed) {
+              onOpenUserInfo?.();
+            } else {
+              navigate('/login');
+              onClose?.();
+            }
+          }}
+          className="
+            w-full
+            flex items-center gap-3
+            rounded-xl border border-gray-200 dark:border-gray-700
+            px-3 py-2
+            bg-white/80 hover:bg-white
+            dark:bg-gray-800/80 dark:hover:bg-gray-800
+            transition-colors
+            text-left
+          "
+        >
+          <img
+            src={user?.avatar || DEFAULT_AVATAR}
+            alt="avatar"
+            className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+          />
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+              {displayName}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{displayPhone}</div>
+          </div>
         </button>
       </div>
 

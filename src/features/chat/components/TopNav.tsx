@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../../shared/types/user.types';
-import { UserAvatarMenu } from '../../../shared/components';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
@@ -21,6 +20,9 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
 
   const { t } = useTranslation('chat');
 
+  void onLogout;
+  void onEditAvatar;
+
   return (
     <header className="h-14 flex items-center px-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       {/* 左侧：侧边栏 + 用户入口 */}
@@ -33,14 +35,16 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
         </button>
 
         {isAuthed ? (
-          <UserAvatarMenu
-            user={{
-              nickname: user!.nickname,
-              avatar: user!.avatar || DEFAULT_AVATAR,
-            }}
-            onEditAvatar={onEditAvatar}
-            onLogout={onLogout}
-          />
+          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100/80 dark:bg-white/10">
+            <img
+              src={user!.avatar || DEFAULT_AVATAR}
+              className="w-8 h-8 rounded-full object-cover ring-2 ring-white/80 dark:ring-white/20"
+              alt="user avatar"
+            />
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">
+              {user!.nickname}
+            </span>
+          </div>
         ) : (
           <button
             type="button"

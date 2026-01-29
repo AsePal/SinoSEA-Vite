@@ -60,5 +60,15 @@
       "OutputError": "Upload failed",
       "UpdatetError": "Failed to update avatar. Please try again later"
     }
+  },
+  "userInfoModal": {
+    "title": "Profile",
+    "close": "Close",
+    "guestName": "Not signed in",
+    "unboundPhone": "Phone not linked",
+    "editAvatar": "Change avatar",
+    "editNickname": "Edit nickname",
+    "editPhone": "Edit phone number",
+    "logout": "Sign out"
   }
 }

@@ -60,5 +60,15 @@
       "OutputError": "Tải lên thất bại",
       "UpdatetError": "Cập nhật ảnh đại diện thất bại, vui lòng thử lại sau"
     }
+  },
+  "userInfoModal": {
+    "title": "Thông tin người dùng",
+    "close": "Đóng",
+    "guestName": "Chưa đăng nhập",
+    "unboundPhone": "Chưa liên kết số điện thoại",
+    "editAvatar": "Thay đổi ảnh đại diện",
+    "editNickname": "Chỉnh sửa biệt danh",
+    "editPhone": "Chỉnh sửa số điện thoại",
+    "logout": "Đăng xuất"
   }
 }

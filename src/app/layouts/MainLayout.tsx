@@ -4,7 +4,12 @@ import type { UserInfo } from '../../shared/types/user.types';
 
 import TopNav from '../../features/chat/components/TopNav';
 import Sidebar from '../../features/chat/components/Sidebar';
-import { LogoutConfirmModal, AvatarEditorModal, SuccessToastModal } from '../../shared/components';
+import {
+  LogoutConfirmModal,
+  AvatarEditorModal,
+  SuccessToastModal,
+  UserInfoModal,
+} from '../../shared/components';
 
 import API, { apiRequest } from '../../shared/api/config';
 import { parseJwt } from '../../shared/utils/jwt';
@@ -14,6 +19,8 @@ export default function MainLayout() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+  const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
@@ -38,8 +45,9 @@ export default function MainLayout() {
       })
       .then((data) => {
         setUser({
-          nickname: data.userName || fallbackNickname,
+          nickname: data.userName || data.username || fallbackNickname,
           avatar: data.avatarUrl ? `${data.avatarUrl}?t=${Date.now()}` : DEFAULT_AVATAR,
+          phone: data.phone ?? null,
         });
       })
       .catch(() => {
@@ -81,7 +89,11 @@ export default function MainLayout() {
               ${sidebarOpen ? 'translate-x-0' : '-translate-x-[260px]'}
             `}
         >
-          <Sidebar onClose={() => setSidebarOpen(false)} />
+          <Sidebar
+            user={user}
+            onClose={() => setSidebarOpen(false)}
+            onOpenUserInfo={() => setShowUserInfoModal(true)}
+          />
         </div>
 
         {/* 页面内容：通过 Outlet 渲染子路由 */}
@@ -93,11 +105,18 @@ export default function MainLayout() {
       {/* 退出 */}
       <LogoutConfirmModal
         open={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
+        onCancel={() => {
+          setShowLogoutModal(false);
+          if (restoreUserInfoOnCancel) {
+            setShowUserInfoModal(true);
+            setRestoreUserInfoOnCancel(false);
+          }
+        }}
         onConfirm={() => {
           localStorage.removeItem('auth_token');
           setUser(null);
           setShowLogoutModal(false);
+          setRestoreUserInfoOnCancel(false);
           navigate('/chat');
         }}
       />
@@ -118,6 +137,18 @@ export default function MainLayout() {
         open={showSuccessToast}
         title="头像更新成功"
         description="你的新头像已生效"
+      />
+
+      <UserInfoModal
+        open={showUserInfoModal}
+        user={user}
+        onClose={() => setShowUserInfoModal(false)}
+        onEditAvatar={() => setShowAvatarEditor(true)}
+        onLogout={() => {
+          setShowUserInfoModal(false);
+          setRestoreUserInfoOnCancel(true);
+          setShowLogoutModal(true);
+        }}
       />
     </div>
   );
