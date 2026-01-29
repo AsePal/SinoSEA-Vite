@@ -103,7 +103,8 @@ export default function ChatWindow({
   }
 
   function initConversation() {
-    console.log('initConversation called');
+    // 语言动作切换控制台打印
+    // console.log('initConversation called');
     const authed = isAuthed();
     const currentLang = i18n.resolvedLanguage || i18n.language;
 
@@ -284,6 +285,11 @@ export default function ChatWindow({
               }
               onChange={(e) => setInput(e.target.value)}
               onInput={(e) => resizeTextarea(e.currentTarget)}
+              onFocus={() => {
+                if (!isAuthed()) {
+                  blockAndAskLogin('');
+                }
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();

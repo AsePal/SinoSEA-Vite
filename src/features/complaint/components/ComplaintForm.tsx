@@ -19,11 +19,11 @@ export default function ComplaintForm() {
     }
 
     // ✅ 这里后期直接接后端
-    console.log({
-      type,
-      content,
-      contact,
-    });
+    // console.log({
+    //   type,
+    //   content,
+    //   contact,
+    // });
 
     alert(t('message.success'));
 

@@ -8,7 +8,7 @@ type LoginAnim = 'idle' | 'success' | 'error';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation('auth');
+  const { t } = useTranslation('auth');
 
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
@@ -24,8 +24,8 @@ export default function Login() {
   const [loginAnim, setLoginAnim] = useState<LoginAnim>('idle');
   const [ready, setReady] = useState(false);
 
-  console.log('current lang:', i18n.language);
-  console.log('auth title:', t('title'));
+  // console.log('current lang:', i18n.language);
+  // console.log('auth title:', t('title'));
 
   useEffect(() => {
     requestAnimationFrame(() => setReady(true));
