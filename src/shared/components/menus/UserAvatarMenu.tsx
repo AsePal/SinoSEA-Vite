@@ -38,13 +38,19 @@ export default function UserAvatarMenu({
           flex items-center gap-2 
           px-2 py-1
           rounded-full
-         bg-white/30
-         hover:bg-black/10
+         bg-gray-100/80 hover:bg-gray-200
+         dark:bg-white/10 dark:hover:bg-white/20
           transition
         "
       >
-        <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
-        <span className="font-semibold text-black/80 whitespace-nowrap">{user.nickname}</span>
+        <img
+          src={user.avatar}
+          alt="avatar"
+          className="w-8 h-8 rounded-full object-cover ring-2 ring-white/80 dark:ring-white/20"
+        />
+        <span className="font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">
+          {user.nickname}
+        </span>
       </button>
 
       {/* 下拉菜单 */}
@@ -55,13 +61,18 @@ export default function UserAvatarMenu({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-            className="absolute left-0 top-full mt-2 w-64 rounded-xl bg-white shadow-lg border z-[9999]"
+            className="absolute left-0 top-full mt-2 w-64 rounded-xl bg-white shadow-lg border border-gray-200 dark:bg-gray-900 dark:border-gray-700 z-[9999]"
           >
-            <div className="px-4 py-4 border-b text-center">
-              <img src={user.avatar} className="w-14 h-14 mx-auto rounded-full object-cover mb-2" />
-              <div className="font-semibold text-gray-800">{user.nickname}</div>
+            <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 text-center">
+              <img
+                src={user.avatar}
+                className="w-14 h-14 mx-auto rounded-full object-cover mb-2 ring-2 ring-gray-200 dark:ring-gray-700"
+              />
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{user.nickname}</div>
               {/* 用户信息 */}
-              <div className="text-xs text-gray-500 mt-1">{t('userMenu.profile')}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                {t('userMenu.profile')}
+              </div>
             </div>
 
             <div className="py-4 px-3">
@@ -79,7 +90,7 @@ export default function UserAvatarMenu({
               <MenuItem label={t('userMenu.editPhone')} />
 
               {/* 分割线 */}
-              <div className="my-2 border-t" />
+              <div className="my-2 border-t border-gray-200 dark:border-gray-700" />
 
               {/* 退出登录 */}
               {onLogout && (
@@ -89,7 +100,7 @@ export default function UserAvatarMenu({
                     setOpen(false);
                     onLogout();
                   }}
-                  className="text-red-500 hover:bg-red-50"
+                  className="text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                 />
               )}
             </div>
@@ -113,7 +124,7 @@ function MenuItem({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 transition ${className || ''}`}
+      className={`w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 transition dark:text-gray-200 dark:hover:bg-gray-800 ${className || ''}`}
     >
       {label}
     </button>

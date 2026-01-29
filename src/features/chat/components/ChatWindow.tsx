@@ -258,7 +258,7 @@ export default function ChatWindow({
     <>
       <div className="w-full h-full flex flex-col">
         {/* Header */}
-        <div className="px-4 py-4 text-sm font-semibold text-black/80 border-b border-white/20">
+        <div className="px-4 py-4 text-sm font-semibold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
           SionSEA-AI
         </div>
 
@@ -273,8 +273,12 @@ export default function ChatWindow({
         {/* Input */}
         <div className="px-4 py-3">
           <div
-            className={`flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-2
-            ${disabled ? 'bg-black/30' : 'bg-black/50'}`}
+            className={`flex items-center gap-3 rounded-2xl border px-3 py-2
+            ${
+              disabled
+                ? 'bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700'
+                : 'bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700'
+            }`}
           >
             <textarea
               ref={textareaRef}
@@ -296,18 +300,22 @@ export default function ChatWindow({
                   handleSend();
                 }
               }}
-              className="flex-1 resize-none bg-transparent outline-none text-gray-300 min-h-[40px]"
+              className="flex-1 resize-none bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[40px]"
             />
 
             <button
               onClick={handleSend}
               disabled={disabled}
               className={`w-9 h-9 rounded-full flex items-center justify-center
-              ${disabled ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'}`}
+              ${
+                disabled
+                  ? 'bg-gray-300 text-gray-500 dark:bg-gray-700'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              }`}
             >
               <div className={isFlying ? 'animate-plane-fly' : ''}>
                 <PaperAirplaneIcon
-                  className={`w-4 h-4 -rotate-90 ${disabled ? 'text-gray-300' : 'text-white'}`}
+                  className={`w-4 h-4 -rotate-90 ${disabled ? 'text-gray-500 dark:text-gray-300' : 'text-white'}`}
                 />
               </div>
             </button>

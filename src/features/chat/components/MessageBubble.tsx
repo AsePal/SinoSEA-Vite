@@ -39,14 +39,18 @@ export default function MessageBubble({
             leading-relaxed
             break-words
             text-[15px] md:text-[16px]
-            ${isUser ? 'bg-neutral-800 text-white' : 'bg-white/90 text-gray-800'}
+            ${
+              isUser
+                ? 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'
+                : 'bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-100'
+            }
           `}
         >
           <div
             className={`
               prose max-w-none
               prose-p:my-0.5 prose-li:my-0.5
-              ${isUser ? 'text-white' : 'text-gray-800'}
+              ${isUser ? 'text-white dark:text-gray-900' : 'text-gray-800 dark:text-gray-100'}
             `}
           >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
@@ -66,8 +70,8 @@ export default function MessageBubble({
             text-sm
             ${
               isUser
-                ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                : 'bg-white/70 text-gray-600 hover:bg-white'
+                ? 'bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white'
+                : 'bg-white/70 text-gray-600 hover:bg-white dark:bg-gray-700/70 dark:text-gray-200 dark:hover:bg-gray-700'
             }
           `}
         >

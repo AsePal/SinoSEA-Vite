@@ -1,6 +1,6 @@
 import { API_BASE } from '../utils/env';
 
-const BASE = API_BASE ?? 'http://172.16.35.10:3000';
+const BASE = API_BASE ?? 'http://10.147.20.237:3000';
 const TOKEN_KEY = 'auth_token';
 
 type Endpoints = {

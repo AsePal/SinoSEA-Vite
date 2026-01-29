@@ -71,7 +71,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
       const token = localStorage.getItem('auth_token');
 
-      const res = await fetch('http://172.16.25.10:3000/user/image', {
+      const res = await fetch('http://10.147.20.237:3000/user/image', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,14 +113,15 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
             transition={{ type: 'spring', damping: 22, stiffness: 260 }}
             className="
               w-[420px] rounded-2xl
-              bg-white/90 backdrop-blur-xl
+              bg-white/95 backdrop-blur-xl
+              dark:bg-gray-900/95
               shadow-[0_30px_80px_rgba(0,0,0,0.35)]
               px-8 py-6
             "
           >
             {/* 标题 */}
             {/* 修改头像 */}
-            <h2 className="text-lg font-semibold text-gray-800 mb-6 text-center">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6 text-center">
               {t('avatarModal.title')}
             </h2>
 
@@ -134,6 +135,8 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                   w-32 h-32 rounded-full overflow-hidden
                   ring-4 ring-blue-500/30
                   hover:ring-blue-500/60
+                  dark:ring-blue-400/30
+                  dark:hover:ring-blue-400/60
                   transition
                 "
               >
@@ -155,7 +158,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                 </div>
               </button>
               {/* 仅支持 JPG / PNG / GIF / WebP ≤ 5MB */}
-              <p className="text-sm text-gray-500">{t('avatarModal.hint')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('avatarModal.hint')}</p>
             </div>
 
             {/* 底部按钮 */}
@@ -167,6 +170,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
                 className="
                   px-5 py-2 rounded-lg
                   text-gray-600 hover:bg-gray-100
+                  dark:text-gray-300 dark:hover:bg-gray-800
                   transition
                 "
               >
