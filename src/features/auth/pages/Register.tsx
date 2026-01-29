@@ -11,11 +11,12 @@ export default function Register() {
   const { t } = useTranslation('auth');
 
   const [method, setMethod] = useState<VerifyMethod | ''>('');
+  const [username, setUsername] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [codeSent, setCodeSent] = useState(false);
 
   const [verificationCode, setVerificationCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [error, setError] = useState('');
@@ -61,31 +62,42 @@ export default function Register() {
   };
 
   const handleReset = async () => {
-    if (!verificationCode || !newPassword || !confirmPassword)
+    if (!username || !password || !confirmPassword || !verificationCode)
       return setError(t('register.error.incomplete'));
 
-    if (newPassword !== confirmPassword) return setError(t('register.error.mismatch'));
+    if (password !== confirmPassword) return setError(t('register.error.mismatch'));
 
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch(API.auth.resetPassword, {
+      const body: any = {
+        username,
+        password,
+        verificationCode,
+      };
+
+      if (method === 'email') {
+        body.email = identifier;
+      } else {
+        body.phone = identifier;
+      }
+
+      const res = await fetch(API.auth.register, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          identifier,
-          verificationCode,
-          newPassword,
-        }),
+        body: JSON.stringify(body),
       });
 
-      if (!res.ok) throw new Error('resetFailed');
+      if (!res.ok) throw new Error('registerFailed');
+
+      const data = await res.json();
+      localStorage.setItem('auth_token', data.accessToken);
 
       setShowSuccess(true);
-      setTimeout(() => navigate('/login'), 1800);
+      setTimeout(() => navigate('/chat'), 1800);
     } catch {
-      setError(t('register.error.resetFailed'));
+      setError(t('register.error.registerFailed'));
     } finally {
       setLoading(false);
     }
@@ -157,6 +169,14 @@ export default function Register() {
           onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
+        <input
+          disabled={!method}
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          placeholder={t('register.placeholder.username')}
+          value={username}
+          onChange={(e) => setUsername(e.currentTarget.value.replace(/\s/g, ''))}
+        />
+
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
           <input
             disabled={!codeSent}
@@ -182,8 +202,8 @@ export default function Register() {
           type="password"
           className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
           placeholder={t('register.placeholder.password')}
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.currentTarget.value.replace(/\s/g, ''))}
+          value={password}
+          onChange={(e) => setPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
         <input
@@ -217,8 +237,8 @@ export default function Register() {
       />
       <SuccessToastModal
         open={showSuccess}
-        title={t('register.toast.resetSuccessTitle')}
-        description={t('register.toast.resetSuccessDesc')}
+        title={t('register.toast.registerSuccessTitle')}
+        description={t('register.toast.registerSuccessDesc')}
       />
     </div>
   );
