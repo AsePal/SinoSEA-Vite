@@ -59,43 +59,27 @@ body {
 .chat-input::placeholder {
   text-align: center;
 }
-/* ChatGPT 风格滚动条 */
-.chat-scroll::-webkit-scrollbar {
+/* ChatGPT 风格滚动条（全局） */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+*::-webkit-scrollbar {
   width: 6px;
 }
 
-.chat-scroll::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  transition: background 0.2s ease;
-}
-
-.chat-scroll:hover::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.38);
-}
-
-/* Firefox */
-.chat-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
-}
-
-/* Firefox */
-.chat-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-}
-.chat-scroll::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
-/*注册页的注册成功手绘图标*/
-.chat-scroll:hover::-webkit-scrollbar-thumb {
+
+*:hover::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.45);
 }
 
