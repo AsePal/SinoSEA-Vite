@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Props = {
   variant?: 'light' | 'dark';
@@ -15,8 +16,16 @@ const LANGS: { code: Lang; label: string }[] = [
 
 export default function LanguageSwitcher({ variant = 'light' }: Props) {
   const { i18n } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [current, setCurrent] = useState(i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN');
+
+  const currentLang = LANGS.find((lang) =>
+    current.startsWith(
+      lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
+    ),
+  );
 
   useEffect(() => {
     const onChanged = (lng: string) => setCurrent(lng);
@@ -26,6 +35,17 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
     };
   }, [i18n]);
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   const isDark = variant === 'dark';
 
   async function switchLang(lang: Lang) {
@@ -34,37 +54,91 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
 
     localStorage.setItem('lang', lang);
     await i18n.changeLanguage(lang);
+    setOpen(false);
   }
 
   return (
-    <div
-      className={[
-        'flex items-center gap-1 rounded-full px-1 py-1',
-        isDark ? 'bg-black/30' : 'bg-white/70',
-      ].join(' ')}
-    >
-      {LANGS.map((lang) => {
-        const active = current.startsWith(
-          lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
-        );
-        const base = 'px-3 py-1 rounded-full text-sm transition';
+    <div ref={containerRef} className="relative">
+      {/* 下拉按钮 */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={`
+          flex items-center gap-2
+          px-3 py-1.5 rounded-lg
+          text-sm font-medium
+          transition
+          ${
+            isDark
+              ? 'bg-black/30 text-white hover:bg-black/40'
+              : 'bg-white/70 text-gray-700 hover:bg-white/80'
+          }
+        `}
+      >
+        {/* 语言选择样式 */}
+        {/* <span>
+          Language{currentLang && ` / ${currentLang.label}`}
+        </span> */}
+        <span>{currentLang && `  ${currentLang.label}`}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
+      </button>
 
-        const activeCls = isDark ? 'bg-white text-black' : 'bg-blue-600 text-white';
-        const idleCls = isDark
-          ? 'text-white/70 hover:bg-white/10'
-          : 'text-gray-500 hover:bg-slate-100';
-
-        return (
-          <button
-            key={lang.code}
-            type="button"
-            onClick={() => switchLang(lang.code)}
-            className={[base, active ? activeCls : idleCls].join(' ')}
+      {/* 下拉菜单 */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+            className={`
+              absolute top-full mt-1 w-32 rounded-lg shadow-lg z-50
+              ${isDark ? 'bg-gray-800 border border-white/10' : 'bg-white border border-gray-200'}
+            `}
           >
-            {lang.label}
-          </button>
-        );
-      })}
+            <div className="py-1">
+              {LANGS.map((lang) => {
+                const isActive = current.startsWith(
+                  lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
+                );
+                return (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    onClick={() => switchLang(lang.code)}
+                    className={`
+                      w-full text-left px-3 py-2 text-sm transition
+                      ${
+                        isActive
+                          ? isDark
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-600 text-white'
+                          : isDark
+                            ? 'text-white/70 hover:bg-white/10'
+                            : 'text-gray-700 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    {lang.label}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
