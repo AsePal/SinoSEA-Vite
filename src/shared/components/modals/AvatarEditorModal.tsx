@@ -71,7 +71,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
       const token = localStorage.getItem('auth_token');
 
-      const res = await fetch('http://10.147.20.237:3000/user/image', {
+      const res = await fetch('http://172.16.25.15:3000/user/image', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -59,7 +59,7 @@ export default function ComplaintPage() {
         onLogout={() => setShowLogoutModal(true)}
       />
 
-      <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto">
+      <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto chat-scroll">
         <div className="w-full max-w-3xl space-y-10">
           <ComplaintHeader />
           <ComplaintForm />

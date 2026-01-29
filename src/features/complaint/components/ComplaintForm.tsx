@@ -41,11 +41,11 @@ export default function ComplaintForm() {
         border border-white/10
         rounded-2xl
         p-8
-        space-y-6
+        space-y-6 
       "
     >
       {/* 标题 */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-6 ">
         <div className="p-2 rounded-lg bg-orange-500/20">
           <PencilSquareIcon className="w-6 h-6 text-orange-400" />
         </div>

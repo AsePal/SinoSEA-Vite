@@ -1,4 +1,4 @@
-import { ArrowLeftOnRectangleIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import type { UserInfo } from '../../../shared/types/user.types';
 
@@ -8,7 +8,7 @@ type ComplaintTopNavProps = {
   onLogout: () => void;
 };
 
-export default function ComplaintTopNav({ user, onBackHome, onLogout }: ComplaintTopNavProps) {
+export default function ComplaintTopNav({ user, onBackHome }: ComplaintTopNavProps) {
   const { t } = useTranslation('complaint');
 
   return (
@@ -18,7 +18,7 @@ export default function ComplaintTopNav({ user, onBackHome, onLogout }: Complain
          backdrop-blur
         border-b border-white/10
         px-6
-        flex items-center justify-between
+        flex items-center justify-between 
       "
     >
       {/* 左侧：用户信息 */}
