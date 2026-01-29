@@ -60,6 +60,7 @@ export default function ChatWindow({
   const [pendingToSend, setPendingToSend] = useState('');
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const welcomeTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -163,6 +164,7 @@ export default function ChatWindow({
     }
 
     setIsFlying(true);
+    setAutoScroll(true);
     triggerSendAnimation();
     sendMessage(value);
 
@@ -244,7 +246,12 @@ export default function ChatWindow({
     }
   }, [i18n.language, hasUserChatted]);
 
-  useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  useEffect(() => {
+    if (!autoScroll) return;
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, autoScroll]);
   useEffect(() => () => abortRef.current?.abort(), []);
   useEffect(() => {
     return () => {
@@ -263,7 +270,17 @@ export default function ChatWindow({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll"
+          onScroll={() => {
+            const el = scrollContainerRef.current;
+            if (!el) return;
+            const threshold = 24;
+            const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= threshold;
+            setAutoScroll(isNearBottom);
+          }}
+        >
           {messages.map((msg, i) => (
             <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
           ))}
