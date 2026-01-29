@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { CpuChipIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 export default function AboutHeader() {
   const navigate = useNavigate();
+  const { t } = useTranslation('about');
 
   return (
     <header
@@ -14,19 +16,6 @@ export default function AboutHeader() {
       "
     >
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* 左侧：图标 + 标题 */}
-        <div className="flex items-center gap-4 text-white">
-          <CpuChipIcon className="w-9 h-9 text-sky-400 shrink-0" />
-
-          <div className="flex flex-col leading-tight">
-            {/* 主标题 */}
-            <span className="text-2xl font-bold tracking-wide">星洲智能科技</span>
-
-            {/* 副标题 */}
-            <span className="text-sm text-white/60 mt-0.5">让技术，终于抵达人心</span>
-          </div>
-        </div>
-
         {/* 右侧：退出按钮 */}
         <button
           onClick={() => navigate('/chat')}
@@ -35,14 +24,14 @@ export default function AboutHeader() {
             px-6 py-3
             text-lg font-semibold
             rounded-full
-            bg-rose-500 hover:bg-rose-600
+            bg-gray-500 hover:bg-rose-500
             text-white
             transition
             shadow-lg
           "
         >
           <ArrowRightOnRectangleIcon className="w-5 h-5" />
-          退出
+          {t('header.exit')}
         </button>
       </div>
     </header>

@@ -5,6 +5,7 @@ import ComplaintTopNav from '../components/ComplaintTopNav';
 import ComplaintHeader from '../components/ComplaintHeader';
 import ComplaintForm from '../components/ComplaintForm';
 import { LogoutConfirmModal } from '../../../shared/components';
+import LoginErrorModal from '../../auth/components/LoginErrorModal';
 import { HomeBackground } from '../../landing';
 
 import API, { apiRequest } from '../../../shared/api/config';
@@ -14,6 +15,7 @@ import type { UserInfo } from '../../../shared/types/user.types';
 export default function ComplaintPage() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
 
   const [user, setUser] = useState<UserInfo | null>(null);
 
@@ -22,7 +24,7 @@ export default function ComplaintPage() {
 
     // 第一层：是否登录
     if (!token) {
-      navigate('/login');
+      setShowLoginRequiredModal(true);
       return;
     }
 
@@ -57,7 +59,7 @@ export default function ComplaintPage() {
         onLogout={() => setShowLogoutModal(true)}
       />
 
-      <main className="px-6 py-10 flex justify-center">
+      <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto">
         <div className="w-full max-w-3xl space-y-10">
           <ComplaintHeader />
           <ComplaintForm />
@@ -69,6 +71,12 @@ export default function ComplaintPage() {
         onConfirm={() => {
           // ✅ 正式退出逻辑
           localStorage.removeItem('auth_token');
+          navigate('/login');
+        }}
+      />
+      <LoginErrorModal
+        open={showLoginRequiredModal}
+        onConfirm={() => {
           navigate('/login');
         }}
       />

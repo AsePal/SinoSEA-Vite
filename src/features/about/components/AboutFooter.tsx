@@ -1,14 +1,18 @@
+import { useTranslation } from 'react-i18next';
+
 export default function AboutFooter() {
+  const { t } = useTranslation('about');
+
   return (
     <footer>
       <div className="h-12 bg-slate-700 text-slate-300 flex items-center justify-center text-sm">
-        © 2026 校园智能助手团队 | 版权所有
+        {t('footer.copyright')}
       </div>
       <div className="h-5 bg-slate-700 text-slate-300 flex items-center justify-center text-sm">
-        本网站仅为团队介绍用途，非商业用途
+        {t('footer.disclaimer')}
       </div>
       <div className="h-5 bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
-        字体：Misans
+        {t('footer.font')}
       </div>
     </footer>
   );

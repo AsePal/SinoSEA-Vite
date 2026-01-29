@@ -12,6 +12,9 @@ import chatEn from './locales/en-US/chat.json';
 import commonZh from './locales/zh-CN/common.json';
 import commonEn from './locales/en-US/common.json';
 
+import aboutZh from './locales/zh-CN/about.json';
+import aboutEn from './locales/en-US/about.json';
+
 // ✅ 只在“第一次初始化”时读取 localStorage
 const savedLang = localStorage.getItem('lang');
 
@@ -26,12 +29,14 @@ if (!i18n.isInitialized) {
         auth: zhAuth,
         chat: chatZh,
         common: commonZh,
+        about: aboutZh,
       },
       'en-US': {
         landing: enLanding,
         auth: enAuth,
         chat: chatEn,
         common: commonEn,
+        about: aboutEn,
       },
     },
     interpolation: {
