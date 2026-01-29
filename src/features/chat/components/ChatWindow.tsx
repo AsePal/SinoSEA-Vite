@@ -78,7 +78,7 @@ export default function ChatWindow({
 
   function isAuthed() {
     const token = localStorage.getItem('auth_token');
-    return Boolean(token) && Boolean(userId);
+    return Boolean(token);
   }
 
   /* -------------------- 欢迎语（i18n） -------------------- */
