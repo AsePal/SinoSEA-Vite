@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PencilSquareIcon } from '@heroicons/react/24/solid';
-import { CloudArrowUpIcon } from '@heroicons/react/24/solid';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { CloudArrowUpIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 export default function ComplaintForm() {
   const { t } = useTranslation('complaint');
@@ -18,13 +16,6 @@ export default function ComplaintForm() {
       return;
     }
 
-    // ✅ 这里后期直接接后端
-    // console.log({
-    //   type,
-    //   content,
-    //   contact,
-    // });
-
     alert(t('message.success'));
 
     // 清空表单
@@ -37,125 +28,126 @@ export default function ComplaintForm() {
     <form
       onSubmit={handleSubmit}
       className="
-        bg-black/30 backdrop-blur
-        border border-white/10
-        rounded-2xl
-        p-8
-        space-y-6 
+        bg-gray-50 dark:bg-[#2f2f2f]
+        border border-gray-200 dark:border-gray-700
+        rounded-xl
+        p-6 md:p-8
+        space-y-5
+        shadow-sm
       "
     >
-      {/* 标题 */}
-      <div className="flex items-center gap-3 mb-6 ">
-        <div className="p-2 rounded-lg bg-orange-500/20">
-          <PencilSquareIcon className="w-6 h-6 text-orange-400" />
-        </div>
-
-        <h2 className="text-2xl font-bold text-orange-300">{t('form.title')}</h2>
-      </div>
-
-      {/*投诉类型*/}
+      {/* 投诉类型 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">{t('form.type.label')}</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {t('form.type.label')}
+        </label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-lg
-          bg-black/30 backdrop-blur text-orange-400
-          border border-white/30 focus:outline-none
-          focus:ring-2 focus:ring-orange-400 focus:border-orange-400
-          transition
+          className="
+            w-full px-4 py-2.5 rounded-lg
+            bg-white dark:bg-[#3f3f3f]
+            text-gray-900 dark:text-gray-100
+            border border-gray-300 dark:border-gray-600
+            focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:border-transparent
+            transition-all duration-200
           "
         >
-          <option value="" disabled className="bg-black/90 text-white/50">
+          <option value="" disabled>
             {t('form.type.placeholder')}
           </option>
-          <option value="bug" className="bg-black/90 text-orange-400">
-            {t('form.type.bug')}
-          </option>
-          <option value="content" className="bg-black/90 text-orange-400">
-            {t('form.type.content')}
-          </option>
-          <option value="experience" className="bg-black/90 text-orange-400">
-            {t('form.type.experience')}
-          </option>
-          <option value="other" className="bg-black/90 text-orange-400">
-            {t('form.type.other')}
-          </option>
+          <option value="bug">{t('form.type.bug')}</option>
+          <option value="content">{t('form.type.content')}</option>
+          <option value="experience">{t('form.type.experience')}</option>
+          <option value="other">{t('form.type.other')}</option>
         </select>
       </div>
 
       {/* 投诉内容 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">{t('form.content.label')}</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {t('form.content.label')}
+        </label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={5}
           placeholder={t('form.content.placeholder')}
           className="
-            w-full resize-none
-            rounded-lg
-            bg-white/10
-            p-3
-            text-sm
-            outline-none
-            focus:ring-2 focus:ring-orange-400
+            w-full resize-none rounded-lg
+            bg-white dark:bg-[#3f3f3f]
+            text-gray-900 dark:text-gray-100
+            placeholder-gray-400 dark:placeholder-gray-500
+            border border-gray-300 dark:border-gray-600
+            p-3 text-sm
+            focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:border-transparent
+            transition-all duration-200
           "
         />
       </div>
 
       {/* 联系方式 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">{t('form.contact.label')}</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {t('form.contact.label')}
+        </label>
         <input
           value={contact}
           onChange={(e) => setContact(e.target.value)}
           placeholder={t('form.contact.placeholder')}
           className="
             w-full rounded-lg
-            bg-white/10
-            p-3
-            text-sm
-            outline-none
-            focus:ring-2 focus:ring-orange-400
+            bg-white dark:bg-[#3f3f3f]
+            text-gray-900 dark:text-gray-100
+            placeholder-gray-400 dark:placeholder-gray-500
+            border border-gray-300 dark:border-gray-600
+            p-3 text-sm
+            focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:border-transparent
+            transition-all duration-200
           "
         />
       </div>
 
-      {/*附件上传 */}
+      {/* 附件上传 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">{t('form.attachment.label')}</label>
-
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {t('form.attachment.label')}
+        </label>
         <label
           htmlFor="attachment"
           className="
-      flex flex-col items-center justify-center gap-3
-      w-full h-32
-      rounded-xl
-      border-2 border-dashed border-orange-500/40
-      bg-orange-500/10
-      cursor-pointer
-      hover:bg-orange-500/20
-      transition
-    "
+            flex flex-col items-center justify-center gap-2
+            w-full h-28
+            rounded-lg
+            border-2 border-dashed border-gray-300 dark:border-gray-600
+            bg-white dark:bg-[#3f3f3f]
+            cursor-pointer
+            hover:border-[#10a37f] hover:bg-gray-50 dark:hover:bg-[#4a4a4a]
+            transition-all duration-200
+          "
         >
-          <CloudArrowUpIcon className="w-8 h-8 text-orange-400" />
-
-          <span className="text-sm text-orange-300">{t('form.attachment.text')}</span>
-
-          <span className="text-xs text-gray-400">{t('form.attachment.hint')}</span>
-
+          <CloudArrowUpIcon className="w-7 h-7 text-gray-400 dark:text-gray-500" />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {t('form.attachment.text')}
+          </span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            {t('form.attachment.hint')}
+          </span>
           <input id="attachment" type="file" multiple className="hidden" />
         </label>
       </div>
 
       {/* 提交按钮 */}
-      <div className="pt-4 flex justify-end">
+      <div className="pt-2">
         <button
           type="submit"
-          className=" w-full flex items-center justify-center gap-2
-          py-3 rounded-xl bg-gradient-to-r from-orange-500 to-yellow-300
-         text-black font-semibold hover:opacity-90 transition
+          className="
+            w-full flex items-center justify-center gap-2
+            py-3 rounded-lg
+            bg-[#10a37f] hover:bg-[#0d8a6a]
+            text-white font-medium
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-[#10a37f] focus:ring-offset-2
           "
         >
           <PaperAirplaneIcon className="w-5 h-5" />

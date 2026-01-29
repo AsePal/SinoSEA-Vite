@@ -1,11 +1,11 @@
-import { PolicyHeader, PolicySection, PolicyTable, BackSection, Footer } from '../components';
+import { PolicySection, PolicyTable, BackSection, Footer } from '../components';
 
 import { lastUpdated, policySections, usageTable, rightsTable } from '../data/policyContent';
 
 export default function PrivacyPolicy() {
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-fixed relative"
+      className="w-full min-h-full bg-cover bg-center bg-fixed relative"
       style={{ backgroundImage: "url('/public/images/login-bg.avif')" }}
     >
       {/* 背景遮罩（等价于原 HTML 的 linear-gradient） */}
@@ -13,8 +13,6 @@ export default function PrivacyPolicy() {
 
       {/* 页面内容 */}
       <div className="relative z-10">
-        <PolicyHeader />
-
         <main className="max-w-5xl mx-auto px-6 py-10">
           {/* 最后更新日期 */}
           <div className="bg-white/95 backdrop-blur border-l-4 border-indigo-500 rounded px-6 py-4 mb-8 shadow">

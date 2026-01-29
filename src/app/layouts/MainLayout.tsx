@@ -54,7 +54,8 @@ export default function MainLayout() {
 
   return (
     <HomeBackground>
-      <div className="h-screen flex flex-col animate-fade-in">
+      <div className="flex flex-col animate-fade-in h-screen">
+        {/* 顶栏 - 所有页面都显示 */}
         <TopNav
           user={user}
           onLogout={() => setShowLogoutModal(true)}
@@ -62,7 +63,8 @@ export default function MainLayout() {
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
         />
 
-        <div className="flex flex-1 overflow-hidden relative">
+        <div className="flex flex-1 relative overflow-hidden">
+          {/* 侧栏 - 所有页面都显示 */}
           {/* 遮罩 */}
           <div
             className={`
@@ -84,11 +86,9 @@ export default function MainLayout() {
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
 
-          {/* 页面内容：通过 Outlet 渲染 /chat 下的页面 */}
-          <main className="flex-1 flex overflow-hidden">
-            <div className="w-full h-full flex">
-              <Outlet context={{ user, refreshUser: fetchUserInfo }} />
-            </div>
+          {/* 页面内容：通过 Outlet 渲染子路由 */}
+          <main className="flex-1 flex overflow-y-auto overflow-x-hidden">
+            <Outlet context={{ user, refreshUser: fetchUserInfo }} />
           </main>
         </div>
 

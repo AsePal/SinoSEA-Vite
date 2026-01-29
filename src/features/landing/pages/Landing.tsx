@@ -58,8 +58,8 @@ export default function Landing() {
   return (
     <div
       className={`
-        relative overflow-hidden bg-gradient-to-br
-        from-sky-50 via-white to-blue-100
+        w-full min-h-full
+        bg-gradient-to-br from-sky-50 via-white to-blue-100
         ${leaving ? 'animate-fade-out-down' : ''}
       `}
     >

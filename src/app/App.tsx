@@ -15,24 +15,22 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/chat" replace />} />
 
-      <Route path="/landing" element={<Landing />} />
-
+      {/* 认证页面，使用 AuthLayout */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
 
-      {/* ✅ 使用 MainLayout 的路由 */}
-      <Route path="/chat" element={<MainLayout />}>
-        <Route index element={<Chat />} />
-        <Route path="complaint" element={<ComplaintPage />} />
+      {/* 所有其他页面都使用 MainLayout，显示顶栏和侧栏 */}
+      <Route element={<MainLayout />}>
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/complaint" element={<ComplaintPage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfUse />} />
+        <Route path="/about" element={<AboutUs />} />
       </Route>
-
-      {/* ✅ 这些页面保持独立（不复用 MainLayout） */}
-      <Route path="/privacy" element={<PrivacyPolicy />} />
-      <Route path="/terms" element={<TermsOfUse />} />
-      <Route path="/about" element={<AboutUs />} />
 
       <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>

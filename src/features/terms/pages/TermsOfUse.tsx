@@ -1,11 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ArrowLeftIcon,
-  ClockIcon,
-  CheckCircleIcon,
-  CpuChipIcon,
-} from '@heroicons/react/24/outline';
+import { ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const TermsOfUse = () => {
   const navigate = useNavigate();
@@ -18,40 +13,18 @@ const TermsOfUse = () => {
   const formattedDate = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
 
   return (
-    <div className="relative min-h-screen">
+    <div className="w-full min-h-full relative">
       {/* 背景图层 */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed"
         style={{ backgroundImage: "url('/public/images/login-bg.avif')" }}
       />
-      {/* 2️⃣ 只作用在背景上的遮罩 */}
+      {/* 只作用在背景上的遮罩 */}
       <div className="absolute inset-0 bg-black/30 pointer-events-none" />
-      <div className="relative z-10 flex min-h-screen flex-col">
-        {/* Header */}
-        <header className="sticky top-0 z-50 bg-gradient-to-r from-indigo-500 to-indigo-700 shadow-lg">
-          <div className="relative mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-            <div
-              className="flex cursor-pointer items-center gap-2 text-white"
-              onClick={() => navigate('/login')}
-            ></div>
-            {/* 中间标题（真正居中） */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <CpuChipIcon className="h-9 w-9 text-white" />
-              <span className="text-2xl font-bold text-white">星洲智能助手</span>
-            </div>
-
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 rounded-lg border border-white/30 bg-white/20 px-4 py-2 text-sm text-white transition hover:bg-white/30"
-            >
-              <ArrowLeftIcon className="h-4 w-4 font-black" />
-              返回
-            </button>
-          </div>
-        </header>
-
+      <div className="relative z-10 flex min-h-full flex-col">
         {/* Main */}
         <main className="mx-auto max-w-4xl px-4 py-10">
+          \n{' '}
           <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
             {/* Title */}
             <div className="bg-gradient-to-r from-indigo-500 to-indigo-700 px-8 py-10 text-center text-white">
