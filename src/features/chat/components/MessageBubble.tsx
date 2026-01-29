@@ -3,6 +3,7 @@ import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '../types/chat.types';
 import { useState } from 'react';
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 
 export default function MessageBubble({
   message,
@@ -22,7 +23,12 @@ export default function MessageBubble({
   }
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}>
+    <motion.div
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}
+      initial={isUser ? { opacity: 0, y: 10 } : false}
+      animate={isUser ? { opacity: 1, y: 0 } : false}
+      transition={isUser ? { type: 'spring', stiffness: 320, damping: 24 } : undefined}
+    >
       {/* AI 头像 */}
       {!isUser && (
         <img src="/sionsealogo.ico" alt="AI" className="w-8 h-8 rounded-full shrink-0 mt-1" />
@@ -93,6 +99,6 @@ export default function MessageBubble({
       {isUser && userAvatar && (
         <img src={userAvatar} alt="avatar" className="w-8 h-8 rounded-full object-cover shrink-0" />
       )}
-    </div>
+    </motion.div>
   );
 }
