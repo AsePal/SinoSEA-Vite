@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 export default function ComplaintHeader() {
+  const { t } = useTranslation('complaint');
+
   return (
     <div className="text-center space-y-3">
       <h1
@@ -8,16 +12,14 @@ export default function ComplaintHeader() {
         bg-clip-text text-transparent
       "
       >
-        每一步的成长，离不开你宝贵的建议和意见。
+        {t('header.title')}
       </h1>
 
       <p className="text-gray-300"></p>
 
-      <p className="text-gray-400 text-10px leading-relaxed">
-        我们重视您的每一个反馈，请详细描述您遇到的问题或建议，我们将尽快处理并给予回复。
-      </p>
+      <p className="text-gray-400 text-10px leading-relaxed">{t('header.description')}</p>
 
-      <p className="text-gray-400 text-10px leading-relaxed">您的登录信息不会被提交</p>
+      <p className="text-gray-400 text-10px leading-relaxed">{t('header.privacy')}</p>
     </div>
   );
 }

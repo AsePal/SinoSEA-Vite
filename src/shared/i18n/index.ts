@@ -15,6 +15,9 @@ import commonEn from './locales/en-US/common.json';
 import aboutZh from './locales/zh-CN/about.json';
 import aboutEn from './locales/en-US/about.json';
 
+import complaintZh from './locales/zh-CN/complaint.json';
+import complaintEn from './locales/en-US/complaint.json';
+
 // ✅ 只在“第一次初始化”时读取 localStorage
 const savedLang = localStorage.getItem('lang');
 
@@ -30,6 +33,7 @@ if (!i18n.isInitialized) {
         chat: chatZh,
         common: commonZh,
         about: aboutZh,
+        complaint: complaintZh,
       },
       'en-US': {
         landing: enLanding,
@@ -37,6 +41,7 @@ if (!i18n.isInitialized) {
         chat: chatEn,
         common: commonEn,
         about: aboutEn,
+        complaint: complaintEn,
       },
     },
     interpolation: {

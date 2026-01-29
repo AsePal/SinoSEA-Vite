@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PencilSquareIcon } from '@heroicons/react/24/solid';
 import { CloudArrowUpIcon } from '@heroicons/react/24/solid';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 export default function ComplaintForm() {
+  const { t } = useTranslation('complaint');
   const [type, setType] = useState('');
   const [content, setContent] = useState('');
   const [contact, setContact] = useState('');
@@ -12,7 +14,7 @@ export default function ComplaintForm() {
     e.preventDefault();
 
     if (!type || !content) {
-      alert('请填写完整投诉信息');
+      alert(t('message.incomplete'));
       return;
     }
 
@@ -23,7 +25,7 @@ export default function ComplaintForm() {
       contact,
     });
 
-    alert('投诉已提交，感谢你的反馈 🙏');
+    alert(t('message.success'));
 
     // 清空表单
     setType('');
@@ -35,7 +37,7 @@ export default function ComplaintForm() {
     <form
       onSubmit={handleSubmit}
       className="
-        bg-black/50 backdrop-blur
+        bg-black/30 backdrop-blur
         border border-white/10
         rounded-2xl
         p-8
@@ -48,12 +50,12 @@ export default function ComplaintForm() {
           <PencilSquareIcon className="w-6 h-6 text-orange-400" />
         </div>
 
-        <h2 className="text-2xl font-bold text-orange-300">提交投诉 / 反馈</h2>
+        <h2 className="text-2xl font-bold text-orange-300">{t('form.title')}</h2>
       </div>
 
       {/*投诉类型*/}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">投诉类型</label>
+        <label className="text-xl text-gray-200">{t('form.type.label')}</label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
@@ -65,31 +67,31 @@ export default function ComplaintForm() {
           "
         >
           <option value="" disabled className="bg-black/90 text-white/50">
-            请选择投诉类型
+            {t('form.type.placeholder')}
           </option>
           <option value="bug" className="bg-black/90 text-orange-400">
-            功能异常
+            {t('form.type.bug')}
           </option>
           <option value="content" className="bg-black/90 text-orange-400">
-            内容问题
+            {t('form.type.content')}
           </option>
           <option value="experience" className="bg-black/90 text-orange-400">
-            体验问题
+            {t('form.type.experience')}
           </option>
           <option value="other" className="bg-black/90 text-orange-400">
-            其他
+            {t('form.type.other')}
           </option>
         </select>
       </div>
 
       {/* 投诉内容 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">投诉内容</label>
+        <label className="text-xl text-gray-200">{t('form.content.label')}</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={5}
-          placeholder="请详细描述你遇到的问题…"
+          placeholder={t('form.content.placeholder')}
           className="
             w-full resize-none
             rounded-lg
@@ -104,11 +106,11 @@ export default function ComplaintForm() {
 
       {/* 联系方式 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">联系方式（可选）</label>
+        <label className="text-xl text-gray-200">{t('form.contact.label')}</label>
         <input
           value={contact}
           onChange={(e) => setContact(e.target.value)}
-          placeholder="邮箱 / QQ / 微信"
+          placeholder={t('form.contact.placeholder')}
           className="
             w-full rounded-lg
             bg-white/10
@@ -122,7 +124,7 @@ export default function ComplaintForm() {
 
       {/*附件上传 */}
       <div className="space-y-2">
-        <label className="text-xl text-gray-200">附件上传</label>
+        <label className="text-xl text-gray-200">{t('form.attachment.label')}</label>
 
         <label
           htmlFor="attachment"
@@ -139,9 +141,9 @@ export default function ComplaintForm() {
         >
           <CloudArrowUpIcon className="w-8 h-8 text-orange-400" />
 
-          <span className="text-sm text-orange-300">点击上传截图或文件</span>
+          <span className="text-sm text-orange-300">{t('form.attachment.text')}</span>
 
-          <span className="text-xs text-gray-400">支持图片、PDF、Word、文本文件</span>
+          <span className="text-xs text-gray-400">{t('form.attachment.hint')}</span>
 
           <input id="attachment" type="file" multiple className="hidden" />
         </label>
@@ -157,7 +159,7 @@ export default function ComplaintForm() {
           "
         >
           <PaperAirplaneIcon className="w-5 h-5" />
-          提交投诉
+          {t('form.submit')}
         </button>
       </div>
     </form>

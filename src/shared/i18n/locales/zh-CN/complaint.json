@@ -1,0 +1,40 @@
+{
+  "header": {
+    "title": "每一步的成长，离不开你宝贵的建议和意见。",
+    "description": "我们重视您的每一个反馈，请详细描述您遇到的问题或建议，我们将尽快处理并给予回复。",
+    "privacy": "您的登录信息不会被提交"
+  },
+  "form": {
+    "title": "提交投诉 / 反馈",
+    "type": {
+      "label": "投诉类型",
+      "placeholder": "请选择投诉类型",
+      "bug": "功能异常",
+      "content": "内容问题",
+      "experience": "体验问题",
+      "other": "其他"
+    },
+    "content": {
+      "label": "投诉内容",
+      "placeholder": "请详细描述你遇到的问题…"
+    },
+    "contact": {
+      "label": "联系方式（可选）",
+      "placeholder": "邮箱 / QQ / 微信"
+    },
+    "attachment": {
+      "label": "附件上传",
+      "text": "点击上传截图或文件",
+      "hint": "支持图片、PDF、Word、文本文件"
+    },
+    "submit": "提交投诉"
+  },
+  "topNav": {
+    "backHome": "返回主页"
+  },
+  "message": {
+    "incomplete": "请填写完整投诉信息",
+    "success": "投诉已提交，感谢你的反馈 🙏",
+    "error": "提交失败，请稍后重试"
+  }
+}
