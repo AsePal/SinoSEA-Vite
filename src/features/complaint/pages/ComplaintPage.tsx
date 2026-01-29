@@ -1,85 +1,72 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import ComplaintTopNav from '../components/ComplaintTopNav';
 import ComplaintHeader from '../components/ComplaintHeader';
 import ComplaintForm from '../components/ComplaintForm';
 import { LogoutConfirmModal } from '../../../shared/components';
 import LoginErrorModal from '../../auth/components/LoginErrorModal';
-import { HomeBackground } from '../../landing';
 
-import API, { apiRequest } from '../../../shared/api/config';
-import { parseJwt } from '../../../shared/utils/jwt';
 import type { UserInfo } from '../../../shared/types/user.types';
+
+type LayoutContext = {
+  user: UserInfo | null;
+  refreshUser: () => void;
+};
 
 export default function ComplaintPage() {
   const navigate = useNavigate();
+  const { user } = useOutletContext<LayoutContext>();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
 
-  const [user, setUser] = useState<UserInfo | null>(null);
-
+  // 检查登录状态
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
-
-    // 第一层：是否登录
-    if (!token) {
+    if (!token || !user) {
       setShowLoginRequiredModal(true);
-      return;
     }
-
-    // 先尝试主方案：user/info
-    apiRequest(API.user.info)
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then((data) => {
-        setUser({
-          nickname: data.username,
-          avatar: data.avatarUrl || '/userlogo.ico',
-        });
-      })
-      .catch(() => {
-        // 主方案失败 → 启用 JWT 备用方案
-        const payload = parseJwt(token);
-
-        setUser({
-          nickname: payload?.username ?? '星洲用户',
-          avatar: '/userlogo.ico',
-        });
-      });
-  }, [navigate]);
+  }, [user]);
 
   return (
-    <HomeBackground>
-      <ComplaintTopNav
-        user={user}
-        onBackHome={() => navigate('/chat')}
-        onLogout={() => setShowLogoutModal(true)}
-      />
+    <>
+      {!showLoginRequiredModal ? (
+        <>
+          <ComplaintTopNav
+            user={user}
+            onBackHome={() => navigate('/chat')}
+            onLogout={() => setShowLogoutModal(true)}
+          />
 
-      <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto chat-scroll">
-        <div className="w-full max-w-3xl space-y-10">
-          <ComplaintHeader />
-          <ComplaintForm />
-        </div>
-      </main>
-      <LogoutConfirmModal
-        open={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
-        onConfirm={() => {
-          // ✅ 正式退出逻辑
-          localStorage.removeItem('auth_token');
-          navigate('/login');
-        }}
-      />
+          <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto chat-scroll">
+            <div className="w-full max-w-3xl space-y-10">
+              <ComplaintHeader />
+              <ComplaintForm />
+            </div>
+          </main>
+
+          <LogoutConfirmModal
+            open={showLogoutModal}
+            onCancel={() => setShowLogoutModal(false)}
+            onConfirm={() => {
+              // ✅ 正式退出逻辑
+              localStorage.removeItem('auth_token');
+              navigate('/chat');
+            }}
+          />
+        </>
+      ) : null}
+
       <LoginErrorModal
         open={showLoginRequiredModal}
         onConfirm={() => {
           navigate('/login');
         }}
+        onCancel={() => {
+          setShowLoginRequiredModal(false);
+          navigate('/chat');
+        }}
       />
-    </HomeBackground>
+    </>
   );
 }

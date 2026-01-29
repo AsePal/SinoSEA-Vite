@@ -61,7 +61,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
         {/* 关于我们 */}
         <FooterButton onClick={() => go('/about')}>{t('sidebar.aboutUs')}</FooterButton>
         {/* 投诉反馈 */}
-        <FooterButton onClick={() => go('/complaint')}>{t('sidebar.feedback')}</FooterButton>
+        <FooterButton onClick={() => go('/chat/complaint')}>{t('sidebar.feedback')}</FooterButton>
       </div>
     </aside>
   );

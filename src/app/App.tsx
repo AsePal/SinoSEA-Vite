@@ -23,18 +23,16 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
 
-      {/* ✅ 只有 /chat 使用 MainLayout */}
+      {/* ✅ 使用 MainLayout 的路由 */}
       <Route path="/chat" element={<MainLayout />}>
         <Route index element={<Chat />} />
+        <Route path="complaint" element={<ComplaintPage />} />
       </Route>
 
       {/* ✅ 这些页面保持独立（不复用 MainLayout） */}
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfUse />} />
       <Route path="/about" element={<AboutUs />} />
-
-      {/* 投诉反馈暂时先不迁移（仍然独立） */}
-      <Route path="/complaint" element={<ComplaintPage />} />
 
       <Route path="*" element={<Navigate to="/chat" replace />} />
     </Routes>
