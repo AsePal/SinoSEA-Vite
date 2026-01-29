@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Props = {
-  variant?: 'light' | 'dark';
+  variant?: 'light' | 'dark' | 'auto';
 };
 
 type Lang = 'zh-CN' | 'en-US' | 'vi-VN';
@@ -14,10 +14,11 @@ const LANGS: { code: Lang; label: string }[] = [
   { code: 'vi-VN', label: 'Tiếng Việt' },
 ];
 
-export default function LanguageSwitcher({ variant = 'light' }: Props) {
+export default function LanguageSwitcher({ variant = 'auto' }: Props) {
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isDocDark, setIsDocDark] = useState(false);
 
   const [current, setCurrent] = useState(i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN');
 
@@ -46,7 +47,17 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const isDark = variant === 'dark';
+  useEffect(() => {
+    const root = document.documentElement;
+    const update = () => setIsDocDark(root.classList.contains('dark'));
+    update();
+
+    const observer = new MutationObserver(update);
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const isDark = variant === 'dark' || (variant === 'auto' && isDocDark);
 
   async function switchLang(lang: Lang) {
     const now = i18n.resolvedLanguage || i18n.language;
@@ -71,7 +82,7 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
           ${
             isDark
               ? 'bg-black/30 text-white hover:bg-black/40'
-              : 'bg-white/70 text-gray-700 hover:bg-white/80'
+              : 'bg-gray-200/80 text-gray-800 hover:bg-gray-200'
           }
         `}
       >
@@ -105,7 +116,7 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
             transition={{ type: 'spring', stiffness: 320, damping: 22 }}
             className={`
               absolute top-full mt-1 w-32 rounded-lg shadow-lg z-50
-              ${isDark ? 'bg-gray-800 border border-white/10' : 'bg-white border border-gray-200'}
+              ${isDark ? 'bg-gray-800 border border-white/10' : 'bg-gray-100 border border-gray-300'}
             `}
           >
             <div className="py-1">

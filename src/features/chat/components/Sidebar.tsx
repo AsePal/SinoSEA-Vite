@@ -56,7 +56,9 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
   const DEFAULT_AVATAR = '/userlogo.ico';
   const isAuthed = Boolean(user);
   const displayName = user?.nickname || t('topnav.login');
-  const displayPhone = user?.phone || '未绑定手机号';
+  const displayPhone = isAuthed
+    ? user?.phone || t('userInfoModal.unboundPhone')
+    : t('sidebar.notLoggedIn');
 
   return (
     <aside
@@ -125,7 +127,7 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
         {/* 功能导航下拉菜单 */}
         <DropdownMenu
-          title="功能导航"
+          title={t('sidebar.title')}
           isOpen={isMenuOpen}
           onToggle={() => setIsMenuOpen(!isMenuOpen)}
         >

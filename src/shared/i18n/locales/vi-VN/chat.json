@@ -38,7 +38,8 @@
     "chatroom": "Phòng trò chuyện",
     "comingSoon": "（Sắp ra mắt）",
     "aboutUs": "Về chúng tôi",
-    "feedback": "Phản hồi & Khiếu nại"
+    "feedback": "Phản hồi & Khiếu nại",
+    "notLoggedIn": "Bạn chưa đăng nhập"
   },
   "userMenu": {
     "profile": "Thông tin người dùng",

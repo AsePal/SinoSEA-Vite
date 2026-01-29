@@ -38,7 +38,8 @@
     "chatroom": "聊天室",
     "comingSoon": "（敬请期待）",
     "aboutUs": "关于我们",
-    "feedback": "投诉反馈"
+    "feedback": "投诉反馈",
+    "notLoggedIn": "你还没有登录"
   },
   "userMenu": {
     "profile": "用户信息",

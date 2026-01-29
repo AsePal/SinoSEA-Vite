@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { UserInfo } from '../../../shared/types/user.types';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
@@ -15,6 +17,7 @@ type TopNavProps = {
 export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
+  const [showNickname, setShowNickname] = useState(false);
 
   const isAuthed = Boolean(user);
 
@@ -35,16 +38,32 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
         </button>
 
         {isAuthed ? (
-          <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100/80 dark:bg-white/10">
+          <button
+            type="button"
+            onClick={() => setShowNickname((v) => !v)}
+            className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100/80 dark:bg-white/10 transition-colors"
+            aria-expanded={showNickname}
+          >
             <img
               src={user!.avatar || DEFAULT_AVATAR}
               className="w-8 h-8 rounded-full object-cover ring-2 ring-white/80 dark:ring-white/20"
               alt="user avatar"
             />
-            <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">
-              {user!.nickname}
-            </span>
-          </div>
+            <AnimatePresence initial={false}>
+              {showNickname && (
+                <motion.span
+                  key="nickname"
+                  initial={{ maxWidth: 0, opacity: 0, x: -6 }}
+                  animate={{ maxWidth: 140, opacity: 1, x: 0 }}
+                  exit={{ maxWidth: 0, opacity: 0, x: -6 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                  className="text-sm font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap overflow-hidden"
+                >
+                  {user!.nickname}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
         ) : (
           <button
             type="button"
@@ -69,7 +88,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
         )}
 
         {/* 🌍 语言切换：始终可用 */}
-        <LanguageSwitcher variant="dark" />
+        <LanguageSwitcher variant="auto" />
       </div>
 
       <div className="flex-1" />
