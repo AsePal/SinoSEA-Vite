@@ -4,10 +4,12 @@ import {
   InformationCircleIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  SunIcon,
+  MoonIcon,
 } from '@heroicons/react/24/outline';
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -21,9 +23,31 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const { t } = useTranslation('chat');
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
+  // 主题状态：只支持 'light' | 'dark'，默认为 'light'
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('themeMode');
+    return (saved as 'light' | 'dark') || 'light';
+  });
+
+  // 应用主题
+  useEffect(() => {
+    if (themeMode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [themeMode]);
+
   function go(path: string) {
     navigate(path);
     onClose?.();
+  }
+
+  function toggleTheme() {
+    // 在 light 和 dark 之间切换
+    const newMode = themeMode === 'dark' ? 'light' : 'dark';
+    setThemeMode(newMode);
+    localStorage.setItem('themeMode', newMode);
   }
 
   return (
@@ -32,17 +56,24 @@ export default function Sidebar({ onClose }: SidebarProps) {
         h-full
         w-[260px]
         flex flex-col
-        bg-white/80
-        backdrop-blur-xl
-        border-r border-white/30
-        shadow-lg
-        rounded-tr-2xl rounded-br-2xl
-        text-gray-700
+        bg-gray-50 dark:bg-gray-900
+        border-r border-gray-200 dark:border-gray-700
       "
     >
       {/* 侧栏标题 */}
-      <div className="px-4 py-5 border-b border-black/5">
-        <h1 className="text-center text-2xl font-bold tracking-wide text-gray-800">Asepal</h1>
+      <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Asepal</h1>
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {themeMode === 'dark' ? (
+            <SunIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          ) : (
+            <MoonIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          )}
+        </button>
       </div>
 
       {/* 主导航区 */}
@@ -115,9 +146,9 @@ function DropdownMenu({
         onClick={onToggle}
         className="
           w-full flex items-center justify-between
-          px-3 py-2 rounded-lg
-          text-sm font-medium text-gray-700
-          hover:bg-white/50
+          px-3 py-2 rounded-md
+          text-sm font-medium text-gray-700 dark:text-gray-300
+          hover:bg-gray-200 dark:hover:bg-gray-800
           transition-colors
         "
       >
@@ -169,15 +200,15 @@ function MenuItem({
       onClick={disabled ? undefined : onClick}
       className={`
         flex items-center gap-3
-        px-4 py-2.5 rounded-xl
+        px-3 py-2 rounded-md
         text-sm
-        transition
+        transition-colors
         ${
           active
-            ? 'bg-white/60 text-gray-900'
+            ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
             : disabled
-              ? 'text-gray-400 cursor-not-allowed'
-              : 'hover:bg-white/50 hover:text-gray-900 cursor-pointer'
+              ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer'
         }
       `}
       role="button"

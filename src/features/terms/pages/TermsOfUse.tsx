@@ -13,19 +13,11 @@ const TermsOfUse = () => {
   const formattedDate = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
 
   return (
-    <div className="w-full min-h-full relative">
-      {/* 背景图层 */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: "url('/public/images/login-bg.avif')" }}
-      />
-      {/* 只作用在背景上的遮罩 */}
-      <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+    <div className="w-full min-h-full bg-gray-100 dark:bg-gray-900">
       <div className="relative z-10 flex min-h-full flex-col">
         {/* Main */}
         <main className="mx-auto max-w-4xl px-4 py-10">
-          \n{' '}
-          <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
+          <div className="overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-xl">
             {/* Title */}
             <div className="bg-gradient-to-r from-indigo-500 to-indigo-700 px-8 py-10 text-center text-white">
               <h1 className="text-2xl font-bold">星洲智能助手使用条款</h1>
@@ -36,7 +28,7 @@ const TermsOfUse = () => {
 
             {/* Content */}
             <div className="px-8 py-10">
-              <div className="mb-8 border-b pb-4 text-center text-sm text-gray-500 flex justify-center items-center gap-2">
+              <div className="mb-8 border-b border-gray-200 dark:border-gray-700 pb-4 text-center text-sm text-gray-500 dark:text-gray-400 flex justify-center items-center gap-2">
                 <ClockIcon className="h-4 w-4" />
                 最后更新日期：{formattedDate}
               </div>

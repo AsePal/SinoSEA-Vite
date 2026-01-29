@@ -5,7 +5,6 @@ import type { UserInfo } from '../../shared/types/user.types';
 import TopNav from '../../features/chat/components/TopNav';
 import Sidebar from '../../features/chat/components/Sidebar';
 import { LogoutConfirmModal, AvatarEditorModal, SuccessToastModal } from '../../shared/components';
-import { HomeBackground } from '../../features/landing';
 
 import API, { apiRequest } from '../../shared/api/config';
 import { parseJwt } from '../../shared/utils/jwt';
@@ -53,75 +52,73 @@ export default function MainLayout() {
   }, []);
 
   return (
-    <HomeBackground>
-      <div className="flex flex-col animate-fade-in h-screen">
-        {/* 顶栏 - 所有页面都显示 */}
-        <TopNav
-          user={user}
-          onLogout={() => setShowLogoutModal(true)}
-          onEditAvatar={() => setShowAvatarEditor(true)}
-          onToggleSidebar={() => setSidebarOpen((v) => !v)}
-        />
+    <div className="flex flex-col h-screen bg-white dark:bg-gray-900">
+      {/* 顶栏 - 所有页面都显示 */}
+      <TopNav
+        user={user}
+        onLogout={() => setShowLogoutModal(true)}
+        onEditAvatar={() => setShowAvatarEditor(true)}
+        onToggleSidebar={() => setSidebarOpen((v) => !v)}
+      />
 
-        <div className="flex flex-1 relative overflow-hidden">
-          {/* 侧栏 - 所有页面都显示 */}
-          {/* 遮罩 */}
-          <div
-            className={`
+      <div className="flex flex-1 relative overflow-hidden">
+        {/* 侧栏 - 所有页面都显示 */}
+        {/* 遮罩 */}
+        <div
+          className={`
               fixed top-[70px] left-0 right-0 bottom-0 z-40
               bg-black/20 transition-opacity duration-300
               ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
             `}
-            onClick={() => setSidebarOpen(false)}
-          />
+          onClick={() => setSidebarOpen(false)}
+        />
 
-          {/* Sidebar */}
-          <div
-            className={`
+        {/* Sidebar */}
+        <div
+          className={`
               fixed top-[70px] left-0 bottom-0 z-50
               transition-transform duration-300 ease-out
               ${sidebarOpen ? 'translate-x-0' : '-translate-x-[260px]'}
             `}
-          >
-            <Sidebar onClose={() => setSidebarOpen(false)} />
-          </div>
-
-          {/* 页面内容：通过 Outlet 渲染子路由 */}
-          <main className="flex-1 flex overflow-y-auto overflow-x-hidden">
-            <Outlet context={{ user, refreshUser: fetchUserInfo }} />
-          </main>
+        >
+          <Sidebar onClose={() => setSidebarOpen(false)} />
         </div>
 
-        {/* 退出 */}
-        <LogoutConfirmModal
-          open={showLogoutModal}
-          onCancel={() => setShowLogoutModal(false)}
-          onConfirm={() => {
-            localStorage.removeItem('auth_token');
-            setUser(null);
-            setShowLogoutModal(false);
-            navigate('/chat');
-          }}
-        />
-
-        {/* 修改头像 */}
-        <AvatarEditorModal
-          open={showAvatarEditor}
-          currentAvatar={user?.avatar || DEFAULT_AVATAR}
-          onClose={() => setShowAvatarEditor(false)}
-          onSuccess={() => {
-            fetchUserInfo();
-            setShowSuccessToast(true);
-            setTimeout(() => setShowSuccessToast(false), 1800);
-          }}
-        />
-
-        <SuccessToastModal
-          open={showSuccessToast}
-          title="头像更新成功"
-          description="你的新头像已生效"
-        />
+        {/* 页面内容：通过 Outlet 渲染子路由 */}
+        <main className="flex-1 flex overflow-y-auto overflow-x-hidden">
+          <Outlet context={{ user, refreshUser: fetchUserInfo }} />
+        </main>
       </div>
-    </HomeBackground>
+
+      {/* 退出 */}
+      <LogoutConfirmModal
+        open={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          localStorage.removeItem('auth_token');
+          setUser(null);
+          setShowLogoutModal(false);
+          navigate('/chat');
+        }}
+      />
+
+      {/* 修改头像 */}
+      <AvatarEditorModal
+        open={showAvatarEditor}
+        currentAvatar={user?.avatar || DEFAULT_AVATAR}
+        onClose={() => setShowAvatarEditor(false)}
+        onSuccess={() => {
+          fetchUserInfo();
+          setShowSuccessToast(true);
+          setTimeout(() => setShowSuccessToast(false), 1800);
+        }}
+      />
+
+      <SuccessToastModal
+        open={showSuccessToast}
+        title="头像更新成功"
+        description="你的新头像已生效"
+      />
+    </div>
   );
 }

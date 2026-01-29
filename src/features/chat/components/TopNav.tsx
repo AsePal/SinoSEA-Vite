@@ -22,11 +22,14 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
   const { t } = useTranslation('chat');
 
   return (
-    <header className="h-[64px] flex items-center px-4 md:px-6 relative z-20">
+    <header className="h-14 flex items-center px-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       {/* 左侧：侧边栏 + 用户入口 */}
       <div className="flex items-center gap-3">
-        <button onClick={onToggleSidebar} className="p-2 rounded-lg hover:bg-black/10 transition">
-          <Bars3Icon className="w-6 h-6" />
+        <button
+          onClick={onToggleSidebar}
+          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        >
+          <Bars3Icon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </button>
 
         {isAuthed ? (

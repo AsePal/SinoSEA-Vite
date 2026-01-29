@@ -1,4 +1,10 @@
+@config "../../../tailwind.config.js";
 @import 'tailwindcss';
+
+@theme {
+  /* Tailwind v4: 启用 dark mode 支持 */
+  --color-scheme: light dark;
+}
 
 @font-face {
   font-family: 'MiSans';
