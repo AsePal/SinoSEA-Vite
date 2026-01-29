@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import ComplaintTopNav from '../components/ComplaintTopNav';
 import ComplaintHeader from '../components/ComplaintHeader';
 import ComplaintForm from '../components/ComplaintForm';
 import { LogoutConfirmModal } from '../../../shared/components';
@@ -28,35 +27,8 @@ export default function ComplaintPage() {
     }
   }, [user]);
 
-  return (
-    <>
-      {!showLoginRequiredModal ? (
-        <>
-          <ComplaintTopNav
-            user={user}
-            onBackHome={() => navigate('/chat')}
-            onLogout={() => setShowLogoutModal(true)}
-          />
-
-          <main className="px-6 py-10 flex justify-center h-[calc(100vh-64px)] overflow-y-auto chat-scroll">
-            <div className="w-full max-w-3xl space-y-10">
-              <ComplaintHeader />
-              <ComplaintForm />
-            </div>
-          </main>
-
-          <LogoutConfirmModal
-            open={showLogoutModal}
-            onCancel={() => setShowLogoutModal(false)}
-            onConfirm={() => {
-              // ✅ 正式退出逻辑
-              localStorage.removeItem('auth_token');
-              navigate('/chat');
-            }}
-          />
-        </>
-      ) : null}
-
+  if (showLoginRequiredModal) {
+    return (
       <LoginErrorModal
         open={showLoginRequiredModal}
         onConfirm={() => {
@@ -67,6 +39,28 @@ export default function ComplaintPage() {
           navigate('/chat');
         }}
       />
-    </>
+    );
+  }
+
+  return (
+    <div className="w-full h-full flex flex-col">
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto px-6 py-10 flex justify-center chat-scroll">
+        <div className="w-full max-w-3xl space-y-10">
+          <ComplaintHeader />
+          <ComplaintForm />
+        </div>
+      </div>
+
+      {/* 退出登录弹窗 */}
+      <LogoutConfirmModal
+        open={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          localStorage.removeItem('auth_token');
+          navigate('/chat');
+        }}
+      />
+    </div>
   );
 }
