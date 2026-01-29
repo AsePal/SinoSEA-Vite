@@ -43,6 +43,22 @@ body {
     'Apple Color Emoji',
     'Segoe UI Emoji';
 }
+
+.chat-input {
+  text-align: left;
+}
+
+.chat-input:placeholder-shown {
+  text-align: center;
+}
+
+.chat-input:focus {
+  text-align: left;
+}
+
+.chat-input::placeholder {
+  text-align: center;
+}
 /* ChatGPT 风格滚动条 */
 .chat-scroll::-webkit-scrollbar {
   width: 6px;

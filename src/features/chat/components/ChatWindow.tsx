@@ -300,7 +300,7 @@ export default function ChatWindow({
                   handleSend();
                 }
               }}
-              className="flex-1 resize-none bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[40px]"
+              className="chat-input flex-1 resize-none bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[24px] leading-6"
             />
 
             <button
