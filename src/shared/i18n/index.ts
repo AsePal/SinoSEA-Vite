@@ -3,20 +3,26 @@ import { initReactI18next } from 'react-i18next';
 
 import zhLanding from './locales/zh-CN/landing.json';
 import enLanding from './locales/en-US/landing.json';
+import viLanding from './locales/vi-VN/landing.json';
 import zhAuth from './locales/zh-CN/auth.json';
 import enAuth from './locales/en-US/auth.json';
+import viAuth from './locales/vi-VN/auth.json';
 
 import chatZh from './locales/zh-CN/chat.json';
 import chatEn from './locales/en-US/chat.json';
+import chatVi from './locales/vi-VN/chat.json';
 
 import commonZh from './locales/zh-CN/common.json';
 import commonEn from './locales/en-US/common.json';
+import commonVi from './locales/vi-VN/common.json';
 
 import aboutZh from './locales/zh-CN/about.json';
 import aboutEn from './locales/en-US/about.json';
+import aboutVi from './locales/vi-VN/about.json';
 
 import complaintZh from './locales/zh-CN/complaint.json';
 import complaintEn from './locales/en-US/complaint.json';
+import complaintVi from './locales/vi-VN/complaint.json';
 
 // ✅ 只在“第一次初始化”时读取 localStorage
 const savedLang = localStorage.getItem('lang');
@@ -42,6 +48,14 @@ if (!i18n.isInitialized) {
         common: commonEn,
         about: aboutEn,
         complaint: complaintEn,
+      },
+      'vi-VN': {
+        landing: viLanding,
+        auth: viAuth,
+        chat: chatVi,
+        common: commonVi,
+        about: aboutVi,
+        complaint: complaintVi,
       },
     },
     interpolation: {

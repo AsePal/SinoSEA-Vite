@@ -1,0 +1,40 @@
+{
+  "header": {
+    "title": "Mỗi bước phát triển của chúng tôi không thể thiếu những lời góp ý và ý kiến quý báu của bạn.",
+    "description": "Chúng tôi coi trọng mỗi phản hồi của bạn, vui lòng mô tả chi tiết vấn đề hoặc gợi ý bạn gặp phải, chúng tôi sẽ xử lý và phản hồi sớm nhất.",
+    "privacy": "Thông tin đăng nhập của bạn sẽ không được gửi"
+  },
+  "form": {
+    "title": "Gửi khiếu nại / Phản hồi",
+    "type": {
+      "label": "Loại khiếu nại",
+      "placeholder": "Vui lòng chọn loại khiếu nại",
+      "bug": "Lỗi chức năng",
+      "content": "Vấn đề nội dung",
+      "experience": "Vấn đề trải nghiệm",
+      "other": "Khác"
+    },
+    "content": {
+      "label": "Nội dung khiếu nại",
+      "placeholder": "Vui lòng mô tả chi tiết vấn đề bạn gặp phải…"
+    },
+    "contact": {
+      "label": "Cách liên hệ (tùy chọn)",
+      "placeholder": "Email / QQ / WeChat"
+    },
+    "attachment": {
+      "label": "Tải lên tệp đính kèm",
+      "text": "Nhấp để tải lên ảnh chụp màn hình hoặc tệp",
+      "hint": "Hỗ trợ hình ảnh, PDF, Word, tệp văn bản"
+    },
+    "submit": "Gửi khiếu nại"
+  },
+  "topNav": {
+    "backHome": "Về trang chủ"
+  },
+  "message": {
+    "incomplete": "Vui lòng điền đầy đủ thông tin khiếu nại",
+    "success": "Khiếu nại đã được gửi, cảm ơn bạn về phản hồi 🙏",
+    "error": "Gửi thất bại, vui lòng thử lại sau"
+  }
+}

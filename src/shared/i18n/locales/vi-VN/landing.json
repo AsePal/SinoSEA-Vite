@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "subtitle": "Trợ lý Thông minh Xingzhou",
+    "line1": "Dành cho sinh viên Đông Nam Á",
+    "line2": "Đến học tập tại Trung Quốc",
+    "line3": "Cung cấp hướng dẫn chính sách, hỗ trợ thích nghi khuôn viên và hỗ trợ tâm lý",
+    "line3": "Trợ lý thông minh",
+    "start": "Hãy bắt đầu →"
+  },
+  "problem": {
+    "title": "Đến một đất nước xa lạ, bạn không nên tự mình khám phá",
+    "desc1": "Sự khác biệt về ngôn ngữ, không quen với các quy định, và khuôn viên trường lạ, tất cả đều có thể gây áp lực vô hình.",
+    "desc2": "Chúng tôi hy vọng biến những sự không chắc chắn này thành những điều có thể hiểu được."
+  },
+  "features": {
+    "title": "Chúng tôi có thể làm gì cho bạn",
+    "items": [
+      {
+        "title": "Giải đáp thông minh về quy định",
+        "desc": "Hiểu các quy tắc bằng ngôn ngữ bạn quen thuộc"
+      },
+      {
+        "title": "Gợi ý về cuộc sống khuôn viên và xung quanh",
+        "desc": "Từng bước làm quen với thành phố nơi bạn sống"
+      },
+      { "title": "Hỗ trợ tâm lý và đồng hành", "desc": "Khi bạn cảm thấy lo lắng và cô đơn" },
+      {
+        "title": "Hỏi đáp thông minh đa ngôn ngữ",
+        "desc": "Phù hợp hơn với bối cảnh sinh viên Đông Nam Á"
+      }
+    ]
+  },
+  "belief": {
+    "line1": "Chúng tôi tin rằng công nghệ không chỉ là một công cụ,",
+    "line2": "mà là một sự đồng hành mang lại cảm giác an toàn trong môi trường xa lạ."
+  }
+}

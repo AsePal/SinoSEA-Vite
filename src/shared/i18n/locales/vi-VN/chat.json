@@ -1,0 +1,64 @@
+{
+  "welcome": {
+    "guest": {
+      "line1": "Xin chào! Tôi là Trợ lý Thông minh Xingzhou 🌟",
+      "line2": "Tôi có thể giúp bạn hiểu các quy định của trường học, cung cấp thông tin về cuộc sống xung quanh khuôn viên, và cũng là cố vấn tâm lý nhỏ bé của bạn."
+    },
+    "authed": {
+      "line1": "Chào mừng bạn trở lại! Hôm nay tôi có thể giúp gì cho bạn? 🌟"
+    }
+  },
+
+  "input": {
+    "placeholder": "Hãy nhập câu hỏi của bạn",
+    "placeholder_authed": "Nhấn Enter để gửi, Shift + Enter để xuống dòng",
+    "login_required": " Vui lòng đăng nhập để sử dụng tính năng này"
+  },
+
+  "system": {
+    "thinking": "Xingzhou đang suy nghĩ…",
+    "timeout": "⚠️ Phản hồi bị gián đoạn (có thể là vấn đề mạng hoặc hết thời gian chờ), bạn có thể tiếp tục hỏi.",
+    "error": "⚠️ Đã có lỗi xảy ra, vui lòng thử lại sau."
+  },
+
+  "topnav": {
+    "login": "Đăng nhập / Đăng ký",
+    "logout": "Đăng xuất"
+  },
+
+  "message": {
+    "copy": "Sao chép",
+    "copied": "Đã sao chép"
+  },
+
+  "sidebar": {
+    "title": "Điều hướng chức năng",
+    "ask": "Hỏi Xingzhou",
+    "about": "Về Xingzhou",
+    "chatroom": "Phòng trò chuyện",
+    "comingSoon": "（Sắp ra mắt）",
+    "aboutUs": "Về chúng tôi",
+    "feedback": "Phản hồi & Khiếu nại"
+  },
+  "userMenu": {
+    "profile": "Thông tin người dùng",
+    "editAvatar": "Thay đổi ảnh đại diện",
+    "editNickname": "Chỉnh sửa biệt danh",
+    "editPhone": "Chỉnh sửa số điện thoại"
+  },
+  "avatarModal": {
+    "title": "Thay đổi ảnh đại diện",
+    "change": "Nhấp để thay đổi",
+    "hint": "Chỉ hỗ trợ JPG / PNG / GIF / WebP, kích thước không vượt quá 5MB",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "saving": "Đang lưu…",
+    "error": {
+      "type": "Chỉ hỗ trợ hình ảnh JPG / PNG / GIF / WebP",
+      "size": "Kích thước hình ảnh không được vượt quá 5MB",
+      "upload": "Cập nhật ảnh đại diện thất bại, vui lòng thử lại sau",
+      "OutputError": "Tải lên thất bại",
+      "UpdatetError": "Cập nhật ảnh đại diện thất bại, vui lòng thử lại sau"
+    }
+  }
+}

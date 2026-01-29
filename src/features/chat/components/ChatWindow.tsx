@@ -230,13 +230,11 @@ export default function ChatWindow({
   /* -------------------- 生命周期 -------------------- */
 
   useEffect(() => {
-    console.log('🔥 ChatWindow mounted');
     // 挂载时重置所有状态，强制播放欢迎语
     welcomePlayedRef.current = false;
     lastAuthedRef.current = null;
     lastLangRef.current = null;
     initConversation();
-    return () => console.log('💀 ChatWindow unmounted');
   }, []);
 
   useEffect(() => {

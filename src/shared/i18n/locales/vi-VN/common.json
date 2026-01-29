@@ -1,0 +1,16 @@
+{
+  "modal": {
+    "logoutConfirm": {
+      "title": "Bạn có chắc chắn muốn đăng xuất?",
+      "confirm": "Xác nhận đăng xuất"
+    },
+    "action": {
+      "cancel": "Hủy"
+    },
+    "loginRequired": {
+      "title": "Bạn dường như chưa đăng nhập",
+      "description": "Không thể lấy thông tin người dùng của bạn, vui lòng đăng nhập lại và thử lại.",
+      "confirm": "Đi đến trang đăng nhập"
+    }
+  }
+}

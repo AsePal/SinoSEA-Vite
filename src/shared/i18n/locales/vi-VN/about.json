@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "title": "Trí tuệ là chiếc thuyền, sự ấm áp là bờ",
+    "description": "AI thông minh là chiếc thuyền giúp bạn vượt qua biển thông tin, trong khi mối quan tâm của chúng tôi là bến cảng luôn chào đón bạn"
+  },
+  "aboutUs": {
+    "title": "Về chúng tôi",
+    "intro": "Chúng tôi là một nhóm sinh viên có nền tảng từ chuyên ngành ứng dụng máy tính, tập hợp lại bởi sự quan tâm chung đến trí tuệ nhân tạo và dịch vụ khuôn viên, tìm cách phát triển các ứng dụng thông minh để giải quyết các vấn đề thực tế của khuôn viên.",
+    "mission": "Sứ mệnh của chúng tôi",
+    "missionText1": "Thông qua đổi mới công nghệ, cung cấp trải nghiệm dịch vụ khuôn viên thông minh và tiện lợi hơn cho giáo viên và sinh viên. Chúng tôi tin rằng công nghệ phải phục vụ con người, và khuôn viên là nơi lý tưởng để áp dụng công nghệ.",
+    "missionText2": "Dự án trợ lý thông minh của chúng tôi nhằm tích hợp các tài nguyên khuôn viên, cung cấp dịch vụ một cửa như truy vấn quy tắc, hướng dẫn tâm lý, giao tiếp ngôn ngữ tự nhiên, gợi ý xung quanh khuôn viên, giúp cuộc sống khuôn viên hiệu quả và có trật tự hơn."
+  },
+  "team": {
+    "title": "Thành viên nhóm",
+    "subtitle": "Mỗi thành viên trong nhóm của chúng tôi đều sở hữu những kỹ năng và chuyên môn độc đáo, cùng nhau thúc đẩy sự phát triển và thực hiện dự án",
+    "members": [
+      {
+        "name": "Tiểu Lôi",
+        "role": "Người chịu trách nhiệm nhóm / Phát triển backend",
+        "desc": "Chịu trách nhiệm quy hoạch tổng thể dự án và xây dựng khung công tác backend."
+      },
+      {
+        "name": "Tiểu Cao",
+        "role": "Phát triển frontend / Thiết kế logic cốt lõi",
+        "desc": "Chịu trách nhiệm thiết kế tương tác cốt lõi dự án và phát triển frontend."
+      },
+      {
+        "name": "Tiểu Trúc",
+        "role": "Phân tích và thu thập dữ liệu",
+        "desc": "Chịu trách nhiệm thu thập và xử lý phân tích dữ liệu dự án."
+      },
+      {
+        "name": "Tiểu Tình",
+        "role": "Thiết kế UI",
+        "desc": "Chịu trách nhiệm thiết kế tổng thể và thiết kế UI dự án."
+      }
+    ]
+  },
+  "project": {
+    "title": "Giới thiệu dự án",
+    "subtitle": "Trợ lý thông minh khuôn viên là một ứng dụng web tích hợp nhiều chức năng, nhằm nâng cao mức độ thông minh hóa của cuộc sống khuôn viên",
+    "features": "Đặc điểm của trợ lý thông minh khuôn viên",
+    "featuresDesc": "Ứng dụng của chúng tôi tích hợp nhu cầu học tập, cuộc sống, xã hội và các khía cạnh khác của khuôn viên, cung cấp dịch vụ một cửa theo cách thông minh hóa.",
+    "coreFeatures": "Chức năng cốt lõi",
+    "coreFeaturesList": [
+      "Giải đáp quy định trực tuyến",
+      "Gợi ý cá nhân hóa xung quanh khuôn viên",
+      "Mô hình tư vấn tâm lý trực tuyến 24/7",
+      "Trợ lý hỏi đáp thông minh đa ngôn ngữ",
+      "Trải nghiệm tương tác đa cầu nền tảng web"
+    ],
+    "techHighlights": "Điểm nổi bật công nghệ",
+    "techHighlightsList": [
+      "Thuật toán khuyến nghị dựa trên học sâu",
+      "Hệ thống hỏi đáp xử lý ngôn ngữ tự nhiên",
+      "Hệ thống backend kiến trúc vi dịch vụ",
+      "Thiết kế frontend đáp ứng đa nền tảng",
+      "Trợ lý thông minh phù hợp hơn với nền tảng sinh viên Đông Nam Á"
+    ],
+    "progress": "Tiến độ dự án",
+    "progressText": "Phiên bản đầu tiên đã hoàn thành đa ngôn ngữ và đào tạo mô hình cốt lõi và đã ra mắt. Phiên bản thứ hai đang phát triển phòng trò chuyện web, chương trình WeChat mini và ứng dụng di động, dự kiến sẽ mở giai đoạn thử nghiệm vào nửa sau năm."
+  },
+  "footer": {
+    "copyright": "© 2026 Nhóm Trợ lý Thông minh Khuôn viên | Bản quyền",
+    "disclaimer": "Trang web này chỉ dùng cho mục đích giới thiệu nhóm, không phải mục đích thương mại",
+    "font": "Font: Misans"
+  },
+  "header": {
+    "exit": "Thoát"
+  }
+}

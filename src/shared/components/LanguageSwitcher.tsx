@@ -5,11 +5,12 @@ type Props = {
   variant?: 'light' | 'dark';
 };
 
-type Lang = 'zh-CN' | 'en-US';
+type Lang = 'zh-CN' | 'en-US' | 'vi-VN';
 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'zh-CN', label: '中文' },
   { code: 'en-US', label: 'English' },
+  { code: 'vi-VN', label: 'Tiếng Việt' },
 ];
 
 export default function LanguageSwitcher({ variant = 'light' }: Props) {
@@ -43,7 +44,9 @@ export default function LanguageSwitcher({ variant = 'light' }: Props) {
       ].join(' ')}
     >
       {LANGS.map((lang) => {
-        const active = current.startsWith(lang.code.startsWith('zh') ? 'zh' : 'en');
+        const active = current.startsWith(
+          lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
+        );
         const base = 'px-3 py-1 rounded-full text-sm transition';
 
         const activeCls = isDark ? 'bg-white text-black' : 'bg-blue-600 text-white';

@@ -9,12 +9,16 @@ export default function AboutContent() {
     const imageMap: { [key: string]: string } = {
       小雷: '/images/team/xiaolei.png',
       Xiaolei: '/images/team/xiaolei.png',
+      'Tiểu Lôi': '/images/team/xiaolei.png',
       小高: '/images/team/xiaogao.JPG',
       Xiaogao: '/images/team/xiaogao.JPG',
+      'Tiểu Cao': '/images/team/xiaogao.JPG',
       小朱: '/images/team/xiaozhu.png',
       Xiaozhu: '/images/team/xiaozhu.png',
+      'Tiểu Trúc': '/images/team/xiaozhu.png',
       小晴: '/images/team/xiaoqing.png',
       Xiaoqing: '/images/team/xiaoqing.png',
+      'Tiểu Tình': '/images/team/xiaoqing.png',
     };
     return imageMap[name] || '/images/team/default.png';
   };
