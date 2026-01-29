@@ -4,7 +4,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ type SidebarProps = {
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation('chat');
 
   function go(path: string) {
@@ -42,11 +43,19 @@ export default function Sidebar({ onClose }: SidebarProps) {
           {t('sidebar.title')}
         </h2>
         {/* 询问星洲 */}
-        <MenuItem icon={CpuChipIcon} active onClick={() => go('/chat')}>
+        <MenuItem
+          icon={CpuChipIcon}
+          active={location.pathname === '/chat'}
+          onClick={() => go('/chat')}
+        >
           {t('sidebar.ask')}
         </MenuItem>
         {/* 关于星洲 */}
-        <MenuItem icon={InformationCircleIcon} onClick={() => go('/landing')}>
+        <MenuItem
+          icon={InformationCircleIcon}
+          active={location.pathname === '/landing'}
+          onClick={() => go('/landing')}
+        >
           {t('sidebar.about')}
         </MenuItem>
         {/* 聊天室（敬请期待） */}
@@ -57,11 +66,18 @@ export default function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* 底部功能区 */}
-      <div className="px-4 py-4 border-t border-black/5 text-sm">
+      <div className="px-4 py-4 border-t border-black/5 text-sm space-y-2">
         {/* 关于我们 */}
-        <FooterButton onClick={() => go('/about')}>{t('sidebar.aboutUs')}</FooterButton>
+        <FooterButton active={location.pathname === '/about'} onClick={() => go('/about')}>
+          {t('sidebar.aboutUs')}
+        </FooterButton>
         {/* 投诉反馈 */}
-        <FooterButton onClick={() => go('/chat/complaint')}>{t('sidebar.feedback')}</FooterButton>
+        <FooterButton
+          active={location.pathname === '/chat/complaint'}
+          onClick={() => go('/chat/complaint')}
+        >
+          {t('sidebar.feedback')}
+        </FooterButton>
       </div>
     </aside>
   );
@@ -109,17 +125,28 @@ function MenuItem({
   );
 }
 
-function FooterButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function FooterButton({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
-      className="
+      className={`
         w-full text-left
         px-4 py-2 rounded-lg
-        text-gray-500
-        hover:bg-white/50 hover:text-gray-800
         transition
-      "
+        ${
+          active
+            ? 'bg-white/60 text-gray-900'
+            : 'text-gray-500 hover:bg-white/50 hover:text-gray-800'
+        }
+      `}
     >
       {children}
     </button>
