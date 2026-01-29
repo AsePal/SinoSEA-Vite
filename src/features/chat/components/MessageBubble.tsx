@@ -25,9 +25,13 @@ export default function MessageBubble({
   return (
     <motion.div
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}
-      initial={isUser ? { opacity: 0, y: 10 } : false}
-      animate={isUser ? { opacity: 1, y: 0 } : false}
-      transition={isUser ? { type: 'spring', stiffness: 320, damping: 24 } : undefined}
+      initial={isUser ? { opacity: 0, y: 10 } : { opacity: 0, y: 6 }}
+      animate={isUser ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+      transition={
+        isUser
+          ? { type: 'spring', stiffness: 320, damping: 24 }
+          : { type: 'tween', duration: 0.25, ease: 'easeOut' }
+      }
     >
       {/* AI 头像 */}
       {!isUser && (
