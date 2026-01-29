@@ -266,7 +266,7 @@ export default function ChatWindow({
       <div className="w-full h-full flex flex-col">
         {/* Header */}
         <div className="px-4 py-4 text-sm font-semibold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
-          SionSEA-AI
+          Asepal
         </div>
 
         {/* Messages */}

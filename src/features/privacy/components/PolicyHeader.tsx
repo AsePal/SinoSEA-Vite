@@ -13,7 +13,7 @@ export default function PolicyHeader() {
           ← 返回
         </button>
 
-        <h1 className="text-2xl font-bold text-center">星洲智能助手隐私政策</h1>
+        <h1 className="text-2xl font-bold text-center">Asepal 隐私政策</h1>
         <p className="text-center text-white/90 mt-2 text-sm">我们致力于保护您的个人信息安全</p>
       </div>
     </header>

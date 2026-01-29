@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
 const BASE_DELAY = 0.1;
 const STEP = 0.2;
@@ -70,7 +69,7 @@ export default function Landing() {
           className="text-5xl md:text-6xl font-semibold tracking-tight text-blue-600 dark:text-blue-400 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY}s` }}
         >
-          SionSEA-AI
+          Asepal
         </h1>
 
         <p
@@ -116,9 +115,6 @@ export default function Landing() {
           >
             {t('hero.start')}
           </button>
-          <div className="animate-slide-up" style={{ animationDelay: `${BASE_DELAY + STEP * 7}s` }}>
-            <LanguageSwitcher />
-          </div>
         </div>
       </section>
 

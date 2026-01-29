@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { UserInfo } from '../../../shared/types/user.types';
 import { Bars3Icon } from '@heroicons/react/24/outline';
@@ -17,6 +17,7 @@ type TopNavProps = {
 export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
+  const location = useLocation();
   const [showNickname, setShowNickname] = useState(false);
 
   const isAuthed = Boolean(user);
@@ -87,8 +88,8 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
           </button>
         )}
 
-        {/* 🌍 语言切换：始终可用 */}
-        <LanguageSwitcher variant="auto" />
+        {/* 🌍 语言切换：关于页不显示 */}
+        {!location.pathname.startsWith('/about') && <LanguageSwitcher variant="auto" />}
       </div>
 
       <div className="flex-1" />

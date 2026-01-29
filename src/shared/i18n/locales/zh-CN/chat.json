@@ -1,7 +1,7 @@
 {
   "welcome": {
     "guest": {
-      "line1": "你好呀！我是 星洲智能助手 🌟",
+      "line1": "你好呀！我是 Asepal 🌟",
       "line2": "我可以为你解答校园的规章制度、校园周边生活，同时还是你的小小心理指导老师。"
     },
     "authed": {
@@ -16,7 +16,7 @@
   },
 
   "system": {
-    "thinking": "星洲正在思考中…",
+    "thinking": "Asepal 正在思考中…",
     "timeout": "⚠️ 回复中断（可能是网络异常或超时），你可以继续提问。",
     "error": "⚠️ 出现了一点问题，请稍后再试。"
   },
@@ -33,8 +33,8 @@
 
   "sidebar": {
     "title": "功能导航",
-    "ask": "询问星洲",
-    "about": "关于星洲",
+    "ask": "询问 Asepal",
+    "about": "关于 Asepal",
     "chatroom": "聊天室",
     "comingSoon": "（敬请期待）",
     "aboutUs": "关于我们",

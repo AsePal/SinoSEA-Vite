@@ -1,7 +1,7 @@
 {
   "welcome": {
     "guest": {
-      "line1": "Xin chào! Tôi là Trợ lý Thông minh Xingzhou 🌟",
+      "line1": "Xin chào! Tôi là Asepal 🌟",
       "line2": "Tôi có thể giúp bạn hiểu các quy định của trường học, cung cấp thông tin về cuộc sống xung quanh khuôn viên, và cũng là cố vấn tâm lý nhỏ bé của bạn."
     },
     "authed": {
@@ -16,7 +16,7 @@
   },
 
   "system": {
-    "thinking": "Xingzhou đang suy nghĩ…",
+    "thinking": "Asepal đang suy nghĩ…",
     "timeout": "⚠️ Phản hồi bị gián đoạn (có thể là vấn đề mạng hoặc hết thời gian chờ), bạn có thể tiếp tục hỏi.",
     "error": "⚠️ Đã có lỗi xảy ra, vui lòng thử lại sau."
   },
@@ -33,8 +33,8 @@
 
   "sidebar": {
     "title": "Điều hướng chức năng",
-    "ask": "Hỏi Xingzhou",
-    "about": "Về Xingzhou",
+    "ask": "Hỏi Asepal",
+    "about": "Về Asepal",
     "chatroom": "Phòng trò chuyện",
     "comingSoon": "（Sắp ra mắt）",
     "aboutUs": "Về chúng tôi",

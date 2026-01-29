@@ -6,7 +6,7 @@ const TermsOfUse = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = '使用条款 | 星洲智能助手';
+    document.title = '使用条款 | Asepal';
   }, []);
 
   const today = new Date();
@@ -20,7 +20,7 @@ const TermsOfUse = () => {
           <div className="overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-xl">
             {/* Title */}
             <div className="bg-gradient-to-r from-indigo-500 to-indigo-700 px-8 py-10 text-center text-white">
-              <h1 className="text-2xl font-bold">星洲智能助手使用条款</h1>
+              <h1 className="text-2xl font-bold">Asepal 使用条款</h1>
               <p className="mt-2 text-sm opacity-90">
                 使用本服务即表示您已阅读、理解并同意以下条款
               </p>
@@ -35,7 +35,7 @@ const TermsOfUse = () => {
 
               {/* Section */}
               <Section title="1. 接受条款">
-                通过访问或使用星洲智能助手（以下简称“本服务”），您同意受本使用条款的约束。
+                通过访问或使用 Asepal（以下简称“本服务”），您同意受本使用条款的约束。
                 如果您不同意这些条款，请不要使用本服务。
               </Section>
 
@@ -132,7 +132,7 @@ const TermsOfUse = () => {
           {/* Footer 背景遮罩 */}
           <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-sm" />
           <div className="relative z-10 py-8 text-center text-sm text-white/80">
-            © 2026 星洲智能助手 | 版权所有
+            © 2026 Asepal | 版权所有
             <p className="mt-1.5 text-10px opacity-80">字体：MiSans</p>
           </div>
         </footer>
