@@ -62,6 +62,8 @@ export default function ChatWindow({
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const welcomeTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
   type SendPhase = 'idle' | 'out' | 'reset' | 'return';
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
 
@@ -84,14 +86,19 @@ export default function ChatWindow({
   /* -------------------- 欢迎语（i18n） -------------------- */
 
   function playWelcomeSteps(steps: WelcomeStep[]) {
+    // 清空之前的所有待执行的 timeout
+    welcomeTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+    welcomeTimeoutsRef.current = [];
+
     setMessages([]);
     let totalDelay = 0;
 
     steps.forEach((step) => {
       totalDelay += step.delay;
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setMessages((prev) => [...prev, { role: 'assistant', content: step.content }]);
       }, totalDelay);
+      welcomeTimeoutsRef.current.push(timeout);
     });
   }
 
@@ -224,6 +231,11 @@ export default function ChatWindow({
 
   useEffect(() => {
     console.log('🔥 ChatWindow mounted');
+    // 挂载时重置所有状态，强制播放欢迎语
+    welcomePlayedRef.current = false;
+    lastAuthedRef.current = null;
+    lastLangRef.current = null;
+    initConversation();
     return () => console.log('💀 ChatWindow unmounted');
   }, []);
 
@@ -231,10 +243,15 @@ export default function ChatWindow({
     if (!hasUserChatted) {
       initConversation();
     }
-  }, [userId, i18n.resolvedLanguage, hasUserChatted]);
+  }, [i18n.language, hasUserChatted]);
 
   useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
   useEffect(() => () => abortRef.current?.abort(), []);
+  useEffect(() => {
+    return () => {
+      welcomeTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, []);
 
   /* -------------------- UI -------------------- */
 
