@@ -6,9 +6,11 @@ import { useTranslation } from 'react-i18next';
 export default function UserAvatarMenu({
   user,
   onEditAvatar,
+  onLogout,
 }: {
   user: UserInfo;
   onEditAvatar: () => void;
+  onLogout?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,6 +77,21 @@ export default function UserAvatarMenu({
               <MenuItem label={t('userMenu.editNickname')} />
               {/* 修改手机号 */}
               <MenuItem label={t('userMenu.editPhone')} />
+
+              {/* 分割线 */}
+              <div className="my-2 border-t" />
+
+              {/* 退出登录 */}
+              {onLogout && (
+                <MenuItem
+                  label={t('topnav.logout')}
+                  onClick={() => {
+                    setOpen(false);
+                    onLogout();
+                  }}
+                  className="text-red-500 hover:bg-red-50"
+                />
+              )}
             </div>
           </motion.div>
         )}
@@ -83,12 +100,20 @@ export default function UserAvatarMenu({
   );
 }
 
-function MenuItem({ label, onClick }: { label: string; onClick?: () => void }) {
+function MenuItem({
+  label,
+  onClick,
+  className,
+}: {
+  label: string;
+  onClick?: () => void;
+  className?: string;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 transition"
+      className={`w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 transition ${className || ''}`}
     >
       {label}
     </button>

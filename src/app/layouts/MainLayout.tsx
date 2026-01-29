@@ -99,7 +99,8 @@ export default function MainLayout() {
           onConfirm={() => {
             localStorage.removeItem('auth_token');
             setUser(null);
-            navigate('/login');
+            setShowLogoutModal(false);
+            navigate('/chat');
           }}
         />
 
