@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useTranslation } from 'react-i18next';
+import API from '../../api/config';
 
 //校验用户上传头像的类型
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
@@ -71,7 +72,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
 
       const token = localStorage.getItem('auth_token');
 
-      const res = await fetch('http://10.147.20.237:3000/user/image', {
+      const res = await fetch(API.user.avatar, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

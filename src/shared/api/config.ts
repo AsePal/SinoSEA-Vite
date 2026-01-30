@@ -1,6 +1,6 @@
 import { API_BASE } from '../utils/env';
 
-const BASE = API_BASE ?? 'http://10.147.20.237:3000';
+const BASE = API_BASE ?? 'https://api.asepal.cn';
 const TOKEN_KEY = 'auth_token';
 
 type Endpoints = {
@@ -15,6 +15,7 @@ type Endpoints = {
   user: {
     info: string;
     update: string;
+    avatar: string;
   };
   complaint: {
     submit: string;
@@ -46,6 +47,8 @@ export const API: Endpoints = {
     info: `${BASE}/user/info`,
     //用户信息更新
     update: `${BASE}/user/update`,
+    //用户头像更新
+    avatar: `${BASE}/user/image`,
   },
   complaint: {
     //
