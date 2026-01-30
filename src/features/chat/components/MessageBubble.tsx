@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '../types/chat.types';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
@@ -14,13 +14,33 @@ export default function MessageBubble({
 }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   function handleCopy() {
     navigator.clipboard.writeText(message.content).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     });
+    setMenuOpen(false);
   }
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (event: Event) => {
+      if (!menuRef.current) return;
+      const path = (event as Event & { composedPath?: () => EventTarget[] }).composedPath?.();
+      if (path?.includes(menuRef.current)) return;
+      if (menuRef.current.contains(event.target as Node)) return;
+      setMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('pointerdown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [menuOpen]);
 
   return (
     <motion.div
@@ -39,7 +59,7 @@ export default function MessageBubble({
       )}
 
       {/* 消息容器 */}
-      <div className="flex flex-col max-w-[92%] md:max-w-[75%] group">
+      <div className="flex flex-col max-w-[92%] md:max-w-[75%]">
         {/* 气泡 */}
         <div
           className={`
@@ -67,36 +87,63 @@ export default function MessageBubble({
           </div>
         </div>
 
-        {/* 复制按钮 */}
-        <button
-          onClick={handleCopy}
-          className={`
-            mt-1 self-end
-            opacity-0 group-hover:opacity-100
-            transition
-            flex items-center gap-2
-            px-3 py-1.5
-            rounded-lg
-            text-sm
-            ${
-              isUser
-                ? 'bg-gray-900 text-white hover:bg-gray-800 dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white'
-                : 'bg-white/70 text-gray-600 hover:bg-white dark:bg-gray-700/70 dark:text-gray-200 dark:hover:bg-gray-700'
-            }
-          `}
-        >
-          {copied ? (
-            <>
-              <CheckIcon className="w-4 h-4" />
-              已复制
-            </>
-          ) : (
-            <>
-              <ClipboardIcon className="w-4 h-4" />
-              复制
-            </>
-          )}
-        </button>
+        {/* 操作菜单（气泡外底部左侧展开） */}
+        <div className="mt-1 flex items-center">
+          <div ref={menuRef} className="flex items-center">
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              className={`
+                inline-flex items-center justify-center
+                w-6 h-6 rounded-md
+                text-xs font-semibold
+                transition-colors
+                ${
+                  isUser
+                    ? 'text-white/80 hover:text-white dark:text-gray-700 dark:hover:text-gray-900'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white'
+                }
+              `}
+              aria-label="打开操作菜单"
+              title="操作"
+            >
+              ···
+            </button>
+
+            {menuOpen && (
+              <div
+                className={`
+                  ml-2
+                  flex items-center gap-1
+                  px-2 py-1
+                  rounded-lg
+                  text-xs
+                  shadow-sm
+                  origin-left
+                  transition
+                  ${
+                    isUser
+                      ? 'bg-gray-900 text-white/90 dark:bg-gray-100 dark:text-gray-900'
+                      : 'bg-white/90 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                  }
+                `}
+              >
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10"
+                >
+                  {copied ? (
+                    <CheckIcon className="w-3.5 h-3.5" />
+                  ) : (
+                    <ClipboardIcon className="w-3.5 h-3.5" />
+                  )}
+                  {copied ? '已复制' : '复制'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* 用户头像 */}
