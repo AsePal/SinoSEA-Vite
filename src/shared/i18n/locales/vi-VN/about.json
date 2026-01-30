@@ -66,6 +66,8 @@
     "font": "Font: Misans"
   },
   "header": {
-    "exit": "Thoát"
+    "exit": "Thoát",
+    "back": "Quay lại",
+    "backToTop": "Lên đầu trang"
   }
 }

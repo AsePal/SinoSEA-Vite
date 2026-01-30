@@ -1,10 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function AboutHeader() {
   const navigate = useNavigate();
   const { t } = useTranslation('about');
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate('/chat');
+  };
 
   return (
     <header
@@ -16,9 +24,9 @@ export default function AboutHeader() {
       "
     >
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* 右侧：退出按钮 */}
+        {/* 返回按钮 */}
         <button
-          onClick={() => navigate('/chat')}
+          onClick={handleBack}
           className="
             flex items-center gap-3
             px-6 py-3
@@ -30,8 +38,8 @@ export default function AboutHeader() {
             shadow-lg
           "
         >
-          <ArrowRightOnRectangleIcon className="w-5 h-5" />
-          {t('header.exit')}
+          <ArrowLeftIcon className="w-5 h-5" />
+          {t('header.back')}
         </button>
       </div>
     </header>

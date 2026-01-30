@@ -66,6 +66,8 @@
     "font": "字体：Misans"
   },
   "header": {
-    "exit": "退出"
+    "exit": "退出",
+    "back": "返回",
+    "backToTop": "回到顶部"
   }
 }

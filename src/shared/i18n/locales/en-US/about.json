@@ -66,6 +66,8 @@
     "font": "Font: Misans"
   },
   "header": {
-    "exit": "Exit"
+    "exit": "Exit",
+    "back": "Back",
+    "backToTop": "Back to top"
   }
 }
