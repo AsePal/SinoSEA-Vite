@@ -29,7 +29,10 @@ import complaintZh from './locales/zh-CN/complaint.json';
 import complaintEn from './locales/en-US/complaint.json';
 import complaintVi from './locales/vi-VN/complaint.json';
 import complaintTh from './locales/th-TH/complaint.json';
-
+import privacyZh from './locales/zh-CN/privacy.json';
+import privacyEn from './locales/en-US/privacy.json';
+import privacyVi from './locales/vi-VN/privacy.json';
+import privacyTh from './locales/th-TH/privacy.json';
 // ✅ 只在“第一次初始化”时读取 localStorage
 const savedLang = localStorage.getItem('lang');
 
@@ -46,6 +49,7 @@ if (!i18n.isInitialized) {
         common: commonZh,
         about: aboutZh,
         complaint: complaintZh,
+        privacy: privacyZh,
       },
       'en-US': {
         landing: enLanding,
@@ -54,6 +58,7 @@ if (!i18n.isInitialized) {
         common: commonEn,
         about: aboutEn,
         complaint: complaintEn,
+        privacy: privacyEn,
       },
       'vi-VN': {
         landing: viLanding,
@@ -62,6 +67,7 @@ if (!i18n.isInitialized) {
         common: commonVi,
         about: aboutVi,
         complaint: complaintVi,
+        privacy: privacyVi,
       },
       'th-TH': {
         landing: thLanding,
@@ -70,6 +76,7 @@ if (!i18n.isInitialized) {
         common: commonTh,
         about: aboutTh,
         complaint: complaintTh,
+        privacy: privacyTh,
       },
     },
     interpolation: {

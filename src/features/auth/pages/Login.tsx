@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import API, { apiRequest } from '../../../shared/api/config';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
@@ -218,17 +218,32 @@ export default function Login() {
           {t('option.rememberMe')}
         </label>
 
-        <label className="mt-4 flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
-          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+        <label className="mt-4 flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 dark:border-slate-600 dark:bg-gray-800 dark:text-indigo-400"
+          />
           <span>
-            {t('agreement.prefix')}
-            <Link to="/privacy" className="underline ml-1">
-              {t('agreement.privacy')}
-            </Link>
-            {t('agreement.and')}
-            <Link to="/terms" className="underline ml-1">
-              {t('agreement.terms')}
-            </Link>
+            <Trans
+              i18nKey="agreement.text"
+              t={t}
+              components={{
+                privacy: (
+                  <Link
+                    to="/privacy"
+                    className="underline ml-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+                  />
+                ),
+                terms: (
+                  <Link
+                    to="/terms"
+                    className="underline ml-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+                  />
+                ),
+              }}
+            />
           </span>
         </label>
 
