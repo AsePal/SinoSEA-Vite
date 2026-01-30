@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { UserInfo } from '../../../shared/types/user.types';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import LanguageSwitcher from '../../../shared/components/LanguageSwitcher';
 
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +16,6 @@ type TopNavProps = {
 export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
-  const location = useLocation();
   const [showNickname, setShowNickname] = useState(false);
 
   const isAuthed = Boolean(user);
@@ -87,9 +85,6 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
             <span className="text-sm text-gray-700 font-medium">{t('topnav.login')}</span>
           </button>
         )}
-
-        {/* 🌍 语言切换：关于页不显示 */}
-        {!location.pathname.startsWith('/about') && <LanguageSwitcher variant="auto" />}
       </div>
 
       <div className="flex-1" />

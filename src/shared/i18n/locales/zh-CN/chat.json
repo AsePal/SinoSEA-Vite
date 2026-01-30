@@ -39,7 +39,8 @@
     "comingSoon": "（敬请期待）",
     "aboutUs": "关于我们",
     "feedback": "投诉反馈",
-    "notLoggedIn": "你还没有登录"
+    "notLoggedIn": "你还没有登录",
+    "language": "语言"
   },
   "userMenu": {
     "profile": "用户信息",

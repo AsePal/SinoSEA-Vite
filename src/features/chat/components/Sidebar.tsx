@@ -6,10 +6,12 @@ import {
   ChevronUpIcon,
   SunIcon,
   MoonIcon,
+  GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { useTranslation } from 'react-i18next';
 import type { UserInfo } from '../../../shared/types/user.types';
@@ -20,11 +22,29 @@ type SidebarProps = {
   onOpenUserInfo?: () => void;
 };
 
+type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
+
+const LANGS: { code: Lang; label: string }[] = [
+  { code: 'zh-CN', label: '中文' },
+  { code: 'en-US', label: 'English' },
+  { code: 'vi-VN', label: 'Tiếng Việt' },
+  { code: 'th-TH', label: 'ไทย' },
+];
+
+function getLangKey(lng: string) {
+  if (lng.startsWith('zh')) return 'zh';
+  if (lng.startsWith('vi')) return 'vi';
+  if (lng.startsWith('th')) return 'th';
+  return 'en';
+}
+
 export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation('chat');
+  const { t, i18n } = useTranslation('chat');
   const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const langButtonRef = useRef<HTMLDivElement>(null);
 
   // 主题状态：只支持 'light' | 'dark'，默认为 'light'
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => {
@@ -41,6 +61,20 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
     }
   }, [themeMode]);
 
+  // 点击外部关闭语言菜单
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (langButtonRef.current && !langButtonRef.current.contains(e.target as Node)) {
+        setIsLangOpen(false);
+      }
+    };
+
+    if (isLangOpen) {
+      document.addEventListener('mousedown', handler);
+    }
+    return () => document.removeEventListener('mousedown', handler);
+  }, [isLangOpen]);
+
   function go(path: string) {
     navigate(path);
     onClose?.();
@@ -52,6 +86,19 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
     setThemeMode(newMode);
     localStorage.setItem('themeMode', newMode);
   }
+
+  async function switchLang(lang: Lang) {
+    const now = i18n.resolvedLanguage || i18n.language;
+    if (now === lang) {
+      setIsLangOpen(false);
+      return;
+    }
+    localStorage.setItem('lang', lang);
+    await i18n.changeLanguage(lang);
+    setIsLangOpen(false);
+  }
+
+  const current = i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN';
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const isAuthed = Boolean(user);
@@ -73,17 +120,96 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
       {/* 侧栏标题 */}
       <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Asepal</h1>
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-          aria-label="Toggle theme"
-        >
-          {themeMode === 'dark' ? (
-            <SunIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          ) : (
-            <MoonIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* 语言切换按钮容器 */}
+          <div ref={langButtonRef} className="relative">
+            <button
+              onClick={() => setIsLangOpen(!isLangOpen)}
+              className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle language"
+            >
+              <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+
+            {/* 语言选择窗口 */}
+            <AnimatePresence>
+              {isLangOpen && (
+                <motion.div
+                  initial={{ x: -260 }}
+                  animate={{ x: 0 }}
+                  exit={{ x: -260 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  className="fixed left-0 top-0 w-[260px] h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col"
+                >
+                  {/* 窗口顶部标题栏 */}
+                  <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {t('sidebar.language')}
+                    </h2>
+                    <button
+                      onClick={() => setIsLangOpen(false)}
+                      className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                      aria-label="Close language menu"
+                    >
+                      <svg
+                        className="w-5 h-5 text-gray-600 dark:text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* 语言列表 */}
+                  <div className="flex-1 overflow-y-auto px-4 py-4">
+                    <div className="space-y-1">
+                      {LANGS.map((lang) => {
+                        const isActive = current.startsWith(getLangKey(lang.code));
+                        return (
+                          <button
+                            key={lang.code}
+                            type="button"
+                            onClick={() => switchLang(lang.code)}
+                            className={`
+                              w-full text-left px-4 py-3 rounded-lg text-sm transition-colors
+                              ${
+                                isActive
+                                  ? 'bg-blue-500 text-white font-medium'
+                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800'
+                              }
+                            `}
+                          >
+                            {lang.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* 主题切换按钮 */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {themeMode === 'dark' ? (
+              <SunIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            ) : (
+              <MoonIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* 侧栏用户信息 */}

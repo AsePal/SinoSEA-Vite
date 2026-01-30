@@ -34,7 +34,8 @@
     "about": "About Asepal",
     "aboutUs": "About Us",
     "feedback": "Feedback & Complaints",
-    "notLoggedIn": "You are not signed in yet"
+    "notLoggedIn": "You are not signed in yet",
+    "language": "Language"
   },
 
   "message": {
