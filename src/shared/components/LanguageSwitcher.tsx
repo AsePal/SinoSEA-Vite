@@ -6,13 +6,21 @@ type Props = {
   variant?: 'light' | 'dark' | 'auto';
 };
 
-type Lang = 'zh-CN' | 'en-US' | 'vi-VN';
+type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'zh-CN', label: '中文' },
   { code: 'en-US', label: 'English' },
   { code: 'vi-VN', label: 'Tiếng Việt' },
+  { code: 'th-TH', label: 'ไทย' },
 ];
+
+function getLangKey(lng: string) {
+  if (lng.startsWith('zh')) return 'zh';
+  if (lng.startsWith('vi')) return 'vi';
+  if (lng.startsWith('th')) return 'th';
+  return 'en';
+}
 
 export default function LanguageSwitcher({ variant = 'auto' }: Props) {
   const { i18n } = useTranslation();
@@ -22,11 +30,7 @@ export default function LanguageSwitcher({ variant = 'auto' }: Props) {
 
   const [current, setCurrent] = useState(i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN');
 
-  const currentLang = LANGS.find((lang) =>
-    current.startsWith(
-      lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
-    ),
-  );
+  const currentLang = LANGS.find((lang) => current.startsWith(getLangKey(lang.code)));
 
   useEffect(() => {
     const onChanged = (lng: string) => setCurrent(lng);
@@ -121,9 +125,7 @@ export default function LanguageSwitcher({ variant = 'auto' }: Props) {
           >
             <div className="py-1">
               {LANGS.map((lang) => {
-                const isActive = current.startsWith(
-                  lang.code.startsWith('zh') ? 'zh' : lang.code.startsWith('vi') ? 'vi' : 'en',
-                );
+                const isActive = current.startsWith(getLangKey(lang.code));
                 return (
                   <button
                     key={lang.code}
