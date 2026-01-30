@@ -119,19 +119,22 @@ export default function Login() {
       <div
         className={`
           min-h-[600px]
-          rounded-3xl bg-white/20 
-          border border-white/30
-          shadow-[0_30px_80px_rgba(0,0,0,0.45)]
-          px-14 py-16 text-white
+          rounded-3xl bg-white
+          dark:bg-gray-900
+          border border-gray-200 dark:border-gray-700
+          shadow-[0_30px_80px_rgba(0,0,0,0.25)]
+          px-14 py-16
           transition-all duration-400 ease-out
-          ${ready ? 'backdrop-blur-lg' : 'backdrop-blur-none'}
+          ${ready ? 'backdrop-blur-none' : 'backdrop-blur-none'}
         `}
       >
-        <h1 className="text-3xl font-semibold mb-2 text-center">{t('title')}</h1>
-        <p className="text-white/70 mb-10 text-center">{t('subtitle')}</p>
+        <h1 className="text-3xl font-semibold mb-2 text-center text-gray-900 dark:text-gray-100">
+          {t('title')}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-10 text-center">{t('subtitle')}</p>
 
         <input
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30 placeholder-white/60"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           placeholder={t('placeholder.account')}
           value={account}
           onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
@@ -146,7 +149,7 @@ export default function Login() {
         <div className="relative mb-2">
           <input
             type={showPassword ? 'text' : 'password'}
-            className="w-full px-4 py-3 pr-12 rounded-xl bg-white/20 border border-white/30 placeholder-white/60"
+            className="w-full px-4 py-3 pr-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder={t('placeholder.password')}
             value={password}
             onFocus={() => setPasswordFocused(true)}
@@ -162,7 +165,7 @@ export default function Login() {
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
             tabIndex={-1}
           >
             {showPassword ? '🧐' : '🙈'}
@@ -170,12 +173,12 @@ export default function Login() {
         </div>
 
         <div className="min-h-[20px] mb-1">
-          {error && <div className="text-red-300 text-sm">{error}</div>}
+          {error && <div className="text-red-500 text-sm">{error}</div>}
         </div>
 
         <div className="h-[20px] mb-3">
           <div
-            className={`text-amber-300 text-sm transition-opacity ${
+            className={`text-amber-500 text-sm transition-opacity ${
               passwordFocused && capsLockOn ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -192,7 +195,9 @@ export default function Login() {
             transition overflow-hidden
             ${loginAnim === 'error' ? 'animate-shake' : ''}
             ${
-              loading || !agreed ? 'bg-white/30 text-white/60' : 'bg-indigo-500 hover:bg-indigo-400'
+              loading || !agreed
+                ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-300'
+                : 'bg-indigo-600 hover:bg-indigo-500 text-white'
             }
           `}
         >
@@ -204,7 +209,7 @@ export default function Login() {
           />
         </button>
 
-        <label className="mt-4 flex items-center gap-2 text-sm text-white/80">
+        <label className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           <input
             type="checkbox"
             checked={rememberMe}
@@ -213,7 +218,7 @@ export default function Login() {
           {t('option.rememberMe')}
         </label>
 
-        <label className="mt-4 flex items-start gap-2 text-xs text-white/70">
+        <label className="mt-4 flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
           <span>
             {t('agreement.prefix')}
@@ -227,16 +232,16 @@ export default function Login() {
           </span>
         </label>
 
-        <div className="mt-6 flex justify-between text-sm text-white/70">
+        <div className="mt-6 flex justify-between text-sm text-gray-500 dark:text-gray-400">
           <Link to="/register">{t('link.register')}</Link>
           <Link to="/forgot-password">{t('link.forgot')}</Link>
         </div>
         {/* 返回首页*/}
-        <div className="mt-6 pt-4 border-t border-white/10 text-center">
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
           <button
             type="button"
             onClick={() => navigate('/chat')}
-            className=" text-sm tracking-wide text-white/60 hover:text-white transition"
+            className=" text-sm tracking-wide text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition"
           >
             {t('link.backHome')}
           </button>

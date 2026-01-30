@@ -105,29 +105,33 @@ export default function Register() {
 
   return (
     <div className="w-full max-w-2xl px-4">
-      <div className="min-h-[620px] rounded-3xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_30px_80px_rgba(0,0,0,0.45)] px-14 py-16 text-white">
-        <h1 className="text-3xl font-semibold mb-2 text-center">{t('register.title')}</h1>
-        <p className="text-white/70 mb-10 text-center">{t('register.subtitle')}</p>
+      <div className="min-h-[620px] rounded-3xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-[0_30px_80px_rgba(0,0,0,0.25)] px-14 py-16">
+        <h1 className="text-3xl font-semibold mb-2 text-center text-gray-900 dark:text-gray-100">
+          {t('register.title')}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-10 text-center">
+          {t('register.subtitle')}
+        </p>
 
         {/* 验证方式选择 */}
         <div className="relative mb-4">
           <button
             type="button"
             onClick={() => setMethodOpen((v) => !v)}
-            className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-left flex justify-between"
+            className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-left flex justify-between"
           >
-            <span className={method ? 'text-white' : 'text-white/60'}>
+            <span className={method ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'}>
               {method === 'phone'
                 ? t('register.method.phone')
                 : method === 'email'
                   ? t('register.method.email')
                   : t('register.method.label')}
             </span>
-            <span className="text-white/60">▾</span>
+            <span className="text-gray-400">▾</span>
           </button>
 
           {methodOpen && (
-            <div className="absolute z-20 mt-2 w-full rounded-xl overflow-hidden bg-zinc-900/95 border border-white/20">
+            <div className="absolute z-20 mt-2 w-full rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg">
               <button
                 type="button"
                 onClick={() => {
@@ -136,7 +140,7 @@ export default function Register() {
                   setCodeSent(false);
                   setMethodOpen(false);
                 }}
-                className="w-full px-4 py-3 text-left hover:bg-white/10"
+                className="w-full px-4 py-3 text-left text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {t('register.method.phone')}
               </button>
@@ -149,7 +153,7 @@ export default function Register() {
                   setCodeSent(false);
                   setMethodOpen(false);
                 }}
-                className="w-full px-4 py-3 text-left hover:bg-white/10"
+                className="w-full px-4 py-3 text-left text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {t('register.method.email')}
               </button>
@@ -159,7 +163,7 @@ export default function Register() {
 
         <input
           disabled={!method}
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           placeholder={
             method === 'email'
               ? t('register.placeholder.identifier_email')
@@ -171,7 +175,7 @@ export default function Register() {
 
         <input
           disabled={!method}
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           placeholder={t('register.placeholder.username')}
           value={username}
           onChange={(e) => setUsername(e.currentTarget.value.replace(/\s/g, ''))}
@@ -180,7 +184,7 @@ export default function Register() {
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
           <input
             disabled={!codeSent}
-            className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+            className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             placeholder={t('register.placeholder.code')}
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.currentTarget.value.replace(/\s/g, ''))}
@@ -190,7 +194,9 @@ export default function Register() {
             disabled={!method || !identifier || countdown > 0}
             onClick={handleSendCode}
             className={`px-4 py-3 rounded-xl ${
-              countdown > 0 ? 'bg-white/30 text-white/50' : 'bg-indigo-500 hover:bg-indigo-400'
+              countdown > 0
+                ? 'bg-gray-200 text-gray-400 dark:bg-gray-700 dark:text-gray-300'
+                : 'bg-indigo-600 hover:bg-indigo-500 text-white'
             }`}
           >
             {countdown > 0 ? `${countdown}s` : t('register.action.sendCode')}
@@ -200,7 +206,7 @@ export default function Register() {
         <input
           disabled={!codeSent}
           type="password"
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          className="w-full mb-4 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           placeholder={t('register.placeholder.password')}
           value={password}
           onChange={(e) => setPassword(e.currentTarget.value.replace(/\s/g, ''))}
@@ -209,23 +215,23 @@ export default function Register() {
         <input
           disabled={!codeSent}
           type="password"
-          className="w-full mb-6 px-4 py-3 rounded-xl bg-white/20 border border-white/30"
+          className="w-full mb-6 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           placeholder={t('register.placeholder.confirmPassword')}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value.replace(/\s/g, ''))}
         />
 
-        {error && <div className="text-red-300 text-sm mb-4">{error}</div>}
+        {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
         <button
           onClick={handleReset}
           disabled={!codeSent || loading}
-          className="w-full h-14 rounded-xl bg-indigo-500 hover:bg-indigo-400 transition"
+          className="w-full h-14 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition"
         >
           {loading ? t('register.action.submitting') : t('register.action.submit')}
         </button>
 
-        <div className="mt-8 text-sm text-white/70 text-center">
+        <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 text-center">
           <Link to="/login">{t('register.action.back')}</Link>
         </div>
       </div>

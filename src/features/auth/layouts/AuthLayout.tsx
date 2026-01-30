@@ -25,13 +25,7 @@ export default function AuthLayout() {
   }, [location.pathname, navigationType]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* 背景 */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url("/images/login-bg2.webp")' }}
-      />
-      <div className="absolute inset-0 bg-black/50" />
+    <div className="relative min-h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       {/* 内容 */}
       <div className="relative z-10 min-h-screen flex items-center justify-center">
         <div
