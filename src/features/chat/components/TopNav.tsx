@@ -85,6 +85,9 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
             <span className="text-sm text-gray-700 font-medium">{t('topnav.login')}</span>
           </button>
         )}
+
+        {/* Asepal 标题 */}
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 ml-2">Asepal</h1>
       </div>
 
       <div className="flex-1" />
