@@ -8,13 +8,18 @@ import { motion } from 'framer-motion';
 export default function MessageBubble({
   message,
   userAvatar,
+  isActive,
+  onActivate,
 }: {
   message: ChatMessage;
   userAvatar?: string;
+  isActive?: boolean;
+  onActivate?: () => void;
 }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(Boolean(isActive));
   const menuRef = useRef<HTMLDivElement>(null);
 
   function handleCopy() {
@@ -42,6 +47,15 @@ export default function MessageBubble({
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (isActive) {
+      setMenuVisible(true);
+      return;
+    }
+    setMenuVisible(false);
+    setMenuOpen(false);
+  }, [isActive]);
+
   return (
     <motion.div
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} gap-2`}
@@ -59,9 +73,14 @@ export default function MessageBubble({
       )}
 
       {/* 消息容器 */}
-      <div className="flex flex-col max-w-[92%] md:max-w-[75%]">
+      <div className="flex flex-col max-w-[calc(100%-80px)] md:max-w-[calc(75%-80px)]">
         {/* 气泡 */}
         <div
+          onClick={() => {
+            onActivate?.();
+            setMenuVisible(true);
+            setMenuOpen(false);
+          }}
           className={`
             max-w-full
             rounded-[24px]
@@ -88,62 +107,64 @@ export default function MessageBubble({
         </div>
 
         {/* 操作菜单（气泡外底部左侧展开） */}
-        <div className="mt-1 flex items-center">
-          <div ref={menuRef} className="flex items-center">
-            <button
-              type="button"
-              onClick={() => setMenuOpen((v) => !v)}
-              className={`
-                inline-flex items-center justify-center
-                w-6 h-6 rounded-md
-                text-xs font-semibold
-                transition-colors
-                ${
-                  isUser
-                    ? 'text-white/80 hover:text-white dark:text-gray-700 dark:hover:text-gray-900'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white'
-                }
-              `}
-              aria-label="打开操作菜单"
-              title="操作"
-            >
-              ···
-            </button>
-
-            {menuOpen && (
-              <div
+        {menuVisible && (
+          <div className="mt-1 flex items-center">
+            <div ref={menuRef} className="flex items-center">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
                 className={`
-                  ml-2
-                  flex items-center gap-1
-                  px-2 py-1
-                  rounded-lg
-                  text-xs
-                  shadow-sm
-                  origin-left
-                  transition
+                  inline-flex items-center justify-center
+                  w-6 h-6 rounded-md
+                  text-xs font-semibold
+                  transition-colors
                   ${
                     isUser
-                      ? 'bg-gray-900 text-white/90 dark:bg-gray-100 dark:text-gray-900'
-                      : 'bg-white/90 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                      ? 'text-white/80 hover:text-white dark:text-gray-700 dark:hover:text-gray-900'
+                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white'
                   }
                 `}
+                aria-label="打开操作菜单"
+                title="操作"
               >
-                <button
-                  type="button"
-                  onClick={handleCopy}
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10"
+                ···
+              </button>
+
+              {menuOpen && (
+                <div
+                  className={`
+                    ml-2
+                    flex items-center gap-1
+                    px-2 py-1
+                    rounded-lg
+                    text-xs
+                    shadow-sm
+                    origin-left
+                    transition
+                    ${
+                      isUser
+                        ? 'bg-gray-900 text-white/90 dark:bg-gray-100 dark:text-gray-900'
+                        : 'bg-white/90 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                    }
+                  `}
                 >
-                  {copied ? (
-                    <CheckIcon className="w-3.5 h-3.5" />
-                  ) : (
-                    <ClipboardIcon className="w-3.5 h-3.5" />
-                  )}
-                  {copied ? '已复制' : '复制'}
-                </button>
-              </div>
-            )}
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10"
+                  >
+                    {copied ? (
+                      <CheckIcon className="w-3.5 h-3.5" />
+                    ) : (
+                      <ClipboardIcon className="w-3.5 h-3.5" />
+                    )}
+                    {copied ? '已复制' : '复制'}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 用户头像 */}

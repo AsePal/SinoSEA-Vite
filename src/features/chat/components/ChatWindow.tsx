@@ -55,6 +55,7 @@ export default function ChatWindow({
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
 
   const [showLoginError, setShowLoginError] = useState(false);
   const [pendingToSend, setPendingToSend] = useState('');
@@ -252,6 +253,15 @@ export default function ChatWindow({
     if (!autoScroll) return;
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, autoScroll]);
+  useEffect(() => {
+    if (!messages.length) {
+      setActiveMessageId(null);
+      return;
+    }
+    const lastIndex = messages.length - 1;
+    const lastMessageId = messages[lastIndex].messageId ?? `index-${lastIndex}`;
+    setActiveMessageId(lastMessageId);
+  }, [messages]);
   useEffect(() => () => abortRef.current?.abort(), []);
   useEffect(() => {
     return () => {
@@ -281,9 +291,20 @@ export default function ChatWindow({
             setAutoScroll(isNearBottom);
           }}
         >
-          {messages.map((msg, i) => (
-            <MessageBubble key={i} message={msg} userAvatar={userAvatar} />
-          ))}
+          {messages.map((msg, i) => {
+            const messageId = msg.messageId ?? `index-${i}`;
+            const isActive = messageId === activeMessageId;
+
+            return (
+              <MessageBubble
+                key={messageId}
+                message={msg}
+                userAvatar={userAvatar}
+                isActive={isActive}
+                onActivate={() => setActiveMessageId(messageId)}
+              />
+            );
+          })}
           <div ref={bottomRef} />
         </div>
 
