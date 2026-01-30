@@ -200,14 +200,37 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
           {/* 主题切换按钮 */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            className="relative p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors overflow-hidden"
             aria-label="Toggle theme"
           >
-            {themeMode === 'dark' ? (
-              <SunIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            ) : (
-              <MoonIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            )}
+            <div className="relative w-5 h-5">
+              <motion.div
+                key="sun"
+                initial={false}
+                animate={{
+                  scale: themeMode === 'dark' ? 1 : 0,
+                  rotate: themeMode === 'dark' ? 0 : -90,
+                  opacity: themeMode === 'dark' ? 1 : 0,
+                }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="absolute inset-0"
+              >
+                <SunIcon className="w-5 h-5 text-amber-500" />
+              </motion.div>
+              <motion.div
+                key="moon"
+                initial={false}
+                animate={{
+                  scale: themeMode === 'light' ? 1 : 0,
+                  rotate: themeMode === 'light' ? 0 : 90,
+                  opacity: themeMode === 'light' ? 1 : 0,
+                }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="absolute inset-0"
+              >
+                <MoonIcon className="w-5 h-5 text-indigo-500" />
+              </motion.div>
+            </div>
           </button>
         </div>
       </div>

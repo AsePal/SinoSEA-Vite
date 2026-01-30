@@ -86,8 +86,33 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
           </button>
         )}
 
-        {/* Asepal 标题 */}
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 ml-2">Asepal</h1>
+        {/* Asepal 标题 - 字母逐个入场动画 */}
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 ml-2 flex">
+          {'Asepal'.split('').map((char, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: index * 0.08,
+                duration: 0.4,
+                ease: 'easeOut',
+              }}
+            >
+              <motion.span
+                className="inline-block"
+                animate={{ rotate: [0, -3, 3, -2, 2, 0] }}
+                transition={{
+                  delay: index * 0.08 + 0.4,
+                  duration: 0.5,
+                  ease: 'easeInOut',
+                }}
+              >
+                {char}
+              </motion.span>
+            </motion.span>
+          ))}
+        </h1>
       </div>
 
       <div className="flex-1" />
