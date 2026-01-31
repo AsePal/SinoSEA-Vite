@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { UserInfo } from '../../../shared/types/user.types';
@@ -13,10 +13,14 @@ type TopNavProps = {
   onToggleSidebar: () => void;
 };
 
+// Asepal 动画总时长约 2.4s，加 3s 后收起 = 5.4s
+const NICKNAME_AUTO_COLLAPSE_DELAY = 5400;
+
 export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
-  const [showNickname, setShowNickname] = useState(false);
+  // 默认展开昵称
+  const [showNickname, setShowNickname] = useState(true);
 
   const isAuthed = Boolean(user);
 
@@ -24,6 +28,15 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
 
   void onLogout;
   void onEditAvatar;
+
+  // 自动收起昵称：Asepal 动画完成后 3 秒
+  useEffect(() => {
+    if (!isAuthed) return;
+    const timer = setTimeout(() => {
+      setShowNickname(false);
+    }, NICKNAME_AUTO_COLLAPSE_DELAY);
+    return () => clearTimeout(timer);
+  }, [isAuthed]);
 
   return (
     <header className="h-14 flex items-center px-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
@@ -48,7 +61,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
               className="w-8 h-8 rounded-full object-cover ring-2 ring-white/80 dark:ring-white/20"
               alt="user avatar"
             />
-            <AnimatePresence initial={false}>
+            <AnimatePresence initial={true}>
               {showNickname && (
                 <motion.span
                   key="nickname"
@@ -86,33 +99,58 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
           </button>
         )}
 
-        {/* Asepal 标题 - 字母逐个入场动画 */}
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100 ml-2 flex">
-          {'Asepal'.split('').map((char, index) => (
-            <motion.span
-              key={index}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: index * 0.08,
-                duration: 0.4,
-                ease: 'easeOut',
-              }}
-            >
-              <motion.span
-                className="inline-block"
-                animate={{ rotate: [0, -3, 3, -2, 2, 0] }}
-                transition={{
-                  delay: index * 0.08 + 0.4,
-                  duration: 0.5,
-                  ease: 'easeInOut',
-                }}
-              >
-                {char}
-              </motion.span>
-            </motion.span>
-          ))}
-        </h1>
+        {/* Asepal 标题 - 组合动画 */}
+        <div className="relative ml-2 flex flex-col items-start select-none">
+          {/* 字母动画 */}
+          <motion.h1
+            className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex overflow-hidden"
+            initial={{ letterSpacing: '0.3em', scale: 0.9 }}
+            animate={{ letterSpacing: '0.05em', scale: 1 }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
+          >
+            {'Asepal'.split('').map((char, index) => {
+              // 自定义延迟：首字母早，中间字母一起，末尾字母略晚
+              const getDelay = () => {
+                if (index === 0) return 0;
+                if (index === 1) return 0.15;
+                if (index >= 2 && index <= 4) return 0.15 + 0.35 + (index - 2) * 0.02;
+                return 0.15 + 0.35 + (index - 4) * 0.1;
+              };
+              return (
+                <motion.span
+                  key={index}
+                  className="inline-block"
+                  initial={{ opacity: 0, scale: 0.8, y: index >= 2 && index <= 4 ? '-30%' : '-100%' }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{
+                    delay: getDelay(),
+                    duration: index >= 2 && index <= 4 ? 0.15 : 0.35,
+                    ease: 'easeOut',
+                  }}
+                >
+                  {char}
+                </motion.span>
+              );
+            })}
+          </motion.h1>
+
+          {/* 下划线 - 从左绘入，从右消失 */}
+          <motion.div
+            className="h-[2px] bg-gray-900 dark:bg-gray-100 mt-0.5"
+            initial={{ scaleX: 0, transformOrigin: 'left' }}
+            animate={{
+              scaleX: [0, 1, 1, 0],
+              transformOrigin: ['left', 'left', 'right', 'right'],
+            }}
+            transition={{
+              duration: 1.6,
+              times: [0, 0.3, 0.7, 1],
+              ease: 'easeInOut',
+              delay: 0.8,
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
       </div>
 
       <div className="flex-1" />
