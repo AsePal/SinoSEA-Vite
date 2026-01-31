@@ -6,19 +6,21 @@ type Props = {
   variant?: 'light' | 'dark' | 'auto';
 };
 
-type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
+type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH' | 'my-MM';
 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'zh-CN', label: '中文' },
   { code: 'en-US', label: 'English' },
   { code: 'vi-VN', label: 'Tiếng Việt' },
   { code: 'th-TH', label: 'ไทย' },
+  { code: 'my-MM', label: 'မြန်မာ' },
 ];
 
 function getLangKey(lng: string) {
   if (lng.startsWith('zh')) return 'zh';
   if (lng.startsWith('vi')) return 'vi';
   if (lng.startsWith('th')) return 'th';
+  if (lng.startsWith('my')) return 'my';
   return 'en';
 }
 
