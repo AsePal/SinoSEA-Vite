@@ -120,7 +120,11 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
                 <motion.span
                   key={index}
                   className="inline-block"
-                  initial={{ opacity: 0, scale: 0.8, y: index >= 2 && index <= 4 ? '-30%' : '-100%' }}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.8,
+                    y: index >= 2 && index <= 4 ? '-30%' : '-100%',
+                  }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{
                     delay: getDelay(),
