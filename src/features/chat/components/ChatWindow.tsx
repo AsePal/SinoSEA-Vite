@@ -38,13 +38,7 @@ type WelcomeStep = {
   delay: number;
 };
 
-export default function ChatWindow({
-  userAvatar,
-  userId,
-}: {
-  userAvatar?: string;
-  userId?: string;
-}) {
+export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   const { t, i18n } = useTranslation('chat');
   const navigate = useNavigate();
 
@@ -197,9 +191,13 @@ export default function ChatWindow({
     ]);
 
     try {
+      console.log('[Chat] Sending message with conversationId:', conversationId);
+
       await sendChatSSE(
-        { message: content, conversationId: conversationId ?? undefined, userId },
+        { message: content, conversationId: conversationId ?? undefined },
         (event: SSEEvent) => {
+          console.log('[Chat] Received SSE event:', event);
+
           if (event.type === 'delta') {
             assistantText += event.text;
             setMessages((prev) =>
@@ -209,12 +207,14 @@ export default function ChatWindow({
             );
           }
           if (event.type === 'end') {
+            console.log('[Chat] End event, new conversationId:', event.conversationId);
             setConversationId(event.conversationId);
           }
         },
         { signal: controller.signal },
       );
-    } catch {
+    } catch (err) {
+      console.error('[Chat SSE Error]', err);
       setMessages((prev) =>
         prev.map((m) =>
           m.messageId === assistantMessageId

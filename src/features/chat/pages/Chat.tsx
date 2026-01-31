@@ -10,5 +10,5 @@ type LayoutContext = {
 export default function Chat() {
   const { user } = useOutletContext<LayoutContext>();
 
-  return <ChatWindow userAvatar={user?.avatar} userId={user?.nickname} />;
+  return <ChatWindow userAvatar={user?.avatar} />;
 }
