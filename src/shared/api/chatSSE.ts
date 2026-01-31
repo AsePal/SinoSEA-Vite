@@ -113,9 +113,6 @@ export async function sendChatSSE(
   };
 
   try {
-    console.log('[SSE] Starting request to:', API.chat.stream);
-    console.log('[SSE] Payload:', payload);
-
     const res = await fetch(API.chat.stream, {
       method: 'POST',
       headers: {
@@ -125,9 +122,6 @@ export async function sendChatSSE(
       body: JSON.stringify(payload),
       signal: controller.signal,
     });
-
-    console.log('[SSE] Response status:', res.status);
-    console.log('[SSE] Response headers:', Object.fromEntries(res.headers.entries()));
 
     if (!res.ok) {
       throw new SSEError('HTTP_ERROR', `SSE request failed: ${res.status}`, {
@@ -146,10 +140,7 @@ export async function sendChatSSE(
 
     while (true) {
       const { value, done } = await reader.read();
-      if (done) {
-        console.log('[SSE] Stream done');
-        break;
-      }
+      if (done) break;
 
       if (!value || value.length === 0) continue;
 
@@ -157,9 +148,7 @@ export async function sendChatSSE(
       gotFirstByte = true;
       lastActivity = Date.now();
 
-      const chunk = decoder.decode(value, { stream: true });
-      console.log('[SSE] Received chunk:', chunk);
-      buffer += chunk;
+      buffer += decoder.decode(value, { stream: true });
 
       /**
        * SSE 事件以空行分隔（\n\n 或 \r\n\r\n）

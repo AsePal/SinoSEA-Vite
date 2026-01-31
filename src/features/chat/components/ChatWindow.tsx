@@ -86,7 +86,10 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     welcomeTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
     welcomeTimeoutsRef.current = [];
 
+    // 重置消息和会话ID，开始新对话
     setMessages([]);
+    setConversationId(null);
+    
     let totalDelay = 0;
 
     steps.forEach((step) => {
@@ -191,13 +194,9 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     ]);
 
     try {
-      console.log('[Chat] Sending message with conversationId:', conversationId);
-
       await sendChatSSE(
         { message: content, conversationId: conversationId ?? undefined },
         (event: SSEEvent) => {
-          console.log('[Chat] Received SSE event:', event);
-
           if (event.type === 'delta') {
             assistantText += event.text;
             setMessages((prev) =>
@@ -207,7 +206,6 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
             );
           }
           if (event.type === 'end') {
-            console.log('[Chat] End event, new conversationId:', event.conversationId);
             setConversationId(event.conversationId);
           }
         },
