@@ -40,7 +40,12 @@ import privacyEn from './locales/en-US/privacy.json';
 import privacyVi from './locales/vi-VN/privacy.json';
 import privacyTh from './locales/th-TH/privacy.json';
 import privacyMy from './locales/my-MM/privacy.json';
-// ✅ 只在“第一次初始化”时读取 localStorage
+import termsZh from './locales/zh-CN/terms.json';
+import termsEn from './locales/en-US/terms.json';
+import termsVi from './locales/vi-VN/terms.json';
+import termsTh from './locales/th-TH/terms.json';
+import termsMy from './locales/my-MM/terms.json';
+// ✅ 只在"第一次初始化"时读取 localStorage
 const savedLang = localStorage.getItem('lang');
 
 if (!i18n.isInitialized) {
@@ -57,6 +62,7 @@ if (!i18n.isInitialized) {
         about: aboutZh,
         complaint: complaintZh,
         privacy: privacyZh,
+        terms: termsZh,
       },
       'en-US': {
         landing: enLanding,
@@ -66,6 +72,7 @@ if (!i18n.isInitialized) {
         about: aboutEn,
         complaint: complaintEn,
         privacy: privacyEn,
+        terms: termsEn,
       },
       'vi-VN': {
         landing: viLanding,
@@ -75,6 +82,7 @@ if (!i18n.isInitialized) {
         about: aboutVi,
         complaint: complaintVi,
         privacy: privacyVi,
+        terms: termsVi,
       },
       'th-TH': {
         landing: thLanding,
@@ -84,6 +92,7 @@ if (!i18n.isInitialized) {
         about: aboutTh,
         complaint: complaintTh,
         privacy: privacyTh,
+        terms: termsTh,
       },
       'my-MM': {
         landing: myLanding,
@@ -93,6 +102,7 @@ if (!i18n.isInitialized) {
         about: aboutMy,
         complaint: complaintMy,
         privacy: privacyMy,
+        terms: termsMy,
       },
     },
     interpolation: {

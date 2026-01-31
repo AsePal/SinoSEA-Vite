@@ -1,0 +1,85 @@
+{
+  "pageTitle": "Điều khoản sử dụng | Asepal",
+  "backButton": "Quay lại",
+  "backToTop": "Về đầu trang",
+  "header": {
+    "title": "Điều khoản sử dụng Asepal",
+    "subtitle": "Khi sử dụng dịch vụ này, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý với các điều khoản sau"
+  },
+  "lastUpdated": "Cập nhật lần cuối: ",
+  "sections": {
+    "acceptance": {
+      "title": "1. Chấp nhận điều khoản",
+      "content": "Bằng việc truy cập hoặc sử dụng Asepal (sau đây gọi là \"Dịch vụ\"), bạn đồng ý tuân theo các Điều khoản sử dụng này. Nếu bạn không đồng ý với các điều khoản này, vui lòng không sử dụng Dịch vụ."
+    },
+    "description": {
+      "title": "2. Mô tả dịch vụ",
+      "items": [
+        "Trợ lý học tập: Cung cấp hướng dẫn học tập và hỏi đáp",
+        "Tư vấn tâm lý: Cung cấp hỗ trợ sức khỏe tâm thần (phi y tế)",
+        "Hỏi đáp về trường: Trả lời câu hỏi về học tập và cuộc sống trong trường",
+        "Tính năng mạng xã hội trong trường (đang phát triển)"
+      ],
+      "highlight": "Lời khuyên được cung cấp bởi dịch vụ này chỉ mang tính tham khảo và không thể thay thế lời khuyên y tế, pháp lý hoặc học thuật chuyên nghiệp."
+    },
+    "account": {
+      "title": "3. Tài khoản người dùng",
+      "items": [
+        "Cung cấp thông tin đăng ký chính xác, đúng và đầy đủ",
+        "Bảo mật tài khoản và mật khẩu của bạn",
+        "Chịu trách nhiệm cho tất cả hoạt động dưới tài khoản của bạn"
+      ]
+    },
+    "acceptableUse": {
+      "title": "4. Chính sách sử dụng chấp nhận được",
+      "items": [
+        "Không vi phạm bất kỳ luật pháp hoặc quy định nào",
+        "Không lan truyền thông tin bất hợp pháp hoặc có hại",
+        "Không tấn công hoặc xâm phạm bảo mật hệ thống",
+        "Không xâm phạm quyền lợi hợp pháp của người khác"
+      ]
+    },
+    "privacy": {
+      "title": "5. Chính sách bảo mật",
+      "content": "Chúng tôi sẽ xử lý thông tin cá nhân của bạn theo Chính sách bảo mật của chúng tôi.",
+      "link": "Xem Chính sách bảo mật"
+    },
+    "intellectualProperty": {
+      "title": "6. Sở hữu trí tuệ",
+      "content": "Tất cả nội dung trong dịch vụ này được bảo vệ bởi pháp luật và không được sao chép, phân phối hoặc sử dụng cho mục đích thương mại mà không có sự cho phép."
+    },
+    "disclaimer": {
+      "title": "7. Tuyên bố miễn trừ trách nhiệm",
+      "items": [
+        "Dịch vụ có thể gặp gián đoạn hoặc lỗi",
+        "Không đảm bảo nội dung hoàn toàn chính xác hoặc đáng tin cậy"
+      ],
+      "warning": "Nội dung do AI tạo ra chỉ mang tính tham khảo. Người dùng phải tự đánh giá và chịu rủi ro."
+    },
+    "liability": {
+      "title": "8. Giới hạn trách nhiệm",
+      "content": "Trong phạm vi tối đa được pháp luật cho phép, chúng tôi không chịu trách nhiệm cho bất kỳ thiệt hại gián tiếp, ngẫu nhiên, đặc biệt, hậu quả hoặc trừng phạt nào, bao gồm nhưng không giới hạn ở việc mất lợi nhuận, mất dữ liệu hoặc các tổn thất vô hình khác."
+    },
+    "changes": {
+      "title": "9. Thay đổi và chấm dứt dịch vụ",
+      "content": "Chúng tôi bảo lưu quyền sửa đổi, tạm ngừng hoặc chấm dứt Dịch vụ (hoặc bất kỳ phần nào của nó) bất cứ lúc nào mà không cần thông báo trước. Nếu chúng tôi chấm dứt Dịch vụ, chúng tôi sẽ nỗ lực hợp lý để thông báo trước cho người dùng."
+    },
+    "updates": {
+      "title": "10. Cập nhật điều khoản",
+      "content": "Chúng tôi có thể cập nhật các Điều khoản sử dụng này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi nào bằng cách đăng phiên bản mới trên trang này và cập nhật ngày \"Cập nhật lần cuối\". Việc tiếp tục sử dụng Dịch vụ đồng nghĩa với việc chấp nhận các điều khoản đã cập nhật."
+    },
+    "contact": {
+      "title": "11. Thông tin liên hệ",
+      "email": "Email: 1769797300@qq.com",
+      "phone": "Điện thoại: +86 15107851770"
+    }
+  },
+  "agreement": {
+    "title": "Tôi đã đọc và hiểu các Điều khoản sử dụng trên",
+    "button": "Quay lại đăng nhập"
+  },
+  "footer": {
+    "copyright": "© 2026 Asepal | Bảo lưu mọi quyền",
+    "font": "Phông chữ: MiSans"
+  }
+}
