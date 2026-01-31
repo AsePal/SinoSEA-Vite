@@ -197,6 +197,10 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
       await sendChatSSE(
         { message: content, conversationId: conversationId ?? undefined },
         (event: SSEEvent) => {
+          // start 事件：保存 conversationId（首次对话时）
+          if (event.type === 'start' && !conversationId) {
+            setConversationId(event.conversationId);
+          }
           if (event.type === 'delta') {
             assistantText += event.text;
             setMessages((prev) =>
@@ -205,6 +209,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
               ),
             );
           }
+          // end 事件：也保存 conversationId（兜底）
           if (event.type === 'end') {
             setConversationId(event.conversationId);
           }

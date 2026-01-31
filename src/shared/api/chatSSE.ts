@@ -63,9 +63,9 @@ export async function sendChatSSE(
 ) {
   const {
     signal,
-    firstByteTimeoutMs = 15000,
-    idleTimeoutMs = 30000,
-    totalTimeoutMs = 120000,
+    firstByteTimeoutMs = 60000, // 首包超时：60秒（AI生成长文本需要更长时间）
+    idleTimeoutMs = 60000, // 空闲超时：60秒（流式传输中可能有较长间隔）
+    totalTimeoutMs = 300000, // 总时长：5分钟（长文本生成可能需要较长时间）
   } = options;
 
   // 内部 controller，用于超时/内部取消
@@ -193,10 +193,14 @@ export async function sendChatSSE(
     }
 
     /**
-     * 走到这里表示：流“自然结束”但没收到 end。
-     * 这在网络抖动/代理截断时很常见。我们把它当成错误，让 UI 解除卡死并可重试。
+     * 走到这里表示：流"自然结束"但没收到 end。
+     * 如果已经收到了数据，视为正常结束（后端可能没发 end 事件）。
+     * 如果没收到任何数据，才视为错误。
      */
-    throw new SSEError('NETWORK_ERROR', 'SSE stream closed before receiving end');
+    if (!gotFirstByte) {
+      throw new SSEError('NETWORK_ERROR', 'SSE stream closed without receiving any data');
+    }
+    // 收到了数据，正常结束
   } catch (e: any) {
     // Abort 细分：是外部取消？还是超时？
     if (e?.name === 'AbortError' || controller.signal.aborted) {
