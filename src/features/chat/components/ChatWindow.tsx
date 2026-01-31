@@ -89,7 +89,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     // 重置消息和会话ID，开始新对话
     setMessages([]);
     setConversationId(null);
-    
+
     let totalDelay = 0;
 
     steps.forEach((step) => {
