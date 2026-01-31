@@ -40,7 +40,7 @@ export const API: Endpoints = {
     //忘记密码接口
     resetPassword: `${BASE}/auth/reset-password`,
     //验证码发送接口
-    forgotPassword: `${BASE}/auth/forgot-Password`,
+    forgotPassword: `${BASE}/auth/forgot-password`,
   },
   user: {
     //

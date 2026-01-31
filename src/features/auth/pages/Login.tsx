@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import API, { apiRequest } from '../../../shared/api/config';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, UserIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon } from '@heroicons/react/24/solid';
 
 type LoginAnim = 'idle' | 'success' | 'error';
 
@@ -115,41 +116,70 @@ export default function Login() {
   };
 
   return (
-    <div className="w-full max-w-2xl px-4">
+    <div className="w-full max-w-lg px-4">
+      {/* Logo 图标 */}
+      <div className="flex justify-center mb-6">
+        <div className="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+          <SparklesIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+        </div>
+      </div>
+
+      {/* 标题 */}
+      <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-8">
+        {t('title')}
+      </h1>
+
+      {/* 表单卡片 */}
       <div
         className={`
-          min-h-[600px]
-          rounded-3xl bg-white
-          dark:bg-gray-900
-          border border-gray-200 dark:border-gray-700
-          shadow-[0_30px_80px_rgba(0,0,0,0.25)]
-          px-14 py-16
+          rounded-2xl bg-white dark:bg-gray-800
+          shadow-xl dark:shadow-gray-900/50
+          px-8 py-8
           transition-all duration-400 ease-out
-          ${ready ? 'backdrop-blur-none' : 'backdrop-blur-none'}
+          ${ready ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
         `}
       >
-        <h1 className="text-3xl font-semibold mb-2 text-center text-gray-900 dark:text-gray-100">
-          {t('title')}
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-10 text-center">{t('subtitle')}</p>
+        {/* 账号输入 */}
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          {t('label.account')}
+        </label>
+        <div className="relative mb-5">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+            <UserIcon className="w-5 h-5" />
+          </div>
+          <input
+            className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            placeholder={t('placeholder.account')}
+            value={account}
+            onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+              }
+            }}
+          />
+        </div>
 
-        <input
-          className="w-full mb-4 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-          placeholder={t('placeholder.account')}
-          value={account}
-          onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleLogin();
-            }
-          }}
-        />
-
-        <div className="relative mb-2">
+        {/* 密码输入 */}
+        <div className="flex justify-between items-center mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            {t('label.password')}
+          </label>
+          <Link
+            to="/forgot-password"
+            className="text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            {t('link.forgot')}
+          </Link>
+        </div>
+        <div className="relative mb-4">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+            <LockClosedIcon className="w-5 h-5" />
+          </div>
           <input
             type={showPassword ? 'text' : 'password'}
-            className="w-full px-4 py-3 pr-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full pl-12 pr-12 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             placeholder={t('placeholder.password')}
             value={password}
             onFocus={() => setPasswordFocused(true)}
@@ -165,17 +195,19 @@ export default function Login() {
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition"
             tabIndex={-1}
           >
             {showPassword ? '🧐' : '🙈'}
           </button>
         </div>
 
+        {/* 错误提示 */}
         <div className="min-h-[20px] mb-1">
           {error && <div className="text-red-500 text-sm">{error}</div>}
         </div>
 
+        {/* 大写锁定提示 */}
         <div className="h-[20px] mb-3">
           <div
             className={`text-amber-500 text-sm transition-opacity ${
@@ -186,44 +218,60 @@ export default function Login() {
           </div>
         </div>
 
+        {/* 登录按钮 */}
         <button
           onClick={handleLogin}
           disabled={loading || !agreed || loginAnim === 'success'}
           className={`
-            relative w-full h-14 rounded-xl
+            relative w-full h-12 rounded-xl
             flex items-center justify-center gap-2
-            transition overflow-hidden
+            font-medium
+            transition-all duration-300 overflow-hidden
             ${loginAnim === 'error' ? 'animate-shake' : ''}
             ${
               loading || !agreed
-                ? 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-300'
-                : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                ? 'bg-gray-200 text-gray-500 dark:bg-gray-600 dark:text-gray-400 cursor-not-allowed'
+                : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
             }
           `}
         >
           <span>{loading ? t('action.loggingIn') : t('action.login')}</span>
-          <PaperAirplaneIcon
+          <ArrowRightIcon
             className={`w-5 h-5 transition-all duration-500 ${
-              loginAnim === 'success' ? 'translate-x-32 opacity-0 scale-90' : ''
+              loginAnim === 'success' ? 'translate-x-32 opacity-0' : ''
             }`}
           />
         </button>
 
-        <label className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+        {/* 返回主页链接 */}
+        <div className="mt-3 text-right">
+          <button
+            type="button"
+            onClick={() => navigate('/chat')}
+            className="text-sm text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition"
+          >
+            {t('link.backHome')}
+          </button>
+        </div>
+
+        {/* 记住我 */}
+        <label className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
           />
           {t('option.rememberMe')}
         </label>
 
-        <label className="mt-4 flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+        {/* 协议同意 */}
+        <label className="mt-3 flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 dark:border-slate-600 dark:bg-gray-800 dark:text-indigo-400"
+            className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
           />
           <span>
             <Trans
@@ -233,34 +281,30 @@ export default function Login() {
                 privacy: (
                   <Link
                     to="/privacy"
-                    className="underline ml-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+                    className="underline text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                   />
                 ),
                 terms: (
                   <Link
                     to="/terms"
-                    className="underline ml-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+                    className="underline text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                   />
                 ),
               }}
             />
           </span>
         </label>
+      </div>
 
-        <div className="mt-6 flex justify-between text-sm text-gray-500 dark:text-gray-400">
-          <Link to="/register">{t('link.register')}</Link>
-          <Link to="/forgot-password">{t('link.forgot')}</Link>
-        </div>
-        {/* 返回首页*/}
-        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-          <button
-            type="button"
-            onClick={() => navigate('/chat')}
-            className=" text-sm tracking-wide text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition"
-          >
-            {t('link.backHome')}
-          </button>
-        </div>
+      {/* 注册链接 */}
+      <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        {t('link.noAccount')}{' '}
+        <Link
+          to="/register"
+          className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+        >
+          {t('link.register')}
+        </Link>
       </div>
     </div>
   );
