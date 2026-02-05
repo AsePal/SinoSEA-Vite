@@ -97,7 +97,10 @@ export default function MainLayout() {
         </div>
 
         {/* 页面内容：通过 Outlet 渲染子路由 */}
-        <main id="app-scroll-container" className="flex-1 flex overflow-y-auto overflow-x-hidden">
+        <main
+          id="app-scroll-container"
+          className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden"
+        >
           <Outlet context={{ user, refreshUser: fetchUserInfo }} />
         </main>
       </div>

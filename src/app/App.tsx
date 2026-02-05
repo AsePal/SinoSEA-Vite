@@ -6,15 +6,12 @@ import { Chat } from '../features/chat';
 import { PrivacyPolicy } from '../features/privacy';
 import { TermsOfUse } from '../features/terms';
 import { ComplaintPage } from '../features/complaint';
-import { AboutUs } from '../features/about';
 
 import MainLayout from './layouts/MainLayout';
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/chat" replace />} />
-
       {/* 认证页面，使用 AuthLayout */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -24,15 +21,16 @@ export default function App() {
 
       {/* 所有其他页面都使用 MainLayout，显示顶栏和侧栏 */}
       <Route element={<MainLayout />}>
-        <Route path="/landing" element={<Landing />} />
+        <Route index element={<Landing />} />
+        <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/complaint" element={<ComplaintPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfUse />} />
-        <Route path="/about" element={<AboutUs />} />
+        <Route path="/about" element={<Navigate to="/#about-us" replace />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/chat" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

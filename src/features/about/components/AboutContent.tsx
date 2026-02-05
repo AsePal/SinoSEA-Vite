@@ -26,13 +26,16 @@ export default function AboutContent() {
   return (
     <main className="flex-1 text-slate-800 dark:text-slate-100">
       {/* 英雄区域 */}
-      <section className="bg-slate-900 text-white py-16 text-center px-6">
+      <section
+        id="about-hero"
+        className="bg-slate-900 text-white py-16 text-center px-6 scroll-mt-28"
+      >
         <h2 className="text-4xl font-bold mb-3">{t('hero.title')}</h2>
         <p className="max-w-3xl mx-auto text-lg text-slate-200">{t('hero.description')}</p>
       </section>
 
       {/* 关于我们 */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section id="about-us" className="max-w-6xl mx-auto px-6 py-16 scroll-mt-28">
         <h2 className="text-3xl font-bold text-center mb-6 text-slate-900 dark:text-slate-100">
           {t('aboutUs.title')}
         </h2>
@@ -54,7 +57,7 @@ export default function AboutContent() {
       </section>
 
       {/* 团队成员 */}
-      <section className="bg-slate-100 dark:bg-slate-900 py-16 px-6">
+      <section id="team" className="bg-slate-100 dark:bg-slate-900 py-16 px-6 scroll-mt-28">
         <h2 className="text-3xl font-bold text-center mb-6 text-slate-900 dark:text-slate-100">
           {t('team.title')}
         </h2>
@@ -85,7 +88,7 @@ export default function AboutContent() {
       </section>
 
       {/* 项目介绍 */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section id="project" className="max-w-6xl mx-auto px-6 py-16 scroll-mt-28">
         <h2 className="text-3xl font-bold text-center mb-6 text-slate-900 dark:text-slate-100">
           {t('project.title')}
         </h2>

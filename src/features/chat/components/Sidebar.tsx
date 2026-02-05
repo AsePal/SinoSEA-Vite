@@ -288,19 +288,11 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
           >
             {t('sidebar.ask')}
           </MenuItem>
-          {/* 关于星洲 */}
-          <MenuItem
-            icon={InformationCircleIcon}
-            active={location.pathname === '/landing'}
-            onClick={() => go('/landing')}
-          >
-            {t('sidebar.about')}
-          </MenuItem>
           {/* 关于我们 */}
           <MenuItem
             icon={InformationCircleIcon}
-            active={location.pathname === '/about'}
-            onClick={() => go('/about')}
+            active={location.pathname === '/' || location.pathname === '/about'}
+            onClick={() => go('/')}
           >
             {t('sidebar.aboutUs')}
           </MenuItem>
@@ -311,11 +303,6 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
             onClick={() => go('/chat/complaint')}
           >
             {t('sidebar.feedback')}
-          </MenuItem>
-          {/* 聊天室（敬请期待） */}
-          <MenuItem icon={ChatBubbleLeftRightIcon} disabled>
-            {t('sidebar.chatroom')}
-            <span className="ml-1 text-xs opacity-70">{t('sidebar.comingSoon')}</span>
           </MenuItem>
         </DropdownMenu>
       </div>

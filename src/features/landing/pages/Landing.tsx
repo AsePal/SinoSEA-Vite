@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import AboutContent from '../../about/components/AboutContent';
+import AboutFooter from '../../about/components/AboutFooter';
 
 const BASE_DELAY = 0.1;
 const STEP = 0.2;
@@ -37,7 +39,8 @@ function useReveal() {
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { t } = useTranslation('landing');
+  const { t: tLanding } = useTranslation('landing');
+  const { t: tAbout } = useTranslation('about');
   const [leaving, setLeaving] = useState(false);
 
   const problem = useReveal();
@@ -51,8 +54,25 @@ export default function Landing() {
     }, 400);
   };
 
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.replaceState(null, '', `#${id}`);
+  };
+
+  const navItems = [
+    { id: 'hero', label: 'Asepal' },
+    { id: 'problem', label: '问题共鸣' },
+    { id: 'features', label: '我们能做什么' },
+    { id: 'belief', label: '理念' },
+    { id: 'about-us', label: tAbout('aboutUs.title') },
+    { id: 'team', label: tAbout('team.title') },
+    { id: 'project', label: tAbout('project.title') },
+  ];
+
   // ✅ 安全获取 features.items
-  const featureItems = (t('features.items', { returnObjects: true }) as FeatureItem[]) ?? [];
+  const featureItems = (tLanding('features.items', { returnObjects: true }) as FeatureItem[]) ?? [];
 
   return (
     <div
@@ -63,8 +83,32 @@ export default function Landing() {
         ${leaving ? 'animate-fade-out-down' : ''}
       `}
     >
+      {/* ===== Landing Top Nav ===== */}
+      <div className="fixed top-14 left-0 right-0 z-30 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 py-2.5">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollToSection(item.id)}
+                className="text-xs md:text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 占位，防止 fixed 导航遮挡内容 */}
+      <div className="h-10" />
+
       {/* ===== Hero ===== */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6">
+      <section
+        id="hero"
+        className="min-h-screen flex flex-col items-center justify-center text-center px-6 scroll-mt-28"
+      >
         <h1
           className="text-5xl md:text-6xl font-semibold tracking-tight text-blue-600 dark:text-blue-400 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY}s` }}
@@ -76,28 +120,28 @@ export default function Landing() {
           className="mt-4 text-xl text-slate-700 dark:text-gray-300 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP}s` }}
         >
-          {t('hero.subtitle')}
+          {tLanding('hero.subtitle')}
         </p>
 
         <p
           className="mt-10 text-lg text-slate-600 dark:text-gray-400 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 2}s` }}
         >
-          {t('hero.line1')}
+          {tLanding('hero.line1')}
         </p>
 
         <p
           className="text-lg text-slate-600 dark:text-gray-400 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 3}s` }}
         >
-          {t('hero.line2')}
+          {tLanding('hero.line2')}
         </p>
 
         <p
           className="text-lg text-slate-600 dark:text-gray-400 animate-slide-up"
           style={{ animationDelay: `${BASE_DELAY + STEP * 4}s` }}
         >
-          {t('hero.line3')}
+          {tLanding('hero.line3')}
         </p>
 
         <div className="flex flex-col items-center gap-4 mt-3">
@@ -113,13 +157,17 @@ export default function Landing() {
           "
             style={{ animationDelay: `${BASE_DELAY + STEP * 6}s` }}
           >
-            {t('hero.start')}
+            {tLanding('hero.start')}
           </button>
         </div>
       </section>
 
       {/* ===== 问题共鸣 ===== */}
-      <section ref={problem.ref} className="py-28 px-6 bg-white dark:bg-gray-800">
+      <section
+        id="problem"
+        ref={problem.ref}
+        className="py-28 px-6 bg-white dark:bg-gray-800 scroll-mt-28"
+      >
         <div
           className={`
             max-w-4xl mx-auto text-center space-y-6
@@ -127,18 +175,22 @@ export default function Landing() {
           `}
         >
           <h2 className="text-3xl font-bold text-slate-900 dark:text-gray-100">
-            {t('problem.title')}
+            {tLanding('problem.title')}
           </h2>
           <p className="text-lg text-slate-600 dark:text-gray-400 leading-relaxed">
-            {t('problem.desc1')}
+            {tLanding('problem.desc1')}
             <br />
-            {t('problem.desc2')}
+            {tLanding('problem.desc2')}
           </p>
         </div>
       </section>
 
       {/* ===== 功能 ===== */}
-      <section ref={features.ref} className="py-28 px-6 bg-slate-50 dark:bg-gray-900">
+      <section
+        id="features"
+        ref={features.ref}
+        className="py-28 px-6 bg-slate-50 dark:bg-gray-900 scroll-mt-28"
+      >
         <div
           className={`
             max-w-6xl mx-auto
@@ -146,7 +198,7 @@ export default function Landing() {
           `}
         >
           <h2 className="text-3xl font-bold text-center text-slate-900 dark:text-gray-100 mb-14">
-            {t('features.title')}
+            {tLanding('features.title')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -167,7 +219,11 @@ export default function Landing() {
       </section>
 
       {/* ===== 理念 ===== */}
-      <section ref={belief.ref} className="py-24 px-6 bg-white dark:bg-gray-800">
+      <section
+        id="belief"
+        ref={belief.ref}
+        className="py-24 px-6 bg-white dark:bg-gray-800 scroll-mt-28"
+      >
         <div
           className={`
             max-w-3xl mx-auto text-center
@@ -175,12 +231,16 @@ export default function Landing() {
           `}
         >
           <p className="text-xl font-medium text-slate-800 dark:text-gray-200">
-            {t('belief.line1')}
+            {tLanding('belief.line1')}
             <br />
-            {t('belief.line2')}
+            {tLanding('belief.line2')}
           </p>
         </div>
       </section>
+
+      {/* ===== About & About Us ===== */}
+      <AboutContent />
+      <AboutFooter />
     </div>
   );
 }
