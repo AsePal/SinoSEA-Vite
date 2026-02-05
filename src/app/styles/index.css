@@ -26,7 +26,18 @@
          bg-orange-500 hover:bg-orange-600 transition;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 body {
+  margin: 0;
+  padding: 0;
   font-family:
     'MiSans',
     'Noto Color Emoji',

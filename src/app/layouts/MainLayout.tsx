@@ -74,7 +74,7 @@ export default function MainLayout() {
         {/* 遮罩 */}
         <div
           className={`
-              fixed top-[70px] left-0 right-0 bottom-0 z-40
+              fixed top-14 left-0 right-0 bottom-0 z-40
               bg-black/20 transition-opacity duration-300
               ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
             `}
@@ -84,7 +84,7 @@ export default function MainLayout() {
         {/* Sidebar */}
         <div
           className={`
-              fixed top-[70px] left-0 bottom-0 z-50
+              fixed top-14 left-0 bottom-0 z-50
               transition-transform duration-300 ease-out
               ${sidebarOpen ? 'translate-x-0' : '-translate-x-[260px]'}
             `}
