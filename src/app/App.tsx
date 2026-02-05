@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import { Landing } from '../features/landing';
 import { Login, Register, ForgotPassword, AuthLayout } from '../features/auth';
 import { Chat } from '../features/chat';
 import { PrivacyPolicy } from '../features/privacy';
