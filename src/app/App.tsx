@@ -21,13 +21,13 @@ export default function App() {
 
       {/* 所有其他页面都使用 MainLayout，显示顶栏和侧栏 */}
       <Route element={<MainLayout />}>
-        <Route index element={<Landing />} />
-        <Route path="/landing" element={<Navigate to="/" replace />} />
+        <Route index element={<Navigate to="/chat" replace />} />
+        <Route path="/landing" element={<Navigate to="/chat" replace />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/complaint" element={<ComplaintPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfUse />} />
-        <Route path="/about" element={<Navigate to="/#about-us" replace />} />
+        <Route path="/about" element={<Navigate to="/" replace />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
