@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Login, Register, ForgotPassword, AuthLayout } from '../features/auth';
 import { Chat } from '../features/chat';
+import { AboutUs } from '../features/about';
 import { PrivacyPolicy } from '../features/privacy';
 import { TermsOfUse } from '../features/terms';
 import { ComplaintPage } from '../features/complaint';
@@ -26,7 +27,7 @@ export default function App() {
         <Route path="/chat/complaint" element={<ComplaintPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfUse />} />
-        <Route path="/about" element={<Navigate to="/" replace />} />
+        <Route path="/about" element={<AboutUs />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

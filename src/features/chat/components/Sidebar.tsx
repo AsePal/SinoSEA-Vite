@@ -291,8 +291,8 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
           {/* 关于我们 */}
           <MenuItem
             icon={InformationCircleIcon}
-            active={location.pathname === '/' || location.pathname === '/about'}
-            onClick={() => go('/')}
+            active={location.pathname === '/about'}
+            onClick={() => go('/about')}
           >
             {t('sidebar.aboutUs')}
           </MenuItem>
