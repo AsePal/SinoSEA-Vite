@@ -63,9 +63,11 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   type SendPhase = 'idle' | 'out' | 'reset' | 'return';
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
 
+  const MIN_TEXTAREA_HEIGHT = 24;
   const MAX_TEXTAREA_HEIGHT = 180;
   const disabled = loading || !input.trim();
   const [isFlying, setIsFlying] = useState(false);
+  const [textareaHeight, setTextareaHeight] = useState(MIN_TEXTAREA_HEIGHT);
 
   const welcomePlayedRef = useRef(false);
 
@@ -131,10 +133,14 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     const h = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT);
     el.style.height = h + 'px';
     el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
+    setTextareaHeight(h);
   }
 
   function resetTextareaHeight() {
-    textareaRef.current && (textareaRef.current.style.height = 'auto');
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+    setTextareaHeight(MIN_TEXTAREA_HEIGHT);
   }
 
   function triggerSendAnimation() {
@@ -347,7 +353,8 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
             <button
               onClick={handleSend}
               disabled={disabled}
-              className={`w-9 h-9 rounded-full flex items-center justify-center self-end
+              style={{ height: `${textareaHeight}px` }}
+              className={`w-9 rounded-full flex items-center justify-center self-end
               ${
                 disabled
                   ? 'bg-gray-300 text-gray-500 dark:bg-gray-700'
