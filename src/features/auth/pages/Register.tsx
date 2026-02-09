@@ -41,6 +41,15 @@ export default function Register() {
     return () => clearInterval(tmr);
   }, [countdown]);
 
+  const handleIdentifierChange = (value: string) => {
+    const trimmed = value.replace(/\s/g, '');
+    if (method === 'phone') {
+      setIdentifier(trimmed.replace(/\D/g, ''));
+      return;
+    }
+    setIdentifier(trimmed);
+  };
+
   const handleSendCode = async () => {
     if (!method || !identifier) return setError(t('register.error.incomplete'));
 
@@ -237,7 +246,9 @@ export default function Register() {
                 : t('register.placeholder.identifier_phone')
             }
             value={identifier}
-            onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
+            inputMode={method === 'phone' ? 'numeric' : 'email'}
+            pattern={method === 'phone' ? '[0-9]*' : undefined}
+            onChange={(e) => handleIdentifierChange(e.currentTarget.value)}
           />
         </div>
 
