@@ -153,9 +153,11 @@ SinoSEA-Vite/
     │   ├── components/           # 通用UI组件
     │   │   ├── LanguageSwitcher.tsx # 语言切换器
     │   │   ├── modals/           # 通用弹窗组件
-    │   │   │   ├── LogoutConfirmModal.tsx    # 登出确认
-    │   │   │   ├── SuccessToastModal.tsx     # 成功提示
-    │   │   │   └── AvatarEditorModal.tsx     # 头像编辑
+    │   │   │   ├── LoginRequiredModal.tsx # 登录要求弹窗
+    │   │   │   ├── LogoutConfirmModal.tsx # 登出确认
+    │   │   │   ├── SuccessToastModal.tsx  # 成功提示
+    │   │   │   ├── AvatarEditorModal.tsx  # 头像编辑
+    │   │   │   └── UserInfoModal.tsx      # 用户信息弹窗
     │   │   ├── menus/            # 菜单组件
     │   │   │   └── UserAvatarMenu.tsx # 用户头像菜单
     │   │   └── index.ts          # 统一导出
@@ -170,13 +172,50 @@ SinoSEA-Vite/
     │   │   ├── index.ts
     │   │   └── locales/          # 国际化语言文件
     │   │       ├── en-US/        # 英文翻译
-    │   │       │   ├── auth.json     # 认证相关翻译
+    │   │       │   ├── about.json    # 关于页面翻译
+    │   │       │   ├── auth.json     # 认证页面翻译
+    │   │       │   ├── chat.json     # 聊天页面翻译
     │   │       │   ├── common.json   # 通用翻译
-    │   │       │   └── landing.json  # 首页翻译
-    │   │       └── zh-CN/        # 中文翻译
+    │   │       │   ├── complaint.json # 投诉页面翻译
+    │   │       │   ├── landing.json  # 首页翻译
+    │   │       │   ├── privacy.json  # 隐私政策翻译
+    │   │       │   └── terms.json    # 服务条款翻译
+    │   │       ├── zh-CN/        # 简体中文翻译
+    │   │       │   ├── about.json
+    │   │       │   ├── auth.json
+    │   │       │   ├── chat.json
+    │   │       │   ├── common.json
+    │   │       │   ├── complaint.json
+    │   │       │   ├── landing.json
+    │   │       │   ├── privacy.json
+    │   │       │   └── terms.json
+    │   │       ├── my-MM/        # 缅甸语翻译
+    │   │       │   ├── about.json
+    │   │       │   ├── auth.json
+    │   │       │   ├── chat.json
+    │   │       │   ├── common.json
+    │   │       │   ├── complaint.json
+    │   │       │   ├── landing.json
+    │   │       │   ├── privacy.json
+    │   │       │   └── terms.json
+    │   │       ├── th-TH/        # 泰语翻译
+    │   │       │   ├── about.json
+    │   │       │   ├── auth.json
+    │   │       │   ├── chat.json
+    │   │       │   ├── common.json
+    │   │       │   ├── complaint.json
+    │   │       │   ├── landing.json
+    │   │       │   ├── privacy.json
+    │   │       │   └── terms.json
+    │   │       └── vi-VN/        # 越南语翻译
+    │   │           ├── about.json
     │   │           ├── auth.json
+    │   │           ├── chat.json
     │   │           ├── common.json
-    │   │           └── landing.json
+    │   │           ├── complaint.json
+    │   │           ├── landing.json
+    │   │           ├── privacy.json
+    │   │           └── terms.json
     │   │
     │   ├── types/                # 通用类型定义
     │   │   ├── user.types.ts     # 用户相关类型
@@ -361,14 +400,16 @@ SinoSEA-Vite/
 
 ### Components 通用组件
 
-| 文件                            | 类型     | 说明                                                                |
-| ------------------------------- | -------- | ------------------------------------------------------------------- |
-| `LanguageSwitcher.tsx`          | 组件     | 多语言切换器，下拉菜单显示可用语言（中文/英文），切换后应用重新渲染 |
-| `modals/LogoutConfirmModal.tsx` | 组件     | 登出确认弹窗，用户点击登出时显示确认提示                            |
-| `modals/SuccessToastModal.tsx`  | 组件     | 成功操作提示组件，短暂显示成功消息后自动消失                        |
-| `modals/AvatarEditorModal.tsx`  | 组件     | 头像编辑弹窗，支持图片上传、裁剪、预览功能                          |
-| `menus/UserAvatarMenu.tsx`      | 组件     | 用户头像下拉菜单，点击头像展开用户信息、设置、登出等选项            |
-| `index.ts`                      | 导出文件 | 统一导出所有共享组件                                                |
+| 文件                            | 类型     | 说明                                                     |
+| ------------------------------- | -------- | -------------------------------------------------------- |
+| `LanguageSwitcher.tsx`          | 组件     | 多语言切换器，下拉菜单显示可用语言，切换后应用重新渲染   |
+| `modals/LoginRequiredModal.tsx` | 组件     | 登录要求弹窗，提示用户需要登录才能使用功能               |
+| `modals/LogoutConfirmModal.tsx` | 组件     | 登出确认弹窗，用户点击登出时显示确认提示                 |
+| `modals/SuccessToastModal.tsx`  | 组件     | 成功操作提示组件，短暂显示成功消息后自动消失             |
+| `modals/AvatarEditorModal.tsx`  | 组件     | 头像编辑弹窗，支持图片上传、裁剪、预览功能               |
+| `modals/UserInfoModal.tsx`      | 组件     | 用户信息展示弹窗，显示用户详细信息和编辑选项             |
+| `menus/UserAvatarMenu.tsx`      | 组件     | 用户头像下拉菜单，点击头像展开用户信息、设置、登出等选项 |
+| `index.ts`                      | 导出文件 | 统一导出所有共享组件                                     |
 
 ### API 通信层
 
@@ -380,18 +421,17 @@ SinoSEA-Vite/
 
 ### i18n 国际化
 
-| 文件                         | 类型     | 说明                                                        |
-| ---------------------------- | -------- | ----------------------------------------------------------- |
-| `config.ts`                  | 配置文件 | i18next初始化配置：语言检测、默认语言、命名空间、后端连接等 |
-| `index.ts`                   | 导出文件 | 统一导出i18n实例                                            |
-| `locales/en-US/auth.json`    | 翻译文件 | 英文：认证页面翻译（登录、注册、密码重置相关文本）          |
-| `locales/en-US/common.json`  | 翻译文件 | 英文：通用翻译（按钮、菜单、通用术语等）                    |
-| `locales/en-US/landing.json` | 翻译文件 | 英文：首页翻译（Hero区域、功能描述等）                      |
-| `locales/zh-CN/auth.json`    | 翻译文件 | 中文：认证页面翻译                                          |
-| `locales/zh-CN/common.json`  | 翻译文件 | 中文：通用翻译                                              |
-| `locales/zh-CN/landing.json` | 翻译文件 | 中文：首页翻译                                              |
+| 文件             | 类型       | 说明                                                                                                                      |
+| ---------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `config.ts`      | 配置文件   | i18next初始化配置：语言检测、默认语言、命名空间、后端连接等                                                               |
+| `index.ts`       | 导出文件   | 统一导出i18n实例                                                                                                          |
+| `locales/en-US/` | 翻译文件夹 | 英文翻译文件夹：包含about.json, auth.json, chat.json, common.json, complaint.json, landing.json, privacy.json, terms.json |
+| `locales/zh-CN/` | 翻译文件夹 | 简体中文翻译文件夹：包含对应各功能模块的翻译文件                                                                          |
+| `locales/my-MM/` | 翻译文件夹 | 缅甸语翻译文件夹：包含对应各功能模块的翻译文件                                                                            |
+| `locales/th-TH/` | 翻译文件夹 | 泰语翻译文件夹：包含对应各功能模块的翻译文件                                                                              |
+| `locales/vi-VN/` | 翻译文件夹 | 越南语翻译文件夹：包含对应各功能模块的翻译文件                                                                            |
 
-**支持语言**: 简体中文 (zh-CN) 和 英文 (en-US)
+**支持语言**: 英文 (en-US)、简体中文 (zh-CN)、缅甸语 (my-MM)、泰语 (th-TH)、越南语 (vi-VN)
 
 ### Types 通用类型定义
 
