@@ -20,6 +20,7 @@ type SidebarProps = {
   user?: UserInfo | null;
   onClose?: () => void;
   onOpenUserInfo?: () => void;
+  userInfoOpen?: boolean;
 };
 
 type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
@@ -38,7 +39,7 @@ function getLangKey(lng: string) {
   return 'en';
 }
 
-export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps) {
+export default function Sidebar({ user, onClose, onOpenUserInfo, userInfoOpen }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation('chat');
@@ -237,39 +238,74 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
 
       {/* 侧栏用户信息 */}
       <div className="px-4 pt-4">
-        <button
-          type="button"
-          onClick={() => {
-            if (isAuthed) {
-              onOpenUserInfo?.();
-            } else {
-              navigate('/login');
-              onClose?.();
-            }
-          }}
-          className="
-            w-full
-            flex items-center gap-3
-            rounded-xl border border-gray-200 dark:border-gray-700
-            px-3 py-2
-            bg-white/80 hover:bg-white
-            dark:bg-gray-800/80 dark:hover:bg-gray-800
-            transition-colors
-            text-left
-          "
-        >
-          <img
-            src={user?.avatar || DEFAULT_AVATAR}
-            alt="avatar"
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
-          />
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
-              {displayName}
+        <div className="relative">
+          <motion.div
+            aria-hidden="true"
+            layoutId="user-info-card"
+            className="
+              pointer-events-none
+              absolute inset-0
+              w-full
+              flex items-center gap-3
+              rounded-xl border border-gray-200 dark:border-gray-700
+              px-3 py-2
+              bg-white/80
+              dark:bg-gray-800/80
+              text-left
+              opacity-0
+            "
+          >
+            <motion.img
+              src={user?.avatar || DEFAULT_AVATAR}
+              alt="avatar"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+              layoutId="user-info-avatar"
+            />
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                {displayName}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {displayPhone}
+              </div>
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{displayPhone}</div>
-          </div>
-        </button>
+          </motion.div>
+          <button
+            type="button"
+            onClick={() => {
+              if (isAuthed) {
+                onOpenUserInfo?.();
+              } else {
+                navigate('/login');
+                onClose?.();
+              }
+            }}
+            className="
+              w-full
+              flex items-center gap-3
+              rounded-xl border border-gray-200 dark:border-gray-700
+              px-3 py-2
+              bg-white/80 hover:bg-white
+              dark:bg-gray-800/80 dark:hover:bg-gray-800
+              transition-colors
+              text-left
+            "
+          >
+            <img
+              src={user?.avatar || DEFAULT_AVATAR}
+              alt="avatar"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+            />
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                {displayName}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {displayPhone}
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* 主导航区 */}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../shared/types/user.types';
 
@@ -20,8 +20,10 @@ export default function MainLayout() {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+  const [userInfoAnimating, setUserInfoAnimating] = useState(false);
   const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const userInfoAnimTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
@@ -59,6 +61,32 @@ export default function MainLayout() {
     fetchUserInfo();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (userInfoAnimTimer.current) {
+        clearTimeout(userInfoAnimTimer.current);
+      }
+    };
+  }, []);
+
+  const openUserInfo = () => {
+    if (userInfoAnimTimer.current) {
+      clearTimeout(userInfoAnimTimer.current);
+    }
+    setUserInfoAnimating(true);
+    setShowUserInfoModal(true);
+  };
+
+  const closeUserInfo = () => {
+    setShowUserInfoModal(false);
+    if (userInfoAnimTimer.current) {
+      clearTimeout(userInfoAnimTimer.current);
+    }
+    userInfoAnimTimer.current = setTimeout(() => {
+      setUserInfoAnimating(false);
+    }, 400);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-gray-900">
       {/* 顶栏 - 所有页面都显示 */}
@@ -92,7 +120,8 @@ export default function MainLayout() {
           <Sidebar
             user={user}
             onClose={() => setSidebarOpen(false)}
-            onOpenUserInfo={() => setShowUserInfoModal(true)}
+            onOpenUserInfo={openUserInfo}
+            userInfoOpen={userInfoAnimating}
           />
         </div>
 
@@ -145,10 +174,10 @@ export default function MainLayout() {
       <UserInfoModal
         open={showUserInfoModal}
         user={user}
-        onClose={() => setShowUserInfoModal(false)}
+        onClose={closeUserInfo}
         onEditAvatar={() => setShowAvatarEditor(true)}
         onLogout={() => {
-          setShowUserInfoModal(false);
+          closeUserInfo();
           setRestoreUserInfoOnCancel(true);
           setShowLogoutModal(true);
         }}
