@@ -1,12 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CloudArrowUpIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+
+type AttachmentPreview = {
+  id: string;
+  name: string;
+  url: string;
+  isImage: boolean;
+};
 
 export default function ComplaintForm() {
   const { t } = useTranslation('complaint');
   const [type, setType] = useState('');
   const [content, setContent] = useState('');
   const [contact, setContact] = useState('');
+  const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
+  const attachmentInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      attachments.forEach((item) => URL.revokeObjectURL(item.url));
+    };
+  }, [attachments]);
+
+  const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.currentTarget.files ?? []);
+    const next = files.map((file) => ({
+      id: `${file.name}-${file.size}-${file.lastModified}`,
+      name: file.name,
+      url: URL.createObjectURL(file),
+      isImage: file.type.startsWith('image/'),
+    }));
+
+    setAttachments((prev) => {
+      prev.forEach((item) => URL.revokeObjectURL(item.url));
+      return next;
+    });
+  };
+
+  const handleRemoveAttachment = (id: string) => {
+    setAttachments((prev) => {
+      const target = prev.find((item) => item.id === id);
+      if (target) {
+        URL.revokeObjectURL(target.url);
+      }
+      const next = prev.filter((item) => item.id !== id);
+      if (next.length === 0 && attachmentInputRef.current) {
+        attachmentInputRef.current.value = '';
+      }
+      return next;
+    });
+  };
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +66,13 @@ export default function ComplaintForm() {
     setType('');
     setContent('');
     setContact('');
+    setAttachments((prev) => {
+      prev.forEach((item) => URL.revokeObjectURL(item.url));
+      return [];
+    });
+    if (attachmentInputRef.current) {
+      attachmentInputRef.current.value = '';
+    }
   }
 
   return (
@@ -133,8 +184,45 @@ export default function ComplaintForm() {
           <span className="text-xs text-gray-400 dark:text-gray-500">
             {t('form.attachment.hint')}
           </span>
-          <input id="attachment" type="file" multiple className="hidden" />
+          <input
+            ref={attachmentInputRef}
+            id="attachment"
+            type="file"
+            multiple
+            className="hidden"
+            onChange={handleAttachmentChange}
+          />
         </label>
+        {attachments.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+            {attachments.map((item) => (
+              <div
+                key={item.id}
+                className="relative rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#3f3f3f] overflow-hidden"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAttachment(item.id)}
+                  className="absolute right-1 top-1 h-6 w-6 rounded-full bg-black/60 text-white text-sm leading-none hover:bg-black/80 transition"
+                  aria-label={t('form.attachment.remove', { name: item.name })}
+                  title={t('form.attachment.remove', { name: item.name })}
+                >
+                  ×
+                </button>
+                <div className="h-20 w-full bg-gray-100 dark:bg-[#2f2f2f] flex items-center justify-center">
+                  {item.isImage ? (
+                    <img src={item.url} alt={item.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <CloudArrowUpIcon className="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                  )}
+                </div>
+                <div className="px-2 py-1.5 text-xs text-gray-600 dark:text-gray-300 truncate">
+                  {item.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 提交按钮 */}
