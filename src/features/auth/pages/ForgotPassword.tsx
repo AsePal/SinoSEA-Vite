@@ -39,6 +39,15 @@ export default function ForgotPassword() {
     return () => clearInterval(t);
   }, [countdown]);
 
+  const handleIdentifierChange = (value: string) => {
+    const trimmed = value.replace(/\s/g, '');
+    if (method === 'phone') {
+      setIdentifier(trimmed.replace(/\D/g, ''));
+      return;
+    }
+    setIdentifier(trimmed);
+  };
+
   const handleSendCode = async () => {
     if (!method || !identifier) {
       return setError(t('forgot.error.incomplete'));
@@ -235,7 +244,9 @@ export default function ForgotPassword() {
                 : t('forgot.placeholder.identifier_phone')
             }
             value={identifier}
-            onChange={(e) => setIdentifier(e.currentTarget.value.replace(/\s/g, ''))}
+            inputMode={method === 'phone' ? 'numeric' : 'email'}
+            pattern={method === 'phone' ? '[0-9]*' : undefined}
+            onChange={(e) => handleIdentifierChange(e.currentTarget.value)}
           />
         </div>
 
