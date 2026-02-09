@@ -20,7 +20,6 @@ type SidebarProps = {
   user?: UserInfo | null;
   onClose?: () => void;
   onOpenUserInfo?: () => void;
-  userInfoOpen?: boolean;
 };
 
 type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
@@ -39,7 +38,7 @@ function getLangKey(lng: string) {
   return 'en';
 }
 
-export default function Sidebar({ user, onClose, onOpenUserInfo, userInfoOpen }: SidebarProps) {
+export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation('chat');

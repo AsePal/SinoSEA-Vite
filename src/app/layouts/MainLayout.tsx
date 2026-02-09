@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../shared/types/user.types';
 
@@ -20,10 +20,8 @@ export default function MainLayout() {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
-  const [userInfoAnimating, setUserInfoAnimating] = useState(false);
   const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const userInfoAnimTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
@@ -61,30 +59,12 @@ export default function MainLayout() {
     fetchUserInfo();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (userInfoAnimTimer.current) {
-        clearTimeout(userInfoAnimTimer.current);
-      }
-    };
-  }, []);
-
   const openUserInfo = () => {
-    if (userInfoAnimTimer.current) {
-      clearTimeout(userInfoAnimTimer.current);
-    }
-    setUserInfoAnimating(true);
     setShowUserInfoModal(true);
   };
 
   const closeUserInfo = () => {
     setShowUserInfoModal(false);
-    if (userInfoAnimTimer.current) {
-      clearTimeout(userInfoAnimTimer.current);
-    }
-    userInfoAnimTimer.current = setTimeout(() => {
-      setUserInfoAnimating(false);
-    }, 400);
   };
 
   return (
@@ -121,7 +101,6 @@ export default function MainLayout() {
             user={user}
             onClose={() => setSidebarOpen(false)}
             onOpenUserInfo={openUserInfo}
-            userInfoOpen={userInfoAnimating}
           />
         </div>
 
