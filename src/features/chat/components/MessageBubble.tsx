@@ -21,14 +21,29 @@ export default function MessageBubble({
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuVisible, setMenuVisible] = useState(Boolean(isActive));
   const menuRef = useRef<HTMLDivElement>(null);
+  const copyTimerRef = useRef<number | null>(null);
 
   function handleCopy() {
     navigator.clipboard.writeText(message.content).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setMenuOpen(true);
+      if (copyTimerRef.current) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+      copyTimerRef.current = window.setTimeout(() => {
+        setCopied(false);
+        setMenuOpen(false);
+      }, 1500);
     });
-    setMenuOpen(false);
   }
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
