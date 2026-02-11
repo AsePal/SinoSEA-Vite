@@ -15,6 +15,7 @@ export default function ComplaintForm() {
   const [content, setContent] = useState('');
   const [contact, setContact] = useState('');
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
+  const [attachmentError, setAttachmentError] = useState('');
   const attachmentInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -25,17 +26,55 @@ export default function ComplaintForm() {
 
   const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.currentTarget.files ?? []);
-    const next = files.map((file) => ({
-      id: `${file.name}-${file.size}-${file.lastModified}`,
-      name: file.name,
-      url: URL.createObjectURL(file),
-      isImage: file.type.startsWith('image/'),
-    }));
+    if (files.length === 0) return;
 
-    setAttachments((prev) => {
-      prev.forEach((item) => URL.revokeObjectURL(item.url));
-      return next;
-    });
+    const allowedTypes = new Set([
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+    ]);
+
+    const buildNextAttachments = (prev: AttachmentPreview[]) => {
+      const errors: string[] = [];
+      const remaining = Math.max(0, 3 - prev.length);
+
+      const valid: File[] = [];
+      for (const file of files) {
+        const ok = file.type.startsWith('image/') || allowedTypes.has(file.type);
+        if (!ok) {
+          errors.push(`不支持的文件类型：${file.name}`);
+        } else {
+          valid.push(file);
+        }
+      }
+
+      if (remaining === 0) {
+        errors.push('最多只能上传3个文件。');
+        return { next: prev, errors };
+      }
+
+      const accepted = valid.slice(0, remaining).map((file) => ({
+        id: `${file.name}-${file.size}-${file.lastModified}`,
+        name: file.name,
+        url: URL.createObjectURL(file),
+        isImage: file.type.startsWith('image/'),
+      }));
+
+      if (valid.length > remaining) {
+        errors.push('文件数量超出限制，已忽略多余文件。');
+      }
+
+      return { next: [...prev, ...accepted], errors };
+    };
+
+    const result = buildNextAttachments(attachments);
+    setAttachments(result.next);
+    setAttachmentError(result.errors[0] ?? '');
+
+    if (attachmentInputRef.current) {
+      attachmentInputRef.current.value = '';
+    }
   };
 
   const handleRemoveAttachment = (id: string) => {
@@ -66,6 +105,7 @@ export default function ComplaintForm() {
     setType('');
     setContent('');
     setContact('');
+    setAttachmentError('');
     setAttachments((prev) => {
       prev.forEach((item) => URL.revokeObjectURL(item.url));
       return [];
@@ -164,64 +204,79 @@ export default function ComplaintForm() {
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           {t('form.attachment.label')}
         </label>
-        <label
-          htmlFor="attachment"
+        <div
           className="
-            flex flex-col items-center justify-center gap-2
-            w-full h-28
-            rounded-lg
+            w-full rounded-lg
             border-2 border-dashed border-gray-300 dark:border-gray-600
             bg-white dark:bg-[#3f3f3f]
-            cursor-pointer
-            hover:border-[#10a37f] hover:bg-gray-50 dark:hover:bg-[#4a4a4a]
+            p-2.5
+            space-y-3
+            max-h-64 overflow-x-hidden overflow-y-auto
             transition-all duration-200
           "
         >
-          <CloudArrowUpIcon className="w-7 h-7 text-gray-400 dark:text-gray-500" />
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {t('form.attachment.text')}
-          </span>
-          <span className="text-xs text-gray-400 dark:text-gray-500">
-            {t('form.attachment.hint')}
-          </span>
-          <input
-            ref={attachmentInputRef}
-            id="attachment"
-            type="file"
-            multiple
-            className="hidden"
-            onChange={handleAttachmentChange}
-          />
-        </label>
-        {attachments.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-            {attachments.map((item) => (
-              <div
-                key={item.id}
-                className="relative rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#3f3f3f] overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleRemoveAttachment(item.id)}
-                  className="absolute right-1 top-1 h-6 w-6 rounded-full bg-black/60 text-white text-sm leading-none hover:bg-black/80 transition"
-                  aria-label={t('form.attachment.remove', { name: item.name })}
-                  title={t('form.attachment.remove', { name: item.name })}
+          <label
+            htmlFor="attachment"
+            className="
+              flex flex-col items-center justify-center gap-2
+              w-full min-h-24
+              rounded-md
+              border border-transparent
+              cursor-pointer
+              hover:border-[#10a37f] hover:bg-gray-50 dark:hover:bg-[#4a4a4a]
+              transition-all duration-200
+            "
+          >
+            <CloudArrowUpIcon className="w-7 h-7 text-gray-400 dark:text-gray-500" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {t('form.attachment.text')}
+            </span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+              {t('form.attachment.hint')}
+            </span>
+            <input
+              ref={attachmentInputRef}
+              id="attachment"
+              type="file"
+              multiple
+              accept="image/*,.pdf,.doc,.docx,.txt"
+              className="hidden"
+              onChange={handleAttachmentChange}
+            />
+          </label>
+          {attachments.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {attachments.map((item) => (
+                <div
+                  key={item.id}
+                  className="relative rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#3f3f3f] overflow-hidden"
                 >
-                  ×
-                </button>
-                <div className="h-20 w-full bg-gray-100 dark:bg-[#2f2f2f] flex items-center justify-center">
-                  {item.isImage ? (
-                    <img src={item.url} alt={item.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <CloudArrowUpIcon className="w-6 h-6 text-gray-400 dark:text-gray-500" />
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveAttachment(item.id)}
+                    className="absolute right-1 top-1 h-6 w-6 rounded-full bg-black/60 text-white text-sm leading-none hover:bg-black/80 transition"
+                    aria-label={t('form.attachment.remove', { name: item.name })}
+                    title={t('form.attachment.remove', { name: item.name })}
+                  >
+                    ×
+                  </button>
+                  <div className="h-14 w-full bg-gray-100 dark:bg-[#2f2f2f] flex items-center justify-center">
+                    {item.isImage ? (
+                      <img src={item.url} alt={item.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <CloudArrowUpIcon className="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                    )}
+                  </div>
+                  <div className="px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 truncate">
+                    {item.name}
+                  </div>
                 </div>
-                <div className="px-2 py-1.5 text-xs text-gray-600 dark:text-gray-300 truncate">
-                  {item.name}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {attachmentError && (
+          <p className="text-xs text-red-500 dark:text-red-400">{attachmentError}</p>
         )}
       </div>
 

@@ -43,9 +43,9 @@ export default function ComplaintPage() {
   }
 
   return (
-    <div className="w-full min-h-full flex flex-col bg-white dark:bg-[#212121]">
+    <div className="w-full min-h-full bg-white dark:bg-gray-900">
       {/* 内容区域 */}
-      <div className="flex-1 px-4 md:px-6 py-8 md:py-12 flex justify-center">
+      <div className="px-4 md:px-6 py-8 md:py-12 flex justify-center">
         <div className="w-full max-w-2xl space-y-8">
           <ComplaintHeader />
           <ComplaintForm />
