@@ -16,6 +16,7 @@ import { parseJwt } from '../../shared/utils/jwt';
 
 export default function MainLayout() {
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [userLoaded, setUserLoaded] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -32,6 +33,7 @@ export default function MainLayout() {
     // 未登录：保持匿名语义（user === null）
     if (!token) {
       setUser(null);
+      setUserLoaded(true);
       return;
     }
 
@@ -52,6 +54,9 @@ export default function MainLayout() {
       })
       .catch(() => {
         setUser(null);
+      })
+      .finally(() => {
+        setUserLoaded(true);
       });
   }
 
@@ -109,7 +114,7 @@ export default function MainLayout() {
           id="app-scroll-container"
           className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden"
         >
-          <Outlet context={{ user, refreshUser: fetchUserInfo }} />
+          <Outlet context={{ user, userLoaded, refreshUser: fetchUserInfo }} />
         </main>
       </div>
 

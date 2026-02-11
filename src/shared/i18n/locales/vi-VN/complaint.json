@@ -35,6 +35,11 @@
   "message": {
     "incomplete": "Vui lòng điền đầy đủ thông tin khiếu nại",
     "success": "Khiếu nại đã được gửi, cảm ơn bạn về phản hồi 🙏",
-    "error": "Gửi thất bại, vui lòng thử lại sau"
+    "error": "Gửi thất bại, vui lòng thử lại sau",
+    "attachment": {
+      "limit": "Bạn chỉ có thể tải lên tối đa 3 tệp.",
+      "invalid": "Loại tệp không được hỗ trợ: {{name}}",
+      "exceeded": "Đã chọn quá nhiều tệp. Các tệp dư đã bị bỏ qua."
+    }
   }
 }

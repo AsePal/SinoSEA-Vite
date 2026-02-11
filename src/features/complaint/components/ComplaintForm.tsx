@@ -43,14 +43,14 @@ export default function ComplaintForm() {
       for (const file of files) {
         const ok = file.type.startsWith('image/') || allowedTypes.has(file.type);
         if (!ok) {
-          errors.push(`不支持的文件类型：${file.name}`);
+          errors.push(t('message.attachment.invalid', { name: file.name }));
         } else {
           valid.push(file);
         }
       }
 
       if (remaining === 0) {
-        errors.push('最多只能上传3个文件。');
+        errors.push(t('message.attachment.limit'));
         return { next: prev, errors };
       }
 
@@ -62,7 +62,7 @@ export default function ComplaintForm() {
       }));
 
       if (valid.length > remaining) {
-        errors.push('文件数量超出限制，已忽略多余文件。');
+        errors.push(t('message.attachment.exceeded'));
       }
 
       return { next: [...prev, ...accepted], errors };

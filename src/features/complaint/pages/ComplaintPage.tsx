@@ -10,22 +10,24 @@ import type { UserInfo } from '../../../shared/types/user.types';
 
 type LayoutContext = {
   user: UserInfo | null;
+  userLoaded: boolean;
   refreshUser: () => void;
 };
 
 export default function ComplaintPage() {
   const navigate = useNavigate();
-  const { user } = useOutletContext<LayoutContext>();
+  const { user, userLoaded } = useOutletContext<LayoutContext>();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
 
   // 检查登录状态
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
+    if (!userLoaded) return;
     if (!token || !user) {
       setShowLoginRequiredModal(true);
     }
-  }, [user]);
+  }, [user, userLoaded]);
 
   if (showLoginRequiredModal) {
     return (

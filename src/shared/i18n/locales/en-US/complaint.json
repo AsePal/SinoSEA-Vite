@@ -35,6 +35,11 @@
   "message": {
     "incomplete": "Please fill in complete complaint information",
     "success": "Complaint submitted, thank you for your feedback 🙏",
-    "error": "Submission failed, please try again later"
+    "error": "Submission failed, please try again later",
+    "attachment": {
+      "limit": "You can upload up to 3 files.",
+      "invalid": "Unsupported file type: {{name}}",
+      "exceeded": "Too many files selected. Extra files were ignored."
+    }
   }
 }
