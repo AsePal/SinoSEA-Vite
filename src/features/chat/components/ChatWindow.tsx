@@ -43,6 +43,11 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   const navigate = useNavigate();
 
   const abortRef = useRef<AbortController | null>(null);
+  const streamBufferRef = useRef('');
+  const assistantTextRef = useRef('');
+  const activeAssistantIdRef = useRef<string | null>(null);
+  const streamFlushTimerRef = useRef<number | null>(null);
+  const isStreamingRef = useRef(false);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const hasUserChatted = messages.some((m) => m.role === 'user');
@@ -172,7 +177,6 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   }
 
   async function sendMessage(content: string) {
-    let assistantText = '';
     if (!content || loading) return;
 
     abortRef.current?.abort();
@@ -186,6 +190,11 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     setMessages((prev) => [...prev, { role: 'user', content }]);
 
     const assistantMessageId = crypto.randomUUID();
+    assistantTextRef.current = '';
+    streamBufferRef.current = '';
+    activeAssistantIdRef.current = assistantMessageId;
+    isStreamingRef.current = true;
+    startAssistantFlushTimer();
     setMessages((prev) => [
       ...prev,
       {
@@ -204,12 +213,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
             setConversationId(event.conversationId);
           }
           if (event.type === 'delta') {
-            assistantText += event.text;
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.messageId === assistantMessageId ? { ...m, content: assistantText } : m,
-              ),
-            );
+            streamBufferRef.current += event.text;
           }
           // end 事件：也保存 conversationId（兜底）
           if (event.type === 'end') {
@@ -220,18 +224,22 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
       );
     } catch (err) {
       console.error('[Chat SSE Error]', err);
+      flushAssistantBuffer();
       setMessages((prev) =>
         prev.map((m) =>
           m.messageId === assistantMessageId
             ? {
                 ...m,
-                content: assistantText || t('system.timeout'),
+                content: assistantTextRef.current || t('system.timeout'),
               }
             : m,
         ),
       );
     } finally {
+      flushAssistantBuffer();
+      stopAssistantFlushTimer();
       setLoading(false);
+      isStreamingRef.current = false;
       abortRef.current = null;
     }
   }
@@ -256,7 +264,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
 
   useEffect(() => {
     if (!autoScroll) return;
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: isStreamingRef.current ? 'auto' : 'smooth' });
   }, [messages, autoScroll]);
   useEffect(() => {
     if (!messages.length) {
@@ -271,8 +279,33 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   useEffect(() => {
     return () => {
       welcomeTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+      stopAssistantFlushTimer();
     };
   }, []);
+
+  function flushAssistantBuffer() {
+    if (!activeAssistantIdRef.current || !streamBufferRef.current) return;
+    assistantTextRef.current += streamBufferRef.current;
+    streamBufferRef.current = '';
+    const nextText = assistantTextRef.current;
+    const targetId = activeAssistantIdRef.current;
+    setMessages((prev) =>
+      prev.map((m) => (m.messageId === targetId ? { ...m, content: nextText } : m)),
+    );
+  }
+
+  function startAssistantFlushTimer() {
+    if (streamFlushTimerRef.current !== null) return;
+    streamFlushTimerRef.current = window.setInterval(() => {
+      flushAssistantBuffer();
+    }, 50);
+  }
+
+  function stopAssistantFlushTimer() {
+    if (streamFlushTimerRef.current === null) return;
+    window.clearInterval(streamFlushTimerRef.current);
+    streamFlushTimerRef.current = null;
+  }
 
   /* -------------------- UI -------------------- */
 
