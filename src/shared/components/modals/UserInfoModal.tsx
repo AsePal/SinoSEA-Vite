@@ -6,6 +6,7 @@ import {
   PhoneIcon,
 } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { UserInfo } from '../../types/user.types';
 
@@ -28,14 +29,14 @@ export default function UserInfoModal({
   const displayName = user?.nickname || t('userInfoModal.guestName');
   const displayPhone = user?.phone || t('userInfoModal.unboundPhone');
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-[12000] flex items-center justify-center bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -118,6 +119,7 @@ export default function UserInfoModal({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

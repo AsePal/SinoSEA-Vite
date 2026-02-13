@@ -244,6 +244,7 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
             className="
               pointer-events-none
               absolute inset-0
+              z-40
               w-full
               flex items-center gap-3
               rounded-xl border border-gray-200 dark:border-gray-700
