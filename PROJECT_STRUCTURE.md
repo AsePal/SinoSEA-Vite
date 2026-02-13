@@ -7,6 +7,8 @@
 - [核心文件说明](#核心文件说明)
 - [功能模块详解](#功能模块详解)
 - [架构设计理念](#架构设计理念)
+- [国际化与资源](#国际化与资源)
+- [维护约定](#维护约定)
 
 ---
 
@@ -298,8 +300,8 @@ SinoSEA-Vite/
 | `pages/Chat.tsx`               | 页面组件 | 聊天主页面，整合ChatWindow和Sidebar，管理聊天状态和消息列表                   |
 | `components/ChatWindow.tsx`    | 子组件   | 聊天窗口容器，展示消息列表、输入框、发送按钮                                  |
 | `components/MessageBubble.tsx` | 子组件   | 单条消息气泡组件，区分用户消息和AI回复，支持markdown渲染                      |
-| `components/Sidebar.tsx`       | 子组件   | 聊天列表侧边栏，显示历史对话、搜索、新建对话按钮                              |
-| `components/TopNav.tsx`        | 子组件   | 聊天页顶部导航，显示当前对话标题、设置按钮、菜单选项                          |
+| `components/Sidebar.tsx`       | 子组件   | 侧边栏导航（语言切换、主题切换、功能入口、用户入口）                          |
+| `components/TopNav.tsx`        | 子组件   | 顶部导航（侧栏开关、用户入口、品牌动画）                                      |
 | `types/chat.types.ts`          | 类型文件 | TypeScript类型定义：Message（消息）、Conversation（对话）、User（用户）等接口 |
 | `index.ts`                     | 导出文件 | 统一导出聊天模块组件                                                          |
 
@@ -356,7 +358,7 @@ SinoSEA-Vite/
 | `types/complaint.types.ts`       | 类型文件 | TypeScript类型定义：ComplaintFormData（表单数据）、ComplaintStatus（状态）等 |
 | `index.ts`                       | 导出文件 | 统一导出投诉模块                                                             |
 
-**路由**: `/complaint`
+**路由**: `/chat/complaint`
 
 ---
 
@@ -400,16 +402,16 @@ SinoSEA-Vite/
 
 ### Components 通用组件
 
-| 文件                            | 类型     | 说明                                                     |
-| ------------------------------- | -------- | -------------------------------------------------------- |
-| `LanguageSwitcher.tsx`          | 组件     | 多语言切换器，下拉菜单显示可用语言，切换后应用重新渲染   |
-| `modals/LoginRequiredModal.tsx` | 组件     | 登录要求弹窗，提示用户需要登录才能使用功能               |
-| `modals/LogoutConfirmModal.tsx` | 组件     | 登出确认弹窗，用户点击登出时显示确认提示                 |
-| `modals/SuccessToastModal.tsx`  | 组件     | 成功操作提示组件，短暂显示成功消息后自动消失             |
-| `modals/AvatarEditorModal.tsx`  | 组件     | 头像编辑弹窗，支持图片上传、裁剪、预览功能               |
-| `modals/UserInfoModal.tsx`      | 组件     | 用户信息展示弹窗，显示用户详细信息和编辑选项             |
-| `menus/UserAvatarMenu.tsx`      | 组件     | 用户头像下拉菜单，点击头像展开用户信息、设置、登出等选项 |
-| `index.ts`                      | 导出文件 | 统一导出所有共享组件                                     |
+| 文件                            | 类型     | 说明                                                   |
+| ------------------------------- | -------- | ------------------------------------------------------ |
+| `LanguageSwitcher.tsx`          | 组件     | 多语言切换器，下拉菜单显示可用语言，切换后应用重新渲染 |
+| `modals/LoginRequiredModal.tsx` | 组件     | 登录要求弹窗，提示用户需要登录才能使用功能             |
+| `modals/LogoutConfirmModal.tsx` | 组件     | 登出确认弹窗，用户点击登出时显示确认提示               |
+| `modals/SuccessToastModal.tsx`  | 组件     | 成功操作提示组件，短暂显示成功消息后自动消失           |
+| `modals/AvatarEditorModal.tsx`  | 组件     | 头像编辑弹窗，支持图片上传、裁剪、预览功能             |
+| `modals/UserInfoModal.tsx`      | 组件     | 用户信息弹窗（头像/昵称/手机号/登出）                  |
+| `menus/UserAvatarMenu.tsx`      | 组件     | 用户头像菜单                                           |
+| `index.ts`                      | 导出文件 | 统一导出所有共享组件                                   |
 
 ### API 通信层
 
@@ -432,6 +434,35 @@ SinoSEA-Vite/
 | `locales/vi-VN/` | 翻译文件夹 | 越南语翻译文件夹：包含对应各功能模块的翻译文件                                                                            |
 
 **支持语言**: 英文 (en-US)、简体中文 (zh-CN)、缅甸语 (my-MM)、泰语 (th-TH)、越南语 (vi-VN)
+
+---
+
+## 🌐 国际化与资源
+
+- 所有界面文本以 `src/shared/i18n/locales/<lang>/` 为准，文案按功能模块拆分。
+- UI 图标按钮的悬停文本统一走 i18n（如 `chat.json` 下的 `tooltips`）。
+- 公共图片资源统一放置在 `public/images/`，头像占位与品牌图标在 `public/` 根目录。
+
+---
+
+## 🧩 维护约定
+
+1. **新增页面**
+   - 在对应 `features/<feature>/pages/` 创建页面组件。
+   - 在模块 `index.ts` 中导出。
+   - 在 `src/app/App.tsx` 中添加路由。
+
+2. **新增共享组件**
+   - 放在 `src/shared/components/` 下对应子目录。
+   - 在 `src/shared/components/index.ts` 统一导出。
+
+3. **国际化新增字段**
+   - 所有语言文件同步新增相同 key。
+   - 建议先补齐 `zh-CN` 与 `en-US`，再扩展到其他语言。
+
+4. **API 接入**
+   - 所有请求从 `src/shared/api/config.ts` 统一管理。
+   - SSE 相关逻辑集中在 `src/shared/api/chatSSE.ts`。
 
 ### Types 通用类型定义
 
