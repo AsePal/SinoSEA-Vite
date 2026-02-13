@@ -26,6 +26,18 @@
     "logout": "ထွက်ရန်"
   },
 
+  "tooltips": {
+    "toggleSidebar": "ဘေးဘား ဖွင့်/ပိတ်",
+    "toggleNickname": "အမည်ပြ မပြ ချိန်ညှိ",
+    "login": "ဝင်ရောက်ရန် / မှတ်ပုံတင်ရန်",
+    "openUserInfo": "အသုံးပြုသူ အချက်အလက် ဖွင့်ရန်",
+    "goLogin": "ဝင်ရောက်ရန် သွားရန်",
+    "toggleLanguage": "ဘာသာစကား ပြောင်းရန်",
+    "closeLanguageMenu": "ဘာသာစကား မီနူး ပိတ်ရန်",
+    "toggleTheme": "အပြင်အဆင် ပြောင်းရန်",
+    "openUserMenu": "အသုံးပြုသူ မီနူး ဖွင့်ရန်"
+  },
+
   "sidebar": {
     "title": "လမ်းညွှန်",
     "ask": "Asepal ကို မေးပါ",

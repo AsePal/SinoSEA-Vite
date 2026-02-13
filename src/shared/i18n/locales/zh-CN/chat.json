@@ -26,6 +26,18 @@
     "logout": "退出登录"
   },
 
+  "tooltips": {
+    "toggleSidebar": "展开/收起侧栏",
+    "toggleNickname": "展开/收起昵称",
+    "login": "登录/注册",
+    "openUserInfo": "打开用户信息",
+    "goLogin": "前往登录",
+    "toggleLanguage": "切换语言",
+    "closeLanguageMenu": "关闭语言菜单",
+    "toggleTheme": "切换主题",
+    "openUserMenu": "打开用户菜单"
+  },
+
   "message": {
     "copy": "复制",
     "copied": "已复制"

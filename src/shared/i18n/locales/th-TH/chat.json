@@ -26,6 +26,18 @@
     "logout": "ออกจากระบบ"
   },
 
+  "tooltips": {
+    "toggleSidebar": "สลับแถบด้านข้าง",
+    "toggleNickname": "สลับการแสดงชื่อเล่น",
+    "login": "เข้าสู่ระบบ / สมัครสมาชิก",
+    "openUserInfo": "เปิดข้อมูลผู้ใช้",
+    "goLogin": "ไปที่การเข้าสู่ระบบ",
+    "toggleLanguage": "สลับภาษา",
+    "closeLanguageMenu": "ปิดเมนูภาษา",
+    "toggleTheme": "สลับธีม",
+    "openUserMenu": "เปิดเมนูผู้ใช้"
+  },
+
   "sidebar": {
     "title": "การนำทาง",
     "ask": "ถาม Asepal",

@@ -26,6 +26,18 @@
     "logout": "Sign out"
   },
 
+  "tooltips": {
+    "toggleSidebar": "Toggle sidebar",
+    "toggleNickname": "Toggle nickname",
+    "login": "Sign in / Register",
+    "openUserInfo": "Open profile",
+    "goLogin": "Go to sign in",
+    "toggleLanguage": "Toggle language",
+    "closeLanguageMenu": "Close language menu",
+    "toggleTheme": "Toggle theme",
+    "openUserMenu": "Open user menu"
+  },
+
   "sidebar": {
     "title": "Navigation",
     "ask": "Ask Asepal",

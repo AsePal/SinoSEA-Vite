@@ -42,6 +42,8 @@ export default function UserAvatarMenu({
          dark:bg-white/10 dark:hover:bg-white/20
           transition
         "
+        aria-label={t('tooltips.openUserMenu')}
+        title={t('tooltips.openUserMenu')}
       >
         <img
           src={user.avatar}

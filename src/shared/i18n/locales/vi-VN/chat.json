@@ -26,6 +26,18 @@
     "logout": "Đăng xuất"
   },
 
+  "tooltips": {
+    "toggleSidebar": "Bật/tắt thanh bên",
+    "toggleNickname": "Bật/tắt biệt danh",
+    "login": "Đăng nhập / Đăng ký",
+    "openUserInfo": "Mở thông tin người dùng",
+    "goLogin": "Đi tới đăng nhập",
+    "toggleLanguage": "Chuyển ngôn ngữ",
+    "closeLanguageMenu": "Đóng menu ngôn ngữ",
+    "toggleTheme": "Chuyển chế độ giao diện",
+    "openUserMenu": "Mở menu người dùng"
+  },
+
   "message": {
     "copy": "Sao chép",
     "copied": "Đã sao chép"
