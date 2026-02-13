@@ -1,4 +1,10 @@
-import { XMarkIcon, PencilSquareIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import {
+  XMarkIcon,
+  PencilSquareIcon,
+  ArrowLeftOnRectangleIcon,
+  UserCircleIcon,
+  PhoneIcon,
+} from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { UserInfo } from '../../types/user.types';
@@ -30,11 +36,13 @@ export default function UserInfoModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={onClose}
         >
           <motion.div
             layoutId="user-info-card"
             transition={{ type: 'spring', stiffness: 260, damping: 28 }}
             className="w-[92%] max-w-md rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
@@ -84,12 +92,14 @@ export default function UserInfoModal({
                   type="button"
                   className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                 >
+                  <UserCircleIcon className="w-4 h-4" />
                   {t('userInfoModal.editNickname')}
                 </button>
                 <button
                   type="button"
                   className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                 >
+                  <PhoneIcon className="w-4 h-4" />
                   {t('userInfoModal.editPhone')}
                 </button>
 
