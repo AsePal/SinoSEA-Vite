@@ -64,6 +64,22 @@ export default function MainLayout() {
     fetchUserInfo();
   }, []);
 
+  useEffect(() => {
+    const onPointerEnter = (event: PointerEvent) => {
+      const el = (event.target as HTMLElement | null)?.closest?.(
+        '[data-tooltip]',
+      ) as HTMLElement | null;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      el.setAttribute('data-tooltip-pos', rect.top < 60 ? 'bottom' : 'top');
+    };
+
+    document.addEventListener('pointerover', onPointerEnter);
+    return () => {
+      document.removeEventListener('pointerover', onPointerEnter);
+    };
+  }, []);
+
   const openUserInfo = () => {
     setShowUserInfoModal(true);
   };

@@ -125,9 +125,9 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
           <div ref={langButtonRef} className="relative">
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              className="ui-tooltip p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={t('tooltips.toggleLanguage')}
-              title={t('tooltips.toggleLanguage')}
+              data-tooltip={t('tooltips.toggleLanguage')}
             >
               <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
@@ -149,9 +149,9 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
                     </h2>
                     <button
                       onClick={() => setIsLangOpen(false)}
-                      className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                      className="ui-tooltip p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                       aria-label={t('tooltips.closeLanguageMenu')}
-                      title={t('tooltips.closeLanguageMenu')}
+                      data-tooltip={t('tooltips.closeLanguageMenu')}
                     >
                       <svg
                         className="w-5 h-5 text-gray-600 dark:text-gray-400"
@@ -202,9 +202,9 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
           {/* 主题切换按钮 */}
           <button
             onClick={toggleTheme}
-            className="relative p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors overflow-hidden"
+            className="ui-tooltip relative p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
             aria-label={t('tooltips.toggleTheme')}
-            title={t('tooltips.toggleTheme')}
+            data-tooltip={t('tooltips.toggleTheme')}
           >
             <div className="relative w-5 h-5">
               <motion.div
@@ -284,7 +284,7 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
               }
             }}
             className="
-              w-full
+              ui-tooltip w-full
               flex items-center gap-3
               rounded-xl border border-gray-200 dark:border-gray-700
               px-3 py-2
@@ -294,7 +294,7 @@ export default function Sidebar({ user, onClose, onOpenUserInfo }: SidebarProps)
               text-left
             "
             aria-label={isAuthed ? t('tooltips.openUserInfo') : t('tooltips.goLogin')}
-            title={isAuthed ? t('tooltips.openUserInfo') : t('tooltips.goLogin')}
+            data-tooltip={isAuthed ? t('tooltips.openUserInfo') : t('tooltips.goLogin')}
           >
             <img
               src={user?.avatar || DEFAULT_AVATAR}

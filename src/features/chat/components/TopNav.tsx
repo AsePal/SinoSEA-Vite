@@ -44,9 +44,9 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="ui-tooltip p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label={t('tooltips.toggleSidebar')}
-          title={t('tooltips.toggleSidebar')}
+          data-tooltip={t('tooltips.toggleSidebar')}
         >
           <Bars3Icon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </button>
@@ -55,10 +55,10 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
           <button
             type="button"
             onClick={() => setShowNickname((v) => !v)}
-            className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100/80 dark:bg-white/10 transition-colors"
+            className="ui-tooltip flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100/80 dark:bg-white/10 transition-colors"
             aria-expanded={showNickname}
             aria-label={t('tooltips.toggleNickname')}
-            title={t('tooltips.toggleNickname')}
+            data-tooltip={t('tooltips.toggleNickname')}
           >
             <img
               src={user!.avatar || DEFAULT_AVATAR}
@@ -85,7 +85,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
             type="button"
             onClick={() => navigate('/login')}
             className="
-              flex items-center gap-2
+              ui-tooltip flex items-center gap-2
               px-2 py-1 
               rounded-full
               bg-white/40
@@ -93,7 +93,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
               transition
             "
             aria-label={t('tooltips.login')}
-            title={t('tooltips.login')}
+            data-tooltip={t('tooltips.login')}
           >
             <img
               src={DEFAULT_AVATAR}

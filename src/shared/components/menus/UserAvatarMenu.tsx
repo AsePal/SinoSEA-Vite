@@ -35,7 +35,7 @@ export default function UserAvatarMenu({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="
-          flex items-center gap-2 
+          ui-tooltip flex items-center gap-2 
           px-2 py-1
           rounded-full
          bg-gray-100/80 hover:bg-gray-200
@@ -43,7 +43,7 @@ export default function UserAvatarMenu({
           transition
         "
         aria-label={t('tooltips.openUserMenu')}
-        title={t('tooltips.openUserMenu')}
+        data-tooltip={t('tooltips.openUserMenu')}
       >
         <img
           src={user.avatar}

@@ -236,6 +236,46 @@ input[type='password']::-webkit-textfield-decoration-container {
 .animate-shake {
   animation: shake 0.4s ease-in-out;
 }
+
+/* ChatGPT-like tooltip */
+.ui-tooltip {
+  position: relative;
+  overflow: visible;
+}
+
+.ui-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(2px);
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(20, 20, 20, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  z-index: 9999;
+}
+
+.ui-tooltip[data-tooltip-pos='bottom']::after {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+
+.ui-tooltip:hover::after,
+.ui-tooltip:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 /*左滑进入动画*/
 @keyframes auth-slide {
   from {
