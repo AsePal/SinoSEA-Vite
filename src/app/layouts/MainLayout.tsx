@@ -232,8 +232,16 @@ export default function MainLayout() {
       <SessionExpiredModal
         open={showSessionExpired}
         onConfirm={() => {
+          localStorage.removeItem('auth_token');
+          setUser(null);
           setShowSessionExpired(false);
           navigate('/login');
+        }}
+        onBackHome={() => {
+          localStorage.removeItem('auth_token');
+          setUser(null);
+          setShowSessionExpired(false);
+          navigate('/');
         }}
       />
     </div>

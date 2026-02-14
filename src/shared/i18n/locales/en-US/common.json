@@ -15,7 +15,8 @@
     "sessionExpired": {
       "title": "Session Expired",
       "description": "Your login session has expired. Please sign in again to continue.",
-      "confirm": "Sign in again"
+      "confirm": "Sign in again",
+      "backHome": "Back to home"
     }
   }
 }

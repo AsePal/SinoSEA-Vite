@@ -15,7 +15,8 @@
     "sessionExpired": {
       "title": "Phiên đăng nhập đã hết hạn",
       "description": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",
-      "confirm": "Đăng nhập lại"
+      "confirm": "Đăng nhập lại",
+      "backHome": "Về trang chủ"
     }
   }
 }
