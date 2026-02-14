@@ -35,6 +35,8 @@ const LANGS: { code: Lang; label: string }[] = [
   { code: 'th-TH', label: 'ไทย' },
 ];
 
+const CONVERSATION_PAGE_SIZE = 8;
+
 function getLangKey(lng: string) {
   if (lng.startsWith('zh')) return 'zh';
   if (lng.startsWith('vi')) return 'vi';
@@ -131,7 +133,7 @@ export default function Sidebar({
 
       try {
         const data = await fetchChatConversations({
-          limit: 20,
+          limit: CONVERSATION_PAGE_SIZE,
           lastId: reset ? undefined : (lastConversationIdRef.current ?? undefined),
         });
 
@@ -379,7 +381,7 @@ export default function Sidebar({
       </div>
 
       {/* 主导航区 */}
-      <div className="flex-1 min-h-0 overflow-hidden px-4 py-4 space-y-2">
+      <div className="flex-1 min-h-0 overflow-hidden px-4 py-4 flex flex-col gap-2">
         {/* 功能导航下拉菜单 */}
         <DropdownMenu
           title={t('sidebar.title')}
@@ -414,89 +416,92 @@ export default function Sidebar({
           title={t('sidebar.history')}
           isOpen={isHistoryOpen}
           onToggle={() => setIsHistoryOpen(!isHistoryOpen)}
+          fillHeight
         >
-          <div className="h-[calc(100vh-330px)] min-h-[220px] flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto pr-1 space-y-2">
-              {!isAuthed && (
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {t('sidebar.historyLoginTip')}
-                </div>
-              )}
+          <div className="flex-1 min-h-0 flex flex-col">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1 overscroll-contain">
+              <div className="space-y-2 pb-2">
+                {!isAuthed && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {t('sidebar.historyLoginTip')}
+                  </div>
+                )}
+
+                {isAuthed && (
+                  <>
+                    {convError && (
+                      <div className="text-xs text-red-500 dark:text-red-400">{convError}</div>
+                    )}
+
+                    {!convError && !convLoading && conversations.length === 0 && (
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {t('sidebar.noHistory')}
+                      </div>
+                    )}
+
+                    {conversations.length > 0 && (
+                      <ul className="space-y-1 pb-14">
+                        {conversations.map((item) => (
+                          <li
+                            key={item.id}
+                            onClick={() => {
+                              onSelectConversation?.(item.id);
+                              onClose?.();
+                            }}
+                            className={`
+                            rounded-md border px-3 py-2
+                            text-sm transition-colors cursor-pointer
+                            ${
+                              item.id === activeConversationId
+                                ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-100'
+                                : 'border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 text-gray-800 dark:text-gray-100 hover:border-blue-500 dark:hover:border-blue-400'
+                            }
+                          `}
+                          >
+                            <div className="truncate font-medium">
+                              {item.title || t('sidebar.untitledConversation')}
+                            </div>
+                            <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                              {new Date(item.updatedAt).toLocaleString()}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {convLoading && (
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {t('sidebar.loadingHistory')}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
 
               {isAuthed && (
-                <>
-                  {convError && (
-                    <div className="text-xs text-red-500 dark:text-red-400">{convError}</div>
-                  )}
-
-                  {!convError && !convLoading && conversations.length === 0 && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('sidebar.noHistory')}
-                    </div>
-                  )}
-
-                  {conversations.length > 0 && (
-                    <ul className="space-y-1">
-                      {conversations.map((item) => (
-                        <li
-                          key={item.id}
-                          onClick={() => {
-                            onSelectConversation?.(item.id);
-                            onClose?.();
-                          }}
-                          className={`
-                          rounded-md border px-3 py-2
-                          text-sm transition-colors cursor-pointer
-                          ${
-                            item.id === activeConversationId
-                              ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-100'
-                              : 'border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 text-gray-800 dark:text-gray-100 hover:border-blue-500 dark:hover:border-blue-400'
-                          }
-                        `}
-                        >
-                          <div className="truncate font-medium">
-                            {item.title || t('sidebar.untitledConversation')}
-                          </div>
-                          <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                            {new Date(item.updatedAt).toLocaleString()}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {convLoading && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {t('sidebar.loadingHistory')}
-                    </div>
-                  )}
-                </>
+                <div className="sticky bottom-0 pt-2 pb-1 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-xs">
+                  <button
+                    type="button"
+                    onClick={() => loadConversations(false)}
+                    disabled={convLoading || (!hasMoreConversations && !convError)}
+                    className="
+                      w-full text-xs font-medium
+                      px-3 py-2
+                      rounded-md border border-gray-200 dark:border-gray-700
+                      text-gray-700 dark:text-gray-200
+                      hover:bg-gray-100 dark:hover:bg-gray-800
+                      disabled:opacity-60 disabled:cursor-not-allowed
+                    "
+                  >
+                    {convLoading
+                      ? t('sidebar.loadingHistory')
+                      : !hasMoreConversations && !convError
+                        ? t('sidebar.loadedAll')
+                        : t('sidebar.loadMore')}
+                  </button>
+                </div>
               )}
             </div>
-
-            {isAuthed && (
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => loadConversations(false)}
-                  disabled={convLoading || (!hasMoreConversations && !convError)}
-                  className="
-                    w-full text-xs font-medium
-                    px-3 py-2
-                    rounded-md border border-gray-200 dark:border-gray-700
-                    text-gray-700 dark:text-gray-200
-                    hover:bg-gray-100 dark:hover:bg-gray-800
-                    disabled:opacity-60 disabled:cursor-not-allowed
-                  "
-                >
-                  {convLoading
-                    ? t('sidebar.loadingHistory')
-                    : !hasMoreConversations && !convError
-                      ? t('sidebar.loadedAll')
-                      : t('sidebar.loadMore')}
-                </button>
-              </div>
-            )}
           </div>
         </DropdownMenu>
       </div>
@@ -508,17 +513,19 @@ function DropdownMenu({
   title,
   isOpen,
   onToggle,
+  fillHeight = false,
   children,
 }: {
   title: string;
   isOpen: boolean;
   onToggle: () => void;
+  fillHeight?: boolean;
   children: React.ReactNode;
 }) {
   const childrenArray = Array.isArray(children) ? children : [children];
 
   return (
-    <div className="space-y-1">
+    <div className={fillHeight ? 'flex-1 min-h-0 flex flex-col' : 'space-y-1'}>
       <button
         onClick={onToggle}
         className="
@@ -534,26 +541,38 @@ function DropdownMenu({
       </button>
       <div
         className={`
-          overflow-hidden transition-all duration-300 ease-in-out
-          ${isOpen ? 'max-h-[600px] mt-1' : 'max-h-0'}
+          transition-all duration-300 ease-in-out
+          ${
+            fillHeight
+              ? isOpen
+                ? 'flex-1 min-h-0 mt-1'
+                : 'overflow-hidden max-h-0'
+              : isOpen
+                ? 'overflow-hidden max-h-150 mt-1'
+                : 'overflow-hidden max-h-0'
+          }
         `}
       >
-        <div className="space-y-1">
-          {childrenArray.map((child, index) => (
-            <div
-              key={index}
-              className={`
-                transition-all duration-300 ease-out
-                ${isOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}
-              `}
-              style={{
-                transitionDelay: isOpen ? `${index * 50}ms` : '0ms',
-              }}
-            >
-              {child}
-            </div>
-          ))}
-        </div>
+        {fillHeight ? (
+          <div className="h-full min-h-0 flex flex-col">{children}</div>
+        ) : (
+          <div className="space-y-1">
+            {childrenArray.map((child, index) => (
+              <div
+                key={index}
+                className={`
+                  transition-all duration-300 ease-out
+                  ${isOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}
+                `}
+                style={{
+                  transitionDelay: isOpen ? `${index * 50}ms` : '0ms',
+                }}
+              >
+                {child}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
