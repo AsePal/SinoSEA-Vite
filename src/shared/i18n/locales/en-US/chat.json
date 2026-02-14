@@ -1,7 +1,7 @@
 {
   "welcome": {
     "guest": {
-      "line1": "Hello there! I am Asepal 🌟",
+      "line1": "Hello there! I am AsePal 🌟",
       "line2": "I can help you understand campus rules and regulations, provide information about life around the campus, and also serve as your friendly little mental wellness guide."
     },
     "authed": {
@@ -16,7 +16,7 @@
   },
 
   "system": {
-    "thinking": "Asepal is thinking…",
+    "thinking": "AsePal is thinking…",
     "timeout": "⚠️ The response was interrupted (network issue or timeout). You can try again.",
     "error": "⚠️ Something went wrong. Please try again later."
   },
@@ -40,10 +40,10 @@
 
   "sidebar": {
     "title": "Navigation",
-    "ask": "Ask Asepal",
+    "ask": "Ask AsePal",
     "chatroom": "Chat Room",
     "comingSoon": "(Coming Soon)",
-    "about": "About Asepal",
+    "about": "About AsePal",
     "aboutUs": "About Us",
     "feedback": "Feedback & Complaints",
     "notLoggedIn": "You are not signed in yet",

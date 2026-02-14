@@ -1,16 +1,16 @@
 {
-  "pageTitle": "Điều khoản sử dụng | Asepal",
+  "pageTitle": "Điều khoản sử dụng | AsePal",
   "backButton": "Quay lại",
   "backToTop": "Về đầu trang",
   "header": {
-    "title": "Điều khoản sử dụng Asepal",
+    "title": "Điều khoản sử dụng AsePal",
     "subtitle": "Khi sử dụng dịch vụ này, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý với các điều khoản sau"
   },
   "lastUpdated": "Cập nhật lần cuối: ",
   "sections": {
     "acceptance": {
       "title": "1. Chấp nhận điều khoản",
-      "content": "Bằng việc truy cập hoặc sử dụng Asepal (sau đây gọi là \"Dịch vụ\"), bạn đồng ý tuân theo các Điều khoản sử dụng này. Nếu bạn không đồng ý với các điều khoản này, vui lòng không sử dụng Dịch vụ."
+      "content": "Bằng việc truy cập hoặc sử dụng AsePal (sau đây gọi là \"Dịch vụ\"), bạn đồng ý tuân theo các Điều khoản sử dụng này. Nếu bạn không đồng ý với các điều khoản này, vui lòng không sử dụng Dịch vụ."
     },
     "description": {
       "title": "2. Mô tả dịch vụ",
@@ -79,7 +79,7 @@
     "button": "Quay lại đăng nhập"
   },
   "footer": {
-    "copyright": "© 2026 Asepal | Bảo lưu mọi quyền",
+    "copyright": "© 2026 AsePal | Bảo lưu mọi quyền",
     "font": "Phông chữ: MiSans"
   }
 }

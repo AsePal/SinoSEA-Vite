@@ -186,7 +186,7 @@ export default function Sidebar({
     >
       {/* 侧栏标题 */}
       <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Asepal</h1>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AsePal</h1>
         <div className="flex items-center gap-2">
           {/* 语言切换按钮容器 */}
           <div ref={langButtonRef} className="relative">

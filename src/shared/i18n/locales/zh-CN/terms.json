@@ -1,16 +1,16 @@
 {
-  "pageTitle": "使用条款 | Asepal",
+  "pageTitle": "使用条款 | AsePal",
   "backButton": "返回",
   "backToTop": "回到顶部",
   "header": {
-    "title": "Asepal 使用条款",
+    "title": "AsePal 使用条款",
     "subtitle": "使用本服务即表示您已阅读、理解并同意以下条款"
   },
   "lastUpdated": "最后更新日期：",
   "sections": {
     "acceptance": {
       "title": "1. 接受条款",
-      "content": "通过访问或使用 Asepal（以下简称「本服务」），您同意受本使用条款的约束。如果您不同意这些条款，请不要使用本服务。"
+      "content": "通过访问或使用 AsePal（以下简称「本服务」），您同意受本使用条款的约束。如果您不同意这些条款，请不要使用本服务。"
     },
     "description": {
       "title": "2. 服务描述",
@@ -72,7 +72,7 @@
     "button": "返回登录页面"
   },
   "footer": {
-    "copyright": "© 2026 Asepal | 版权所有",
+    "copyright": "© 2026 AsePal | 版权所有",
     "font": "字体：MiSans"
   }
 }

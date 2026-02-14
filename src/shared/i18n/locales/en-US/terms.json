@@ -1,16 +1,16 @@
 {
-  "pageTitle": "Terms of Use | Asepal",
+  "pageTitle": "Terms of Use | AsePal",
   "backButton": "Back",
   "backToTop": "Back to Top",
   "header": {
-    "title": "Asepal Terms of Use",
+    "title": "AsePal Terms of Use",
     "subtitle": "By using this service, you acknowledge that you have read, understood, and agreed to the following terms"
   },
   "lastUpdated": "Last updated: ",
   "sections": {
     "acceptance": {
       "title": "1. Acceptance of Terms",
-      "content": "By accessing or using Asepal (hereinafter referred to as \"the Service\"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Service."
+      "content": "By accessing or using AsePal (hereinafter referred to as \"the Service\"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Service."
     },
     "description": {
       "title": "2. Service Description",
@@ -79,7 +79,7 @@
     "button": "Back to Login"
   },
   "footer": {
-    "copyright": "© 2026 Asepal | All Rights Reserved",
+    "copyright": "© 2026 AsePal | All Rights Reserved",
     "font": "Font: MiSans"
   }
 }

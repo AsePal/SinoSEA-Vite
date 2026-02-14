@@ -105,7 +105,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
           </button>
         )}
 
-        {/* Asepal 标题 - 组合动画 */}
+        {/* AsePal 标题 - 组合动画 */}
         <div className="relative ml-2 flex flex-col items-start select-none">
           {/* 字母动画 */}
           <motion.h1
@@ -114,7 +114,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
             animate={{ letterSpacing: '0.05em', scale: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
           >
-            {'Asepal'.split('').map((char, index) => {
+            {'AsePal'.split('').map((char, index) => {
               // 自定义延迟：首字母早，中间字母一起，末尾字母略晚
               const getDelay = () => {
                 if (index === 0) return 0;
