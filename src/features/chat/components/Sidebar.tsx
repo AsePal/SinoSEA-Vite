@@ -379,42 +379,72 @@ export default function Sidebar({
       </div>
 
       {/* 主导航区 */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
+      <div className="flex-1 min-h-0 overflow-hidden px-4 py-4 space-y-2">
+        {/* 功能导航下拉菜单 */}
+        <DropdownMenu
+          title={t('sidebar.title')}
+          isOpen={isMenuOpen}
+          onToggle={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <MenuItem
+            icon={CpuChipIcon}
+            active={location.pathname === '/chat'}
+            onClick={() => go('/chat')}
+          >
+            {t('sidebar.ask')}
+          </MenuItem>
+          <MenuItem
+            icon={InformationCircleIcon}
+            active={location.pathname === '/about'}
+            onClick={() => go('/about')}
+          >
+            {t('sidebar.aboutUs')}
+          </MenuItem>
+          <MenuItem
+            icon={ChatBubbleLeftRightIcon}
+            active={location.pathname === '/chat/complaint'}
+            onClick={() => go('/chat/complaint')}
+          >
+            {t('sidebar.feedback')}
+          </MenuItem>
+        </DropdownMenu>
+
         {/* 历史对话 */}
         <DropdownMenu
           title={t('sidebar.history')}
           isOpen={isHistoryOpen}
           onToggle={() => setIsHistoryOpen(!isHistoryOpen)}
         >
-          <div className="space-y-2">
-            {!isAuthed && (
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                {t('sidebar.historyLoginTip')}
-              </div>
-            )}
+          <div className="h-[calc(100vh-330px)] min-h-[220px] flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto pr-1 space-y-2">
+              {!isAuthed && (
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {t('sidebar.historyLoginTip')}
+                </div>
+              )}
 
-            {isAuthed && (
-              <>
-                {convError && (
-                  <div className="text-xs text-red-500 dark:text-red-400">{convError}</div>
-                )}
+              {isAuthed && (
+                <>
+                  {convError && (
+                    <div className="text-xs text-red-500 dark:text-red-400">{convError}</div>
+                  )}
 
-                {!convError && !convLoading && conversations.length === 0 && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('sidebar.noHistory')}
-                  </div>
-                )}
+                  {!convError && !convLoading && conversations.length === 0 && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('sidebar.noHistory')}
+                    </div>
+                  )}
 
-                {conversations.length > 0 && (
-                  <ul className="space-y-1 max-h-64 overflow-y-auto pr-1">
-                    {conversations.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => {
-                          onSelectConversation?.(item.id);
-                          onClose?.();
-                        }}
-                        className={`
+                  {conversations.length > 0 && (
+                    <ul className="space-y-1">
+                      {conversations.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => {
+                            onSelectConversation?.(item.id);
+                            onClose?.();
+                          }}
+                          className={`
                           rounded-md border px-3 py-2
                           text-sm transition-colors cursor-pointer
                           ${
@@ -423,76 +453,51 @@ export default function Sidebar({
                               : 'border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 text-gray-800 dark:text-gray-100 hover:border-blue-500 dark:hover:border-blue-400'
                           }
                         `}
-                      >
-                        <div className="truncate font-medium">
-                          {item.title || t('sidebar.untitledConversation')}
-                        </div>
-                        <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                          {new Date(item.updatedAt).toLocaleString()}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                        >
+                          <div className="truncate font-medium">
+                            {item.title || t('sidebar.untitledConversation')}
+                          </div>
+                          <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                            {new Date(item.updatedAt).toLocaleString()}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                {convLoading && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('sidebar.loadingHistory')}
-                  </div>
-                )}
+                  {convLoading && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('sidebar.loadingHistory')}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
 
-                {hasMoreConversations && (
-                  <button
-                    type="button"
-                    onClick={() => loadConversations(false)}
-                    disabled={convLoading}
-                    className="
-                      w-full text-xs font-medium
-                      px-3 py-2
-                      rounded-md border border-gray-200 dark:border-gray-700
-                      text-gray-700 dark:text-gray-200
-                      hover:bg-gray-100 dark:hover:bg-gray-800
-                      disabled:opacity-60
-                    "
-                  >
-                    {convLoading ? t('sidebar.loadingHistory') : t('sidebar.loadMore')}
-                  </button>
-                )}
-              </>
+            {isAuthed && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => loadConversations(false)}
+                  disabled={convLoading || (!hasMoreConversations && !convError)}
+                  className="
+                    w-full text-xs font-medium
+                    px-3 py-2
+                    rounded-md border border-gray-200 dark:border-gray-700
+                    text-gray-700 dark:text-gray-200
+                    hover:bg-gray-100 dark:hover:bg-gray-800
+                    disabled:opacity-60 disabled:cursor-not-allowed
+                  "
+                >
+                  {convLoading
+                    ? t('sidebar.loadingHistory')
+                    : !hasMoreConversations && !convError
+                      ? t('sidebar.loadedAll')
+                      : t('sidebar.loadMore')}
+                </button>
+              </div>
             )}
           </div>
-        </DropdownMenu>
-
-        {/* 功能导航下拉菜单 */}
-        <DropdownMenu
-          title={t('sidebar.title')}
-          isOpen={isMenuOpen}
-          onToggle={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {/* 询问星洲 */}
-          <MenuItem
-            icon={CpuChipIcon}
-            active={location.pathname === '/chat'}
-            onClick={() => go('/chat')}
-          >
-            {t('sidebar.ask')}
-          </MenuItem>
-          {/* 关于我们 */}
-          <MenuItem
-            icon={InformationCircleIcon}
-            active={location.pathname === '/about'}
-            onClick={() => go('/about')}
-          >
-            {t('sidebar.aboutUs')}
-          </MenuItem>
-          {/* 投诉反馈 */}
-          <MenuItem
-            icon={ChatBubbleLeftRightIcon}
-            active={location.pathname === '/chat/complaint'}
-            onClick={() => go('/chat/complaint')}
-          >
-            {t('sidebar.feedback')}
-          </MenuItem>
         </DropdownMenu>
       </div>
     </aside>

@@ -52,6 +52,7 @@
     "historyLoginTip": "เข้าสู่ระบบเพื่อดูประวัติการสนทนา",
     "noHistory": "ยังไม่มีการสนทนา",
     "loadMore": "โหลดเพิ่มเติม",
+    "loadedAll": "โหลดครบแล้ว",
     "loadingHistory": "กำลังโหลดรายการสนทนา…",
     "conversationError": "ไม่สามารถโหลดรายการสนทนา",
     "untitledConversation": "การสนทนาไม่มีชื่อ"
