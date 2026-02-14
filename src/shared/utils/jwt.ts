@@ -19,3 +19,14 @@ export function parseJwt(token: string): any | null {
     return null;
   }
 }
+
+/**
+ * 判断 JWT token 是否已过期
+ * 基于 token payload 中的 `exp`（秒级时间戳）进行判断
+ */
+export function isTokenExpired(token: string): boolean {
+  const payload = parseJwt(token);
+  if (!payload || typeof payload.exp !== 'number') return true;
+  // exp 是秒级时间戳，Date.now() 是毫秒
+  return Date.now() >= payload.exp * 1000;
+}

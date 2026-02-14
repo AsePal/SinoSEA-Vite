@@ -11,6 +11,11 @@
       "title": "You are not signed in",
       "description": "We couldn't retrieve your user information. Please sign in again.",
       "confirm": "Go to sign in"
+    },
+    "sessionExpired": {
+      "title": "Session Expired",
+      "description": "Your login session has expired. Please sign in again to continue.",
+      "confirm": "Sign in again"
     }
   }
 }

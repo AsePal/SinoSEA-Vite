@@ -110,7 +110,7 @@ export async function apiRequest(
   // token 失效统一处理
   if (res.status === 401) {
     localStorage.removeItem(TOKEN_KEY);
-    //throw new Error('UNAUTHORIZED');
+    window.dispatchEvent(new CustomEvent('auth:expired'));
   }
 
   return res;

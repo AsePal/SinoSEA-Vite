@@ -11,6 +11,11 @@
       "title": "Bạn dường như chưa đăng nhập",
       "description": "Không thể lấy thông tin người dùng của bạn, vui lòng đăng nhập lại và thử lại.",
       "confirm": "Đi đến trang đăng nhập"
+    },
+    "sessionExpired": {
+      "title": "Phiên đăng nhập đã hết hạn",
+      "description": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",
+      "confirm": "Đăng nhập lại"
     }
   }
 }

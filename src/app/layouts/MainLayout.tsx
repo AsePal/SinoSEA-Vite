@@ -9,10 +9,11 @@ import {
   AvatarEditorModal,
   SuccessToastModal,
   UserInfoModal,
+  SessionExpiredModal,
 } from '../../shared/components';
 
 import API, { apiRequest } from '../../shared/api/config';
-import { parseJwt } from '../../shared/utils/jwt';
+import { parseJwt, isTokenExpired } from '../../shared/utils/jwt';
 
 export default function MainLayout() {
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -24,6 +25,7 @@ export default function MainLayout() {
   const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [showSessionExpired, setShowSessionExpired] = useState(false);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
@@ -35,6 +37,15 @@ export default function MainLayout() {
     if (!token) {
       setUser(null);
       setUserLoaded(true);
+      return;
+    }
+
+    // 前端主动检测 token 是否过期
+    if (isTokenExpired(token)) {
+      localStorage.removeItem('auth_token');
+      setUser(null);
+      setUserLoaded(true);
+      setShowSessionExpired(true);
       return;
     }
 
@@ -63,6 +74,29 @@ export default function MainLayout() {
 
   useEffect(() => {
     fetchUserInfo();
+  }, []);
+
+  // 定时检测 token 过期（每 30 秒）
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const token = localStorage.getItem('auth_token');
+      if (token && isTokenExpired(token)) {
+        localStorage.removeItem('auth_token');
+        setUser(null);
+        setShowSessionExpired(true);
+      }
+    }, 30_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // 监听 API 层 401 事件
+  useEffect(() => {
+    const handler = () => {
+      setUser(null);
+      setShowSessionExpired(true);
+    };
+    window.addEventListener('auth:expired', handler);
+    return () => window.removeEventListener('auth:expired', handler);
   }, []);
 
   useEffect(() => {
@@ -191,6 +225,15 @@ export default function MainLayout() {
           closeUserInfo();
           setRestoreUserInfoOnCancel(true);
           setShowLogoutModal(true);
+        }}
+      />
+
+      {/* 登录过期提示 */}
+      <SessionExpiredModal
+        open={showSessionExpired}
+        onConfirm={() => {
+          setShowSessionExpired(false);
+          navigate('/login');
         }}
       />
     </div>
