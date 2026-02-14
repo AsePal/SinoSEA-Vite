@@ -15,6 +15,7 @@ export default function Chat() {
   return (
     <ChatWindow
       userAvatar={user?.avatar}
+      isAuthed={Boolean(user)}
       conversationId={activeConversationId}
       onConversationIdChange={setActiveConversationId}
     />

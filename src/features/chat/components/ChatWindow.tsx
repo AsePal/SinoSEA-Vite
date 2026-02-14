@@ -41,12 +41,14 @@ type WelcomeStep = {
 
 type ChatWindowProps = {
   userAvatar?: string;
+  isAuthed?: boolean;
   conversationId?: string | null;
   onConversationIdChange?: (id: string | null) => void;
 };
 
 export default function ChatWindow({
   userAvatar,
+  isAuthed: isAuthedProp,
   conversationId: conversationIdProp,
   onConversationIdChange,
 }: ChatWindowProps) {
@@ -100,6 +102,10 @@ export default function ChatWindow({
     return Boolean(token);
   }
 
+  function getCurrentAuthed() {
+    return typeof isAuthedProp === 'boolean' ? isAuthedProp : isAuthed();
+  }
+
   /* -------------------- 欢迎语（i18n） -------------------- */
 
   function playWelcomeSteps(steps: WelcomeStep[]) {
@@ -122,14 +128,14 @@ export default function ChatWindow({
     });
   }
 
-  function initConversation() {
+  function initConversation(force = false) {
     // 语言动作切换控制台打印
     // console.log('initConversation called');
-    const authed = isAuthed();
+    const authed = getCurrentAuthed();
     const currentLang = i18n.resolvedLanguage || i18n.language;
 
     // 如果外部指定了会话，跳过欢迎语
-    if (conversationIdProp) {
+    if (conversationIdProp && !force) {
       return;
     }
 
@@ -333,6 +339,14 @@ export default function ChatWindow({
       initConversation();
     }
   }, [i18n.language, hasUserChatted]);
+
+  useEffect(() => {
+    if (lastAuthedRef.current === null) return;
+    const authed = getCurrentAuthed();
+    if (authed !== lastAuthedRef.current) {
+      initConversation(true);
+    }
+  }, [isAuthedProp]);
 
   const [autoScroll, setAutoScroll] = useState(true);
 

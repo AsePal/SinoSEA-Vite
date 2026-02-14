@@ -192,6 +192,7 @@ export default function MainLayout() {
         onConfirm={() => {
           localStorage.removeItem('auth_token');
           setUser(null);
+          setActiveConversationId(null);
           setShowLogoutModal(false);
           setRestoreUserInfoOnCancel(false);
           navigate('/chat');
@@ -234,12 +235,14 @@ export default function MainLayout() {
         onConfirm={() => {
           localStorage.removeItem('auth_token');
           setUser(null);
+          setActiveConversationId(null);
           setShowSessionExpired(false);
           navigate('/login');
         }}
         onBackHome={() => {
           localStorage.removeItem('auth_token');
           setUser(null);
+          setActiveConversationId(null);
           setShowSessionExpired(false);
           navigate('/');
         }}
