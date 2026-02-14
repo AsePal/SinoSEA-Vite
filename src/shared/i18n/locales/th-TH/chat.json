@@ -47,7 +47,14 @@
     "aboutUs": "เกี่ยวกับเรา",
     "feedback": "ข้อเสนอแนะและการร้องเรียน",
     "notLoggedIn": "คุณยังไม่ได้เข้าสู่ระบบ",
-    "language": "ภาษา"
+    "language": "ภาษา",
+    "history": "ประวัติการสนทนา",
+    "historyLoginTip": "เข้าสู่ระบบเพื่อดูประวัติการสนทนา",
+    "noHistory": "ยังไม่มีการสนทนา",
+    "loadMore": "โหลดเพิ่มเติม",
+    "loadingHistory": "กำลังโหลดรายการสนทนา…",
+    "conversationError": "ไม่สามารถโหลดรายการสนทนา",
+    "untitledConversation": "การสนทนาไม่มีชื่อ"
   },
 
   "message": {

@@ -24,6 +24,8 @@ type Endpoints = {
   chat: {
     send: string;
     history: string;
+    conversations: string;
+    messages: string;
     stream: string;
   };
 };
@@ -61,6 +63,10 @@ export const API: Endpoints = {
     send: `${BASE}/chat/send`,
     //
     history: `${BASE}/chat/history`,
+    // 对话列表
+    conversations: `${BASE}/chat/conversations`,
+    // 对话历史消息
+    messages: `${BASE}/chat/messages`,
     // ⭐ SSE 流式接口
     stream: `${BASE}/chat/stream`,
   },

@@ -23,6 +23,7 @@ export default function MainLayout() {
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
@@ -122,6 +123,8 @@ export default function MainLayout() {
             user={user}
             onClose={() => setSidebarOpen(false)}
             onOpenUserInfo={openUserInfo}
+            onSelectConversation={(id) => setActiveConversationId(id)}
+            activeConversationId={activeConversationId}
           />
         </div>
 
@@ -130,7 +133,15 @@ export default function MainLayout() {
           id="app-scroll-container"
           className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden"
         >
-          <Outlet context={{ user, userLoaded, refreshUser: fetchUserInfo }} />
+          <Outlet
+            context={{
+              user,
+              userLoaded,
+              refreshUser: fetchUserInfo,
+              activeConversationId,
+              setActiveConversationId,
+            }}
+          />
         </main>
       </div>
 

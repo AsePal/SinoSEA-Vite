@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
@@ -8,9 +8,10 @@ import MessageBubble from './MessageBubble';
 import LoginErrorModal from '../../auth/components/LoginErrorModal';
 
 // SSE
-import type { ChatMessage, SSEEvent } from '../types/chat.types';
+import type { ChatMessage, SSEEvent, ChatHistoryMessage } from '../types/chat.types';
 import { sendChatSSE } from '../../../shared/api/chatSSE';
 import type { TFunction } from 'i18next';
+import { fetchChatMessages } from '../../../shared/api/chat';
 function getWelcomeSteps(t: TFunction, authed: boolean): WelcomeStep[] {
   if (authed) {
     return [
@@ -38,7 +39,17 @@ type WelcomeStep = {
   delay: number;
 };
 
-export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
+type ChatWindowProps = {
+  userAvatar?: string;
+  conversationId?: string | null;
+  onConversationIdChange?: (id: string | null) => void;
+};
+
+export default function ChatWindow({
+  userAvatar,
+  conversationId: conversationIdProp,
+  onConversationIdChange,
+}: ChatWindowProps) {
   const { t, i18n } = useTranslation('chat');
   const navigate = useNavigate();
 
@@ -52,7 +63,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const hasUserChatted = messages.some((m) => m.role === 'user');
   const [input, setInput] = useState('');
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(conversationIdProp ?? null);
   const [loading, setLoading] = useState(false);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
 
@@ -73,6 +84,11 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
   const [isFlying, setIsFlying] = useState(false);
 
   const welcomePlayedRef = useRef(false);
+
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const historyLoadingRef = useRef(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [historyHasMore, setHistoryHasMore] = useState(false);
 
   const lastAuthedRef = useRef<boolean | null>(null);
   const lastLangRef = useRef<string | null>(null);
@@ -111,6 +127,11 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     // console.log('initConversation called');
     const authed = isAuthed();
     const currentLang = i18n.resolvedLanguage || i18n.language;
+
+    // 如果外部指定了会话，跳过欢迎语
+    if (conversationIdProp) {
+      return;
+    }
 
     // 🚫 如果已经播过，并且「登录状态 + 语言」都没变，就不重播
     if (
@@ -156,6 +177,42 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     setPendingToSend(content);
     setShowLoginError(true);
   }
+
+  const loadHistory = useCallback(
+    async (conversationIdValue: string, reset = false) => {
+      if (historyLoadingRef.current) return;
+
+      historyLoadingRef.current = true;
+      setHistoryLoading(true);
+      setHistoryError(null);
+
+      try {
+        const firstId = reset ? undefined : messages.length > 0 ? messages[0].messageId : undefined;
+
+        const res = await fetchChatMessages({
+          conversationId: conversationIdValue,
+          firstId,
+          limit: 20,
+        });
+
+        const { items, hasMore } = res.data;
+        const mapped: ChatMessage[] = items.map((m: ChatHistoryMessage) => ({
+          role: m.role,
+          content: m.content,
+          messageId: m.id,
+        }));
+
+        setHistoryHasMore(hasMore);
+        setMessages((prev) => (reset ? mapped : [...mapped, ...prev]));
+      } catch (err) {
+        setHistoryError(t('system.error'));
+      } finally {
+        historyLoadingRef.current = false;
+        setHistoryLoading(false);
+      }
+    },
+    [messages, t],
+  );
 
   /* -------------------- 发送 -------------------- */
 
@@ -211,6 +268,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
           // start 事件：保存 conversationId（首次对话时）
           if (event.type === 'start' && !conversationId) {
             setConversationId(event.conversationId);
+            onConversationIdChange?.(event.conversationId);
           }
           if (event.type === 'delta') {
             streamBufferRef.current += event.text;
@@ -218,6 +276,7 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
           // end 事件：也保存 conversationId（兜底）
           if (event.type === 'end') {
             setConversationId(event.conversationId);
+            onConversationIdChange?.(event.conversationId);
           }
         },
         { signal: controller.signal },
@@ -253,6 +312,21 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
     lastLangRef.current = null;
     initConversation();
   }, []);
+
+  useEffect(() => {
+    if (!conversationIdProp) return;
+    if (conversationIdProp === conversationId) return;
+
+    abortRef.current?.abort();
+    setConversationId(conversationIdProp);
+    setMessages([]);
+    setHistoryHasMore(false);
+    setHistoryError(null);
+    historyLoadingRef.current = false;
+    setHistoryLoading(false);
+    welcomePlayedRef.current = true; // 避免重播欢迎语
+    loadHistory(conversationIdProp, true);
+  }, [conversationIdProp, conversationId, loadHistory]);
 
   useEffect(() => {
     if (!hasUserChatted) {
@@ -329,6 +403,23 @@ export default function ChatWindow({ userAvatar }: { userAvatar?: string }) {
             setAutoScroll(isNearBottom);
           }}
         >
+          {historyHasMore && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => conversationId && loadHistory(conversationId, false)}
+                disabled={historyLoading}
+                className="text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-blue-500 dark:hover:border-blue-400 disabled:opacity-60"
+              >
+                {historyLoading ? t('sidebar.loadingHistory') : t('sidebar.loadMore')}
+              </button>
+            </div>
+          )}
+
+          {historyError && (
+            <div className="text-xs text-center text-red-500 dark:text-red-400">{historyError}</div>
+          )}
+
           {messages.map((msg, i) => {
             const messageId = msg.messageId ?? `index-${i}`;
             const isActive = messageId === activeMessageId;

@@ -47,7 +47,14 @@
     "aboutUs": "About Us",
     "feedback": "Feedback & Complaints",
     "notLoggedIn": "You are not signed in yet",
-    "language": "Language"
+    "language": "Language",
+    "history": "Chat history",
+    "historyLoginTip": "Sign in to view your past chats",
+    "noHistory": "No conversations yet",
+    "loadMore": "Load more",
+    "loadingHistory": "Loading conversations…",
+    "conversationError": "Failed to load conversations",
+    "untitledConversation": "Untitled conversation"
   },
 
   "message": {

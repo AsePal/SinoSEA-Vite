@@ -5,10 +5,18 @@ import ChatWindow from '../components/ChatWindow';
 type LayoutContext = {
   user: UserInfo | null;
   refreshUser: () => void;
+  activeConversationId: string | null;
+  setActiveConversationId: (id: string | null) => void;
 };
 
 export default function Chat() {
-  const { user } = useOutletContext<LayoutContext>();
+  const { user, activeConversationId, setActiveConversationId } = useOutletContext<LayoutContext>();
 
-  return <ChatWindow userAvatar={user?.avatar} />;
+  return (
+    <ChatWindow
+      userAvatar={user?.avatar}
+      conversationId={activeConversationId}
+      onConversationIdChange={setActiveConversationId}
+    />
+  );
 }

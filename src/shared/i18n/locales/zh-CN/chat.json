@@ -52,7 +52,14 @@
     "aboutUs": "关于我们",
     "feedback": "投诉反馈",
     "notLoggedIn": "你还没有登录",
-    "language": "语言"
+    "language": "语言",
+    "history": "历史对话",
+    "historyLoginTip": "登录后查看历史对话",
+    "noHistory": "暂时没有对话记录",
+    "loadMore": "加载更多",
+    "loadingHistory": "正在加载对话…",
+    "conversationError": "对话列表加载失败",
+    "untitledConversation": "未命名对话"
   },
   "userMenu": {
     "profile": "用户信息",
