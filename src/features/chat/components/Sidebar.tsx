@@ -440,7 +440,7 @@ export default function Sidebar({
                     )}
 
                     {conversations.length > 0 && (
-                      <ul className="space-y-1 pb-14">
+                      <ul className="space-y-1">
                         {conversations.map((item) => (
                           <li
                             key={item.id}
@@ -477,31 +477,31 @@ export default function Sidebar({
                   </>
                 )}
               </div>
-
-              {isAuthed && (
-                <div className="sticky bottom-0 pt-2 pb-1 bg-gray-50/95 dark:bg-gray-900/95 backdrop-blur-xs">
-                  <button
-                    type="button"
-                    onClick={() => loadConversations(false)}
-                    disabled={convLoading || (!hasMoreConversations && !convError)}
-                    className="
-                      w-full text-xs font-medium
-                      px-3 py-2
-                      rounded-md border border-gray-200 dark:border-gray-700
-                      text-gray-700 dark:text-gray-200
-                      hover:bg-gray-100 dark:hover:bg-gray-800
-                      disabled:opacity-60 disabled:cursor-not-allowed
-                    "
-                  >
-                    {convLoading
-                      ? t('sidebar.loadingHistory')
-                      : !hasMoreConversations && !convError
-                        ? t('sidebar.loadedAll')
-                        : t('sidebar.loadMore')}
-                  </button>
-                </div>
-              )}
             </div>
+
+            {isAuthed && (
+              <div className="pt-2 pb-1 shrink-0 bg-gray-50 dark:bg-gray-900">
+                <button
+                  type="button"
+                  onClick={() => loadConversations(false)}
+                  disabled={convLoading || (!hasMoreConversations && !convError)}
+                  className="
+                    w-full text-xs font-medium
+                    px-3 py-2
+                    rounded-md border border-gray-200 dark:border-gray-700
+                    text-gray-700 dark:text-gray-200
+                    hover:bg-gray-100 dark:hover:bg-gray-800
+                    disabled:opacity-60 disabled:cursor-not-allowed
+                  "
+                >
+                  {convLoading
+                    ? t('sidebar.loadingHistory')
+                    : !hasMoreConversations && !convError
+                      ? t('sidebar.loadedAll')
+                      : t('sidebar.loadMore')}
+                </button>
+              </div>
+            )}
           </div>
         </DropdownMenu>
       </div>
