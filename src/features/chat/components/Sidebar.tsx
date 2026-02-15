@@ -229,7 +229,7 @@ export default function Sidebar({
     <aside
       className="
         h-full
-        w-[260px]
+        w-65
         flex flex-col
         bg-gray-50 dark:bg-gray-900
         border-r border-gray-200 dark:border-gray-700
@@ -258,7 +258,7 @@ export default function Sidebar({
                   animate={{ x: 0 }}
                   exit={{ x: -260 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  className="fixed left-0 top-0 w-[260px] h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col"
+                  className="fixed left-0 top-0 w-65 h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col"
                 >
                   {/* 窗口顶部标题栏 */}
                   <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -740,55 +740,71 @@ function ConfirmDeleteModal({
   confirmText: string;
   cancelText: string;
 }) {
-  if (!open) return null;
-
   return createPortal(
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col space-y-3 mb-6">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{description}</p>
-          {conversationTitle && (
-            <div className="text-base font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 shadow-inner">
-              "{conversationTitle}"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-999 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.22, ease: 'easeInOut' }}
+        >
+          <motion.div
+            className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700"
+            initial={{ y: 60, scale: 0.96, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            exit={{ y: 40, scale: 0.92, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 32, mass: 0.7 }}
+          >
+            <div className="flex flex-col space-y-3 mb-6">
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {description}
+              </p>
+              {conversationTitle && (
+                <div className="text-base font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 shadow-inner">
+                  "{conversationTitle}"
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="flex justify-between items-center">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="
-              px-5 py-2.5
-              rounded-lg
-              text-sm font-medium
-              border border-blue-500/60
-              text-blue-400
-              hover:bg-blue-500
-              hover:text-white
-              transition-colors
-            "
-          >
-            {cancelText}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={loading}
-            className="
-              px-5 py-2.5 rounded-lg
-              bg-red-600 hover:bg-red-700
-              disabled:opacity-70 disabled:cursor-not-allowed
-              text-sm font-semibold text-white
-              transition-colors
-            "
-          >
-            {loading ? '...' : confirmText}
-          </button>
-        </div>
-      </div>
-    </div>,
+            <div className="flex justify-between items-center">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="
+                  px-5 py-2.5
+                  rounded-lg
+                  text-sm font-medium
+                  border border-blue-500/60
+                  text-blue-400
+                  hover:bg-blue-500
+                  hover:text-white
+                  transition-colors
+                "
+              >
+                {cancelText}
+              </button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                disabled={loading}
+                className="
+                  px-5 py-2.5 rounded-lg
+                  bg-red-600 hover:bg-red-700
+                  disabled:opacity-70 disabled:cursor-not-allowed
+                  text-sm font-semibold text-white
+                  transition-colors
+                "
+              >
+                {loading ? '...' : confirmText}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body,
   );
 }

@@ -68,10 +68,10 @@ export default function UserInfoModal({
                   className="w-14 h-14 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
                 />
                 <div className="min-w-0">
-                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+                  <div className="text-lg font-bold text-gray-900 dark:text-gray-100 truncate">
                     {displayName}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <div className="text-base font-medium text-gray-500 dark:text-gray-400 truncate">
                     {displayPhone}
                   </div>
                 </div>
