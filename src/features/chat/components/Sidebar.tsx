@@ -16,6 +16,7 @@ import { createPortal } from 'react-dom';
 
 import { useTranslation } from 'react-i18next';
 import { fetchChatConversations, deleteChatConversation } from '../../../shared/api/chat';
+import LoginErrorModal from '../../auth/components/LoginErrorModal';
 import type { ChatConversation } from '../types/chat.types';
 import type { UserInfo } from '../../../shared/types/user.types';
 
@@ -66,6 +67,7 @@ export default function Sidebar({
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
   const langButtonRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
   const convLoadingRef = useRef(false);
@@ -102,6 +104,14 @@ export default function Sidebar({
 
   function go(path: string) {
     navigate(path);
+  }
+
+  function handleFeedbackClick() {
+    if (!isAuthed) {
+      setShowLoginRequiredModal(true);
+      return;
+    }
+    go('/chat/complaint');
   }
 
   function toggleTheme() {
@@ -482,7 +492,7 @@ export default function Sidebar({
           <MenuItem
             icon={ChatBubbleLeftRightIcon}
             active={location.pathname === '/chat/complaint'}
-            onClick={() => go('/chat/complaint')}
+            onClick={handleFeedbackClick}
           >
             {t('sidebar.feedback')}
           </MenuItem>
@@ -620,6 +630,15 @@ export default function Sidebar({
         description={t('sidebar.deleteConfirmDesc')}
         confirmText={t('sidebar.deleteConfirm')}
         cancelText={t('sidebar.deleteCancel')}
+      />
+
+      <LoginErrorModal
+        open={showLoginRequiredModal}
+        onConfirm={() => {
+          setShowLoginRequiredModal(false);
+          navigate('/login');
+        }}
+        onCancel={() => setShowLoginRequiredModal(false)}
       />
     </aside>
   );

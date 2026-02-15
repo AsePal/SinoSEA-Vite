@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 type LoginErrorModalProps = {
   open: boolean;
@@ -9,7 +10,7 @@ type LoginErrorModalProps = {
 export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErrorModalProps) {
   const { t } = useTranslation('common');
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -81,6 +82,7 @@ export default function LoginErrorModal({ open, onConfirm, onCancel }: LoginErro
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
