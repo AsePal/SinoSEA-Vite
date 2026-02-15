@@ -12,6 +12,7 @@
   "input": {
     "placeholder": "ဘာမဆို မေးပါ",
     "placeholder_authed": "ပို့ရန် Enter နှိပ်ပါ၊ စာကြောင်းအသစ်အတွက် Shift + Enter",
+    "newConversation": "စကားပြောအသစ်",
     "login_required": " ဤအင်္ဂါရပ်ကို အသုံးပြုရန် ဝင်ရောက်ပါ"
   },
 

@@ -304,11 +304,43 @@ export default function ChatWindow({
     setTimeout(() => setIsFlying(false), 1800);
   }
 
+  function handleNewConversation() {
+    abortRef.current?.abort();
+    stopAssistantFlushTimer();
+
+    streamBufferRef.current = '';
+    assistantTextRef.current = '';
+    activeAssistantIdRef.current = null;
+    isStreamingRef.current = false;
+
+    setLoading(false);
+    setInput('');
+    requestAnimationFrame(resetTextareaHeight);
+    setActiveMessageId(null);
+    setAutoScroll(true);
+
+    setHistoryHasMore(false);
+    setHistoryError(null);
+    latestOnlyBootstrappedRef.current = false;
+    historyLoadingRef.current = false;
+    setHistoryLoading(false);
+
+    welcomePlayedRef.current = false;
+    lastAuthedRef.current = null;
+    lastLangRef.current = null;
+
+    setConversationId(null);
+    setMessages([]);
+    onConversationIdChange?.(null);
+    initConversation(true);
+  }
+
   async function sendMessage(content: string) {
     if (!content || loading) return;
 
     abortRef.current?.abort();
     const controller = new AbortController();
+
     abortRef.current = controller;
 
     setLoading(true);
@@ -583,6 +615,16 @@ export default function ChatWindow({
                 : 'bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700'
             }`}
           >
+            <button
+              type="button"
+              onClick={handleNewConversation}
+              className="ui-tooltip shrink-0 w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center font-semibold text-lg leading-none"
+              aria-label={t('input.newConversation')}
+              data-tooltip={t('input.newConversation')}
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+
             <textarea
               ref={textareaRef}
               rows={1}

@@ -12,6 +12,7 @@
   "input": {
     "placeholder": "ถามฉันได้ทุกอย่าง",
     "placeholder_authed": "กด Enter เพื่อส่ง, Shift + Enter เพื่อขึ้นบรรทัดใหม่",
+    "newConversation": "การสนทนาใหม่",
     "login_required": " โปรดเข้าสู่ระบบเพื่อใช้ฟีเจอร์นี้"
   },
 

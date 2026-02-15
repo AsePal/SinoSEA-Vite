@@ -12,6 +12,7 @@
   "input": {
     "placeholder": "请输入你的问题",
     "placeholder_authed": "Enter 发送，Shift + Enter 换行",
+    "newConversation": "新建对话",
     "login_required": " 当前功能需要登录后使用"
   },
 
