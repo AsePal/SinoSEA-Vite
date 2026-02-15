@@ -31,6 +31,8 @@
     "toggleSidebar": "Toggle sidebar",
     "toggleNickname": "Toggle nickname",
     "login": "Sign in / Register",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar",
     "openUserInfo": "Open profile",
     "goLogin": "Go to sign in",
     "toggleLanguage": "Toggle language",

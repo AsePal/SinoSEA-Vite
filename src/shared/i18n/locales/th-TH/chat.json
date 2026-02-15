@@ -32,6 +32,8 @@
     "toggleNickname": "สลับการแสดงชื่อเล่น",
     "login": "เข้าสู่ระบบ / สมัครสมาชิก",
     "openUserInfo": "เปิดข้อมูลผู้ใช้",
+    "openSidebar": "เปิดแถบด้านข้าง",
+    "closeSidebar": "ย่อแถบด้านข้าง",
     "goLogin": "ไปที่การเข้าสู่ระบบ",
     "toggleLanguage": "สลับภาษา",
     "closeLanguageMenu": "ปิดเมนูภาษา",

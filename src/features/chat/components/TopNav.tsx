@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { UserInfo } from '../../../shared/types/user.types';
-import { Bars3Icon } from '@heroicons/react/24/outline';
 
 import { useTranslation } from 'react-i18next';
 
@@ -11,12 +10,19 @@ type TopNavProps = {
   onLogout: () => void;
   onEditAvatar: () => void;
   onToggleSidebar: () => void;
+  sidebarOpen: boolean;
 };
 
 // Asepal 动画总时长约 2.4s，加 3s 后收起 = 5.4s
 const NICKNAME_AUTO_COLLAPSE_DELAY = 5400;
 
-export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }: TopNavProps) {
+export default function TopNav({
+  user,
+  onLogout,
+  onEditAvatar,
+  onToggleSidebar,
+  sidebarOpen,
+}: TopNavProps) {
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
   // 默认展开昵称
@@ -25,6 +31,7 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
   const isAuthed = Boolean(user);
 
   const { t } = useTranslation('chat');
+  const sidebarTooltip = sidebarOpen ? t('tooltips.closeSidebar') : t('tooltips.openSidebar');
 
   void onLogout;
   void onEditAvatar;
@@ -45,10 +52,59 @@ export default function TopNav({ user, onLogout, onEditAvatar, onToggleSidebar }
         <button
           onClick={onToggleSidebar}
           className="ui-tooltip p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          aria-label={t('tooltips.toggleSidebar')}
-          data-tooltip={t('tooltips.toggleSidebar')}
+          aria-label={sidebarTooltip}
+          data-tooltip={sidebarTooltip}
         >
-          <Bars3Icon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+          <svg
+            viewBox="0 0 24 24"
+            className="w-6 h-6 text-gray-700 dark:text-gray-300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <rect
+              x="3"
+              y="3"
+              width="18"
+              height="18"
+              rx="4"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            />
+            {sidebarOpen ? (
+              <>
+                <path
+                  d="M16 6.5V17.5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M11.5 9L8.5 12L11.5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </>
+            ) : (
+              <>
+                <path
+                  d="M8 6.5V17.5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M12.5 9L15.5 12L12.5 15"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </>
+            )}
+          </svg>
         </button>
 
         {isAuthed ? (

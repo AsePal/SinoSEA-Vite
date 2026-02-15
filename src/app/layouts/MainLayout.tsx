@@ -130,6 +130,7 @@ export default function MainLayout() {
         onLogout={() => setShowLogoutModal(true)}
         onEditAvatar={() => setShowAvatarEditor(true)}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
+        sidebarOpen={sidebarOpen}
       />
 
       <div className="flex flex-1 relative overflow-hidden">

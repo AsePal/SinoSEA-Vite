@@ -29,6 +29,8 @@
 
   "tooltips": {
     "toggleSidebar": "展开/收起侧栏",
+    "openSidebar": "展开侧栏",
+    "closeSidebar": "收起侧栏",
     "toggleNickname": "展开/收起昵称",
     "login": "登录/注册",
     "openUserInfo": "打开用户信息",
