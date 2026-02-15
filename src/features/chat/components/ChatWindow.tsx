@@ -709,12 +709,14 @@ export default function ChatWindow({
             <button
               onClick={handleSend}
               disabled={disabled}
-              className={`w-8 h-8 rounded-full flex items-center justify-center self-end
+              className={`ui-tooltip w-8 h-8 rounded-full flex items-center justify-center self-end
               ${
                 disabled
                   ? 'bg-gray-300 text-gray-500 dark:bg-gray-700'
                   : 'bg-blue-600 hover:bg-blue-700'
               }`}
+              aria-label={t('input.send', '发送消息')}
+              data-tooltip={t('input.send', '发送消息')}
             >
               <div className={isFlying ? 'animate-plane-fly' : ''}>
                 <PaperAirplaneIcon
