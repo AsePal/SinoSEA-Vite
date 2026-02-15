@@ -241,6 +241,7 @@ input[type='password']::-webkit-textfield-decoration-container {
 .ui-tooltip {
   position: relative;
   overflow: visible;
+  --tooltip-visible-duration: 5s;
 }
 
 .ui-tooltip::after {
@@ -259,10 +260,12 @@ input[type='password']::-webkit-textfield-decoration-container {
   white-space: nowrap;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transition:
     opacity 0.12s ease,
     transform 0.12s ease;
+  animation: none;
   z-index: 9999;
 }
 
@@ -274,7 +277,32 @@ input[type='password']::-webkit-textfield-decoration-container {
 .ui-tooltip:hover::after,
 .ui-tooltip:focus-visible::after {
   opacity: 1;
+  visibility: visible;
   transform: translateX(-50%) translateY(0);
+  animation: tooltip-hide var(--tooltip-visible-duration) linear forwards;
+}
+
+@media (hover: none) {
+  .ui-tooltip:active::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    animation: tooltip-hide var(--tooltip-visible-duration) linear forwards;
+  }
+}
+
+@keyframes tooltip-hide {
+  0%,
+  85% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-2px);
+  }
 }
 /*左滑进入动画*/
 @keyframes auth-slide {
