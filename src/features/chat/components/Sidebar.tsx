@@ -814,7 +814,7 @@ function ConfirmDeleteModal({
               )}
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex justify-end items-center gap-3">
               <button
                 type="button"
                 onClick={onCancel}
