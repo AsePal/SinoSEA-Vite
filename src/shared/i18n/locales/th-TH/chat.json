@@ -58,7 +58,17 @@
     "loadedAll": "โหลดครบแล้ว",
     "loadingHistory": "กำลังโหลดรายการสนทนา…",
     "conversationError": "ไม่สามารถโหลดรายการสนทนา",
-    "untitledConversation": "การสนทนาไม่มีชื่อ"
+    "untitledConversation": "การสนทนาไม่มีชื่อ",
+    "rename": "เปลี่ยนชื่อ",
+    "renamePrompt": "กรอกชื่อการสนทนาใหม่",
+    "renameEmptyError": "ชื่อห้ามเว้นว่าง",
+    "renameError": "เปลี่ยนชื่อไม่สำเร็จ โปรดลองอีกครั้ง",
+    "delete": "ลบ",
+    "deleteConfirmTitle": "ลบการสนทนานี้หรือไม่?",
+    "deleteConfirmDesc": "การกระทำนี้ไม่สามารถย้อนกลับได้",
+    "deleteConfirm": "ลบ",
+    "deleteCancel": "ยกเลิก",
+    "deleteError": "ลบไม่สำเร็จ โปรดลองอีกครั้ง"
   },
 
   "message": {

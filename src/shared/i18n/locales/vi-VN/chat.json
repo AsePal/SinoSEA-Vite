@@ -63,7 +63,17 @@
     "loadedAll": "Đã tải xong",
     "loadingHistory": "Đang tải danh sách cuộc trò chuyện…",
     "conversationError": "Không thể tải danh sách cuộc trò chuyện",
-    "untitledConversation": "Cuộc trò chuyện chưa có tiêu đề"
+    "untitledConversation": "Cuộc trò chuyện chưa có tiêu đề",
+    "rename": "Đổi tên",
+    "renamePrompt": "Nhập tiêu đề cuộc trò chuyện mới",
+    "renameEmptyError": "Tiêu đề không được để trống",
+    "renameError": "Đổi tên thất bại, vui lòng thử lại sau",
+    "delete": "Xóa",
+    "deleteConfirmTitle": "Xóa cuộc trò chuyện này?",
+    "deleteConfirmDesc": "Thao tác này không thể hoàn tác.",
+    "deleteConfirm": "Xóa",
+    "deleteCancel": "Hủy",
+    "deleteError": "Xóa thất bại, vui lòng thử lại sau"
   },
   "userMenu": {
     "profile": "Thông tin người dùng",

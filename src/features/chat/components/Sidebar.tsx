@@ -6,6 +6,7 @@ import {
   SunIcon,
   MoonIcon,
   GlobeAltIcon,
+  PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
@@ -15,7 +16,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
 import { useTranslation } from 'react-i18next';
-import { fetchChatConversations, deleteChatConversation } from '../../../shared/api/chat';
+import {
+  fetchChatConversations,
+  deleteChatConversation,
+  renameChatConversation,
+} from '../../../shared/api/chat';
 import LoginErrorModal from '../../auth/components/LoginErrorModal';
 import type { ChatConversation } from '../types/chat.types';
 import type { UserInfo } from '../../../shared/types/user.types';
@@ -67,6 +72,8 @@ export default function Sidebar({
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [renameLoadingId, setRenameLoadingId] = useState<string | null>(null);
+  const [renameError, setRenameError] = useState<string | null>(null);
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
   const langButtonRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
@@ -143,6 +150,7 @@ export default function Sidebar({
 
       setConvError(null);
       setDeleteError(null);
+      setRenameError(null);
       setConvLoading(true);
       convLoadingRef.current = true;
 
@@ -194,6 +202,8 @@ export default function Sidebar({
       setDeleteButtonFor(null);
       setDeleteError(null);
       setDeleteConfirmId(null);
+      setRenameError(null);
+      setRenameLoadingId(null);
     }
   }, [user]);
 
@@ -232,6 +242,40 @@ export default function Sidebar({
       setDeleteError(t('sidebar.deleteError'));
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  const handleRenameConversation = async (conversation: ChatConversation) => {
+    const nextName = window.prompt(t('sidebar.renamePrompt'), conversation.title || '')?.trim();
+    if (nextName === undefined) return;
+
+    setRenameError(null);
+
+    if (!nextName) {
+      setRenameError(t('sidebar.renameEmptyError'));
+      return;
+    }
+
+    if (nextName === conversation.title) return;
+
+    setRenameLoadingId(conversation.id);
+    try {
+      const renamed = await renameChatConversation(conversation.id, { name: nextName });
+      setConversations((prev) =>
+        prev.map((item) =>
+          item.id === conversation.id
+            ? {
+                ...item,
+                title: renamed.title,
+                updatedAt: renamed.updatedAt,
+              }
+            : item,
+        ),
+      );
+    } catch (err) {
+      setRenameError(t('sidebar.renameError'));
+    } finally {
+      setRenameLoadingId(null);
     }
   };
 
@@ -556,22 +600,42 @@ export default function Sidebar({
                               </div>
 
                               {deleteButtonFor === item.id && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDeleteConfirmId(item.id);
-                                  }}
-                                  className="
-                                    shrink-0 w-8 h-8 flex items-center justify-center
-                                    text-red-600 dark:text-red-300
-                                    hover:opacity-70
-                                    transition-opacity
-                                  "
-                                  aria-label={t('sidebar.delete')}
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                </button>
+                                <div className="shrink-0 flex items-center">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      void handleRenameConversation(item);
+                                    }}
+                                    disabled={renameLoadingId === item.id || deleteLoading}
+                                    className="
+                                      w-8 h-8 flex items-center justify-center
+                                      text-gray-600 dark:text-gray-300
+                                      hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
+                                      transition-opacity
+                                    "
+                                    aria-label={t('sidebar.rename')}
+                                  >
+                                    <PencilSquareIcon className="w-4 h-4" />
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDeleteConfirmId(item.id);
+                                    }}
+                                    className="
+                                      w-8 h-8 flex items-center justify-center
+                                      text-red-600 dark:text-red-300
+                                      hover:opacity-70
+                                      transition-opacity
+                                    "
+                                    aria-label={t('sidebar.delete')}
+                                  >
+                                    <TrashIcon className="w-4 h-4" />
+                                  </button>
+                                </div>
                               )}
                             </div>
                           </li>
@@ -587,6 +651,10 @@ export default function Sidebar({
 
                     {deleteError && !convError && (
                       <div className="text-xs text-red-500 dark:text-red-400">{deleteError}</div>
+                    )}
+
+                    {renameError && !convError && (
+                      <div className="text-xs text-red-500 dark:text-red-400">{renameError}</div>
                     )}
                   </>
                 )}

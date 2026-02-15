@@ -1,4 +1,5 @@
 import type {
+  ChatConversation,
   ChatConversationListResponse,
   ChatHistoryResponse,
 } from '../../features/chat/types/chat.types';
@@ -13,6 +14,11 @@ type FetchMessagesParams = {
   conversationId: string;
   firstId?: string;
   limit?: number;
+};
+
+type RenameConversationParams = {
+  name?: string;
+  autoGenerate?: boolean;
 };
 
 export async function fetchChatConversations(
@@ -57,4 +63,24 @@ export async function deleteChatConversation(conversationId: string) {
   if (!res.ok) {
     throw new Error('CONVERSATION_DELETE_FAILED');
   }
+}
+
+export async function renameChatConversation(
+  conversationId: string,
+  params: RenameConversationParams,
+) {
+  const url = `${API.chat.conversations}/${conversationId}/name`;
+  const res = await apiRequest(url, {
+    method: 'POST',
+    body: {
+      name: params.name,
+      autoGenerate: params.autoGenerate ?? false,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('CONVERSATION_RENAME_FAILED');
+  }
+
+  return (await res.json()) as ChatConversation;
 }
