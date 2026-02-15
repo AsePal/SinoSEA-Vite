@@ -657,7 +657,7 @@ export default function Sidebar({
                               </div>
 
                               {deleteButtonFor === item.id && (
-                                <div className="shrink-0 flex items-center">
+                                <div className="shrink-0 flex items-center gap-x-1">
                                   {editingConversationId !== item.id && (
                                     <>
                                       <button
@@ -672,6 +672,7 @@ export default function Sidebar({
                                           text-gray-600 dark:text-gray-300
                                           hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
                                           transition-opacity
+                                          ml-auto
                                         "
                                         aria-label={t('sidebar.rename')}
                                       >
@@ -690,6 +691,7 @@ export default function Sidebar({
                                           text-red-600 dark:text-red-300
                                           hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
                                           transition-opacity
+                                          ml-0
                                         "
                                         aria-label={t('sidebar.delete')}
                                       >
