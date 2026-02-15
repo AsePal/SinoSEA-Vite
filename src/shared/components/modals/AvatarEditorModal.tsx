@@ -100,7 +100,7 @@ export default function AvatarEditorModal({ open, currentAvatar, onClose, onSucc
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[9999]
+          className="fixed inset-0 z-[13000]
                      bg-black/60 backdrop-blur-sm
                      flex items-center justify-center"
           initial={{ opacity: 0 }}

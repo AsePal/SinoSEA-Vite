@@ -23,7 +23,7 @@ export default function LogoutConfirmModal({ open, onConfirm, onCancel }: Logout
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[14000] flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700">
         {/* emoji + 文案 */}
         <div className="flex flex-col items-center text-center mb-8 space-y-4">

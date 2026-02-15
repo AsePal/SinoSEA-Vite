@@ -21,7 +21,6 @@ export default function MainLayout() {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
-  const [restoreUserInfoOnCancel, setRestoreUserInfoOnCancel] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [showSessionExpired, setShowSessionExpired] = useState(false);
@@ -184,17 +183,13 @@ export default function MainLayout() {
         open={showLogoutModal}
         onCancel={() => {
           setShowLogoutModal(false);
-          if (restoreUserInfoOnCancel) {
-            setShowUserInfoModal(true);
-            setRestoreUserInfoOnCancel(false);
-          }
         }}
         onConfirm={() => {
           localStorage.removeItem('auth_token');
           setUser(null);
           setActiveConversationId(null);
+          setShowUserInfoModal(false);
           setShowLogoutModal(false);
-          setRestoreUserInfoOnCancel(false);
           navigate('/chat');
         }}
       />
@@ -223,8 +218,6 @@ export default function MainLayout() {
         onClose={closeUserInfo}
         onEditAvatar={() => setShowAvatarEditor(true)}
         onLogout={() => {
-          closeUserInfo();
-          setRestoreUserInfoOnCancel(true);
           setShowLogoutModal(true);
         }}
       />
