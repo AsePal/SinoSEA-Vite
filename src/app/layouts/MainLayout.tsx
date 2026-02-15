@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import type { UserInfo } from '../../shared/types/user.types';
 
 import { TopNav, Sidebar } from '../../features/chat';
@@ -145,11 +146,17 @@ export default function MainLayout() {
         />
 
         {/* Sidebar */}
-        <div
+        <motion.div
+          initial={false}
+          animate={{
+            x: sidebarOpen ? 0 : -260,
+            opacity: sidebarOpen ? 1 : 0.98,
+          }}
+          transition={{ type: 'spring', stiffness: 360, damping: 34, mass: 0.85 }}
           className={`
               fixed top-14 left-0 bottom-0 z-50
-              transition-transform duration-300 ease-out
-              ${sidebarOpen ? 'translate-x-0' : '-translate-x-65'}
+              will-change-transform
+              ${sidebarOpen ? 'pointer-events-auto' : 'pointer-events-none'}
             `}
         >
           <Sidebar
@@ -159,7 +166,7 @@ export default function MainLayout() {
             onSelectConversation={(id: string | null) => setActiveConversationId(id)}
             activeConversationId={activeConversationId}
           />
-        </div>
+        </motion.div>
 
         {/* 页面内容：通过 Outlet 渲染子路由 */}
         <main

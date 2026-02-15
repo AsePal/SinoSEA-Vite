@@ -8,6 +8,7 @@ import {
   GlobeAltIcon,
   PencilSquareIcon,
   TrashIcon,
+  EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -43,6 +44,16 @@ const LANGS: { code: Lang; label: string }[] = [
 ];
 
 const CONVERSATION_PAGE_SIZE = 8;
+const HISTORY_ACTION_MENU_HEIGHT = 92;
+const HISTORY_ACTION_MENU_GAP = 6;
+const HISTORY_ACTION_MENU_SIDE_GAP = 8;
+
+type HistoryActionMenuState = {
+  conversationId: string;
+  top: number;
+  left: number;
+  openUpward: boolean;
+};
 
 function getLangKey(lng: string) {
   if (lng.startsWith('zh')) return 'zh';
@@ -76,8 +87,10 @@ export default function Sidebar({
   const [renameError, setRenameError] = useState<string | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [historyActionMenu, setHistoryActionMenu] = useState<HistoryActionMenuState | null>(null);
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
   const langButtonRef = useRef<HTMLDivElement>(null);
+  const historyActionMenuRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
   const convLoadingRef = useRef(false);
 
@@ -208,8 +221,40 @@ export default function Sidebar({
       setRenameLoadingId(null);
       setEditingConversationId(null);
       setEditingTitle('');
+      setHistoryActionMenu(null);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!historyActionMenu) return;
+
+    const handleDocumentMouseDown = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (historyActionMenuRef.current?.contains(target)) return;
+      if (target.closest('[data-history-action-trigger="true"]')) return;
+      setHistoryActionMenu(null);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setHistoryActionMenu(null);
+      }
+    };
+
+    const closeMenu = () => setHistoryActionMenu(null);
+
+    document.addEventListener('mousedown', handleDocumentMouseDown);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('scroll', closeMenu, true);
+    window.addEventListener('resize', closeMenu);
+
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentMouseDown);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('scroll', closeMenu, true);
+      window.removeEventListener('resize', closeMenu);
+    };
+  }, [historyActionMenu]);
 
   const current = i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN';
 
@@ -252,6 +297,7 @@ export default function Sidebar({
   const startRenameConversation = (conversation: ChatConversation) => {
     setRenameError(null);
     setDeleteError(null);
+    setHistoryActionMenu(null);
     setEditingConversationId(conversation.id);
     setEditingTitle(conversation.title || '');
   };
@@ -297,6 +343,27 @@ export default function Sidebar({
     } finally {
       setRenameLoadingId(null);
     }
+  };
+
+  const toggleHistoryActionMenu = (conversationId: string, triggerElement: HTMLButtonElement) => {
+    setHistoryActionMenu((prev) => {
+      if (prev?.conversationId === conversationId) {
+        return null;
+      }
+
+      const rect = triggerElement.getBoundingClientRect();
+      const shouldOpenUpward =
+        window.innerHeight - rect.bottom < HISTORY_ACTION_MENU_HEIGHT + HISTORY_ACTION_MENU_GAP;
+
+      return {
+        conversationId,
+        top: shouldOpenUpward
+          ? rect.top - HISTORY_ACTION_MENU_GAP
+          : rect.bottom + HISTORY_ACTION_MENU_GAP,
+        left: rect.right + HISTORY_ACTION_MENU_SIDE_GAP,
+        openUpward: shouldOpenUpward,
+      };
+    });
   };
 
   return (
@@ -598,6 +665,7 @@ export default function Sidebar({
                             onClick={() => {
                               if (editingConversationId === item.id) return;
                               setDeleteButtonFor(item.id);
+                              setHistoryActionMenu(null);
                               onSelectConversation?.(item.id);
                             }}
                             className={`
@@ -659,45 +727,25 @@ export default function Sidebar({
                               {deleteButtonFor === item.id && (
                                 <div className="shrink-0 flex items-center gap-x-1">
                                   {editingConversationId !== item.id && (
-                                    <>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          startRenameConversation(item);
-                                        }}
-                                        disabled={renameLoadingId === item.id || deleteLoading}
-                                        className="
-                                          w-8 h-8 flex items-center justify-center
-                                          text-gray-600 dark:text-gray-300
-                                          hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
-                                          transition-opacity
-                                          ml-auto
-                                        "
-                                        aria-label={t('sidebar.rename')}
-                                      >
-                                        <PencilSquareIcon className="w-4 h-4" />
-                                      </button>
-
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setDeleteConfirmId(item.id);
-                                        }}
-                                        disabled={renameLoadingId === item.id}
-                                        className="
-                                          w-8 h-8 flex items-center justify-center
-                                          text-red-600 dark:text-red-300
-                                          hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
-                                          transition-opacity
-                                          ml-0
-                                        "
-                                        aria-label={t('sidebar.delete')}
-                                      >
-                                        <TrashIcon className="w-4 h-4" />
-                                      </button>
-                                    </>
+                                    <button
+                                      type="button"
+                                      data-history-action-trigger="true"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleHistoryActionMenu(item.id, e.currentTarget);
+                                      }}
+                                      disabled={renameLoadingId === item.id || deleteLoading}
+                                      className="
+                                        w-8 h-8 flex items-center justify-center
+                                        text-gray-600 dark:text-gray-300
+                                        hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
+                                        transition-opacity
+                                        ml-auto
+                                      "
+                                      aria-label={`${t('sidebar.rename')} / ${t('sidebar.delete')}`}
+                                    >
+                                      <EllipsisHorizontalIcon className="w-4 h-4" />
+                                    </button>
                                   )}
                                 </div>
                               )}
@@ -751,6 +799,68 @@ export default function Sidebar({
           </div>
         </DropdownMenu>
       </div>
+
+      {historyActionMenu &&
+        createPortal(
+          <div
+            ref={historyActionMenuRef}
+            className="
+              fixed z-999 min-w-33
+              rounded-lg border border-gray-200 dark:border-gray-700
+              bg-white dark:bg-gray-800
+              shadow-lg
+              py-1
+            "
+            style={{
+              top: historyActionMenu.top,
+              left: historyActionMenu.left,
+              transform: historyActionMenu.openUpward ? 'translate(0, -100%)' : 'translate(0, 0)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                const conversation = conversations.find(
+                  (conversationItem) => conversationItem.id === historyActionMenu.conversationId,
+                );
+                if (!conversation) {
+                  setHistoryActionMenu(null);
+                  return;
+                }
+                startRenameConversation(conversation);
+              }}
+              disabled={renameLoadingId === historyActionMenu.conversationId || deleteLoading}
+              className="
+                w-full flex items-center gap-2 px-3 py-2 text-sm text-left
+                text-gray-700 dark:text-gray-200
+                hover:bg-gray-100 dark:hover:bg-gray-700
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
+            >
+              <PencilSquareIcon className="w-4 h-4" />
+              <span>{t('sidebar.rename')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteConfirmId(historyActionMenu.conversationId);
+                setHistoryActionMenu(null);
+              }}
+              disabled={renameLoadingId === historyActionMenu.conversationId}
+              className="
+                w-full flex items-center gap-2 px-3 py-2 text-sm text-left
+                text-red-600 dark:text-red-300
+                hover:bg-red-50 dark:hover:bg-red-900/30
+                disabled:opacity-50 disabled:cursor-not-allowed
+              "
+            >
+              <TrashIcon className="w-4 h-4" />
+              <span>{t('sidebar.delete')}</span>
+            </button>
+          </div>,
+          document.body,
+        )}
 
       <ConfirmDeleteModal
         open={Boolean(deleteConfirmId)}
