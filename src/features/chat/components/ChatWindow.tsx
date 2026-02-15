@@ -82,6 +82,7 @@ export default function ChatWindow({
   const [sendPhase, setSendPhase] = useState<SendPhase>('reset');
 
   const MAX_TEXTAREA_HEIGHT = 180;
+  const MIN_TEXTAREA_HEIGHT = 32;
   const disabled = loading || !input.trim();
   const [isFlying, setIsFlying] = useState(false);
 
@@ -165,14 +166,14 @@ export default function ChatWindow({
 
   function resizeTextarea(el: HTMLTextAreaElement) {
     el.style.height = 'auto';
-    const h = Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT);
+    const h = Math.max(MIN_TEXTAREA_HEIGHT, Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT));
     el.style.height = h + 'px';
     el.style.overflowY = el.scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
   }
 
   function resetTextareaHeight() {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${MIN_TEXTAREA_HEIGHT}px`;
     }
   }
 
@@ -618,7 +619,7 @@ export default function ChatWindow({
             <button
               type="button"
               onClick={handleNewConversation}
-              className="ui-tooltip shrink-0 w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center font-semibold text-lg leading-none"
+              className="ui-tooltip shrink-0 w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center self-end font-semibold text-lg leading-none"
               aria-label={t('input.newConversation')}
               data-tooltip={t('input.newConversation')}
             >
@@ -645,13 +646,13 @@ export default function ChatWindow({
                   handleSend();
                 }
               }}
-              className="chat-input flex-1 resize-none bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 min-h-[24px] leading-6"
+              className="chat-input flex-1 resize-none bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 h-8 min-h-8 py-1 box-border leading-6"
             />
 
             <button
               onClick={handleSend}
               disabled={disabled}
-              className={`w-6 h-6 rounded-full flex items-center justify-center self-end
+              className={`w-8 h-8 rounded-full flex items-center justify-center self-end
               ${
                 disabled
                   ? 'bg-gray-300 text-gray-500 dark:bg-gray-700'
@@ -660,7 +661,7 @@ export default function ChatWindow({
             >
               <div className={isFlying ? 'animate-plane-fly' : ''}>
                 <PaperAirplaneIcon
-                  className={`w-4 h-4 -rotate-90 ${disabled ? 'text-gray-500 dark:text-gray-300' : 'text-white'}`}
+                  className={`w-5 h-5 -rotate-90 ${disabled ? 'text-gray-500 dark:text-gray-300' : 'text-white'}`}
                 />
               </div>
             </button>
