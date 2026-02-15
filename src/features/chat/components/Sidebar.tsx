@@ -324,29 +324,55 @@ export default function Sidebar({
             aria-label={t('tooltips.toggleTheme')}
             data-tooltip={t('tooltips.toggleTheme')}
           >
-            <div className="relative w-5 h-5">
+            <div className="relative w-5 h-5 overflow-visible">
               <motion.div
                 key="sun"
-                initial={false}
-                animate={{
-                  scale: themeMode === 'dark' ? 1 : 0,
-                  rotate: themeMode === 'dark' ? 0 : -90,
-                  opacity: themeMode === 'dark' ? 1 : 0,
+                initial={{ scale: 1, rotate: 0, opacity: 1, x: 0 }}
+                animate={
+                  themeMode === 'dark'
+                    ? {
+                        scale: 1,
+                        rotate: 0,
+                        opacity: 1,
+                        x: 0,
+                        filter: 'drop-shadow(0 0 8px #FFD700)',
+                      }
+                    : { scale: 0.7, rotate: 45, opacity: 0, x: 24, filter: 'none' }
+                }
+                transition={{
+                  scale: { type: 'spring', stiffness: 320, damping: 22 },
+                  rotate: { type: 'spring', stiffness: 320, damping: 22 },
+                  opacity: { duration: 0.22, ease: 'easeInOut' },
+                  x: { duration: 0.32, ease: 'easeInOut' },
+                  filter: { duration: 0.22, ease: 'easeInOut' },
                 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                style={{ zIndex: themeMode === 'dark' ? 2 : 1 }}
                 className="absolute inset-0"
               >
                 <SunIcon className="w-5 h-5 text-amber-500" />
               </motion.div>
               <motion.div
                 key="moon"
-                initial={false}
-                animate={{
-                  scale: themeMode === 'light' ? 1 : 0,
-                  rotate: themeMode === 'light' ? 0 : 90,
-                  opacity: themeMode === 'light' ? 1 : 0,
+                initial={{ scale: 0.7, rotate: 45, opacity: 0, x: -24 }}
+                animate={
+                  themeMode === 'light'
+                    ? {
+                        scale: 1,
+                        rotate: 0,
+                        opacity: 1,
+                        x: 0,
+                        filter: 'drop-shadow(0 0 8px #6366F1)',
+                      }
+                    : { scale: 0.7, rotate: 45, opacity: 0, x: -24, filter: 'none' }
+                }
+                transition={{
+                  scale: { type: 'spring', stiffness: 320, damping: 22 },
+                  rotate: { type: 'spring', stiffness: 320, damping: 22 },
+                  opacity: { duration: 0.22, ease: 'easeInOut' },
+                  x: { duration: 0.32, ease: 'easeInOut' },
+                  filter: { duration: 0.22, ease: 'easeInOut' },
                 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                style={{ zIndex: themeMode === 'light' ? 2 : 1 }}
                 className="absolute inset-0"
               >
                 <MoonIcon className="w-5 h-5 text-indigo-500" />
