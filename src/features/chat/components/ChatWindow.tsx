@@ -83,6 +83,7 @@ export default function ChatWindow({
 
   const MAX_TEXTAREA_HEIGHT = 180;
   const MIN_TEXTAREA_HEIGHT = 32;
+  const BOOTSTRAP_RECENT_MESSAGE_LIMIT = 4;
   const disabled = loading || !input.trim();
   const [isFlying, setIsFlying] = useState(false);
 
@@ -91,12 +92,15 @@ export default function ChatWindow({
   const [historyLoading, setHistoryLoading] = useState(false);
   const historyLoadingRef = useRef(false);
   const latestOnlyBootstrappedRef = useRef(false);
+  const bootstrapBufferedOlderMessagesRef = useRef<ChatMessage[]>([]);
+  const bootstrapRemoteHasMoreRef = useRef(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [historyHasMore, setHistoryHasMore] = useState(false);
 
   const lastAuthedRef = useRef<boolean | null>(null);
   const lastLangRef = useRef<string | null>(null);
   const prevConversationIdPropRef = useRef<string | null>(conversationIdProp ?? null);
+  const pendingBootstrapConversationSyncRef = useRef<string | null>(null);
 
   /* -------------------- 鉴权 -------------------- */
 
@@ -199,9 +203,29 @@ export default function ChatWindow({
       setHistoryError(null);
 
       try {
+        if (!reset && bootstrapBufferedOlderMessagesRef.current.length > 0) {
+          const bufferedOlderMessages = bootstrapBufferedOlderMessagesRef.current;
+          bootstrapBufferedOlderMessagesRef.current = [];
+
+          setMessages((prev) => {
+            const seenMessageIds = new Set<string>();
+            return [...bufferedOlderMessages, ...prev].filter((message) => {
+              if (!message.messageId) return true;
+              if (seenMessageIds.has(message.messageId)) return false;
+              seenMessageIds.add(message.messageId);
+              return true;
+            });
+          });
+          setHistoryHasMore(bootstrapRemoteHasMoreRef.current);
+          latestOnlyBootstrappedRef.current = false;
+          return;
+        }
+
         const isLoadMoreFromLatestOnly = !reset && latestOnlyBootstrappedRef.current;
         const firstId = isLoadMoreFromLatestOnly
-          ? undefined
+          ? messages.length > 0
+            ? messages[0].messageId
+            : undefined
           : reset
             ? undefined
             : messages.length > 0
@@ -223,8 +247,15 @@ export default function ChatWindow({
 
         setHistoryHasMore(hasMore);
         setMessages((prev) => {
-          if (reset || isLoadMoreFromLatestOnly) return mapped;
-          return [...mapped, ...prev];
+          if (reset) return mapped;
+
+          const seenMessageIds = new Set<string>();
+          return [...mapped, ...prev].filter((message) => {
+            if (!message.messageId) return true;
+            if (seenMessageIds.has(message.messageId)) return false;
+            seenMessageIds.add(message.messageId);
+            return true;
+          });
         });
         latestOnlyBootstrappedRef.current = false;
       } catch (err) {
@@ -254,25 +285,31 @@ export default function ChatWindow({
 
       const messageRes = await fetchChatMessages({
         conversationId: latestConversation.id,
-        limit: 1,
+        limit: BOOTSTRAP_RECENT_MESSAGE_LIMIT,
       });
 
-      const latestMessage = messageRes.data.items[messageRes.data.items.length - 1];
-      if (!latestMessage) {
+      const recentMessages = messageRes.data.items.map((m: ChatHistoryMessage) => ({
+        role: m.role,
+        content: m.content,
+        messageId: m.id,
+      }));
+
+      const overflowOlderMessages = recentMessages.slice(0, -BOOTSTRAP_RECENT_MESSAGE_LIMIT);
+      const bootstrapMessages = recentMessages.slice(-BOOTSTRAP_RECENT_MESSAGE_LIMIT);
+      const bootstrapHasMore = messageRes.data.hasMore || overflowOlderMessages.length > 0;
+
+      if (bootstrapMessages.length === 0) {
         return false;
       }
 
       setConversationId(latestConversation.id);
+      pendingBootstrapConversationSyncRef.current = latestConversation.id;
       onConversationIdChange?.(latestConversation.id);
-      setHistoryHasMore(messageRes.data.hasMore);
+      bootstrapBufferedOlderMessagesRef.current = overflowOlderMessages;
+      bootstrapRemoteHasMoreRef.current = messageRes.data.hasMore;
+      setHistoryHasMore(bootstrapHasMore);
       latestOnlyBootstrappedRef.current = true;
-      setMessages([
-        {
-          role: latestMessage.role,
-          content: latestMessage.content,
-          messageId: latestMessage.id,
-        },
-      ]);
+      setMessages(bootstrapMessages);
 
       welcomePlayedRef.current = true;
       lastAuthedRef.current = getCurrentAuthed();
@@ -284,7 +321,13 @@ export default function ChatWindow({
       historyLoadingRef.current = false;
       setHistoryLoading(false);
     }
-  }, [conversationIdProp, i18n.language, i18n.resolvedLanguage, onConversationIdChange]);
+  }, [
+    conversationIdProp,
+    i18n.language,
+    i18n.resolvedLanguage,
+    onConversationIdChange,
+    BOOTSTRAP_RECENT_MESSAGE_LIMIT,
+  ]);
 
   /* -------------------- 发送 -------------------- */
 
@@ -322,6 +365,8 @@ export default function ChatWindow({
 
     setHistoryHasMore(false);
     setHistoryError(null);
+    bootstrapBufferedOlderMessagesRef.current = [];
+    bootstrapRemoteHasMoreRef.current = false;
     latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);
@@ -433,12 +478,22 @@ export default function ChatWindow({
   useEffect(() => {
     if (!conversationIdProp) return;
 
+    if (pendingBootstrapConversationSyncRef.current === conversationIdProp) {
+      pendingBootstrapConversationSyncRef.current = null;
+      if (conversationId !== conversationIdProp) {
+        setConversationId(conversationIdProp);
+      }
+      return;
+    }
+
     if (conversationIdProp !== conversationId) {
       abortRef.current?.abort();
       setConversationId(conversationIdProp);
       setMessages([]);
       setHistoryHasMore(false);
       setHistoryError(null);
+      bootstrapBufferedOlderMessagesRef.current = [];
+      bootstrapRemoteHasMoreRef.current = false;
       latestOnlyBootstrappedRef.current = false;
       historyLoadingRef.current = false;
       setHistoryLoading(false);
@@ -466,6 +521,8 @@ export default function ChatWindow({
     setMessages([]);
     setHistoryHasMore(false);
     setHistoryError(null);
+    bootstrapBufferedOlderMessagesRef.current = [];
+    bootstrapRemoteHasMoreRef.current = false;
     latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);
