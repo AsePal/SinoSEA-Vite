@@ -11,7 +11,7 @@ import LoginErrorModal from '../../auth/components/LoginErrorModal';
 import type { ChatMessage, SSEEvent, ChatHistoryMessage } from '../types/chat.types';
 import { sendChatSSE } from '../../../shared/api/chatSSE';
 import type { TFunction } from 'i18next';
-import { fetchChatMessages } from '../../../shared/api/chat';
+import { fetchChatConversations, fetchChatMessages } from '../../../shared/api/chat';
 function getWelcomeSteps(t: TFunction, authed: boolean): WelcomeStep[] {
   if (authed) {
     return [
@@ -89,11 +89,13 @@ export default function ChatWindow({
 
   const [historyLoading, setHistoryLoading] = useState(false);
   const historyLoadingRef = useRef(false);
+  const latestOnlyBootstrappedRef = useRef(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [historyHasMore, setHistoryHasMore] = useState(false);
 
   const lastAuthedRef = useRef<boolean | null>(null);
   const lastLangRef = useRef<string | null>(null);
+  const prevConversationIdPropRef = useRef<string | null>(conversationIdProp ?? null);
 
   /* -------------------- 鉴权 -------------------- */
 
@@ -103,7 +105,10 @@ export default function ChatWindow({
   }
 
   function getCurrentAuthed() {
-    return typeof isAuthedProp === 'boolean' ? isAuthedProp : isAuthed();
+    if (typeof isAuthedProp === 'boolean') {
+      return isAuthedProp || isAuthed();
+    }
+    return isAuthed();
   }
 
   /* -------------------- 欢迎语（i18n） -------------------- */
@@ -193,7 +198,14 @@ export default function ChatWindow({
       setHistoryError(null);
 
       try {
-        const firstId = reset ? undefined : messages.length > 0 ? messages[0].messageId : undefined;
+        const isLoadMoreFromLatestOnly = !reset && latestOnlyBootstrappedRef.current;
+        const firstId = isLoadMoreFromLatestOnly
+          ? undefined
+          : reset
+            ? undefined
+            : messages.length > 0
+              ? messages[0].messageId
+              : undefined;
 
         const res = await fetchChatMessages({
           conversationId: conversationIdValue,
@@ -209,7 +221,11 @@ export default function ChatWindow({
         }));
 
         setHistoryHasMore(hasMore);
-        setMessages((prev) => (reset ? mapped : [...mapped, ...prev]));
+        setMessages((prev) => {
+          if (reset || isLoadMoreFromLatestOnly) return mapped;
+          return [...mapped, ...prev];
+        });
+        latestOnlyBootstrappedRef.current = false;
       } catch (err) {
         setHistoryError(t('system.error'));
       } finally {
@@ -219,6 +235,55 @@ export default function ChatWindow({
     },
     [messages, t],
   );
+
+  const loadLatestHistoryMessage = useCallback(async () => {
+    if (!getCurrentAuthed() || conversationIdProp) return false;
+    if (historyLoadingRef.current) return false;
+
+    historyLoadingRef.current = true;
+    setHistoryLoading(true);
+    setHistoryError(null);
+
+    try {
+      const conversationRes = await fetchChatConversations({ limit: 1 });
+      const latestConversation = conversationRes.items[0];
+      if (!latestConversation) {
+        return false;
+      }
+
+      const messageRes = await fetchChatMessages({
+        conversationId: latestConversation.id,
+        limit: 1,
+      });
+
+      const latestMessage = messageRes.data.items[messageRes.data.items.length - 1];
+      if (!latestMessage) {
+        return false;
+      }
+
+      setConversationId(latestConversation.id);
+      onConversationIdChange?.(latestConversation.id);
+      setHistoryHasMore(messageRes.data.hasMore);
+      latestOnlyBootstrappedRef.current = true;
+      setMessages([
+        {
+          role: latestMessage.role,
+          content: latestMessage.content,
+          messageId: latestMessage.id,
+        },
+      ]);
+
+      welcomePlayedRef.current = true;
+      lastAuthedRef.current = getCurrentAuthed();
+      lastLangRef.current = i18n.resolvedLanguage || i18n.language;
+      return true;
+    } catch (err) {
+      return false;
+    } finally {
+      historyLoadingRef.current = false;
+      setHistoryLoading(false);
+    }
+  }, [conversationIdProp, i18n.language, i18n.resolvedLanguage, onConversationIdChange]);
 
   /* -------------------- 发送 -------------------- */
 
@@ -312,11 +377,24 @@ export default function ChatWindow({
   /* -------------------- 生命周期 -------------------- */
 
   useEffect(() => {
-    // 挂载时重置所有状态，强制播放欢迎语
+    // 挂载时重置欢迎语状态，并优先尝试加载最近历史
     welcomePlayedRef.current = false;
     lastAuthedRef.current = null;
     lastLangRef.current = null;
-    initConversation();
+
+    let alive = true;
+
+    const bootstrapConversation = async () => {
+      const loadedLatestHistory = await loadLatestHistoryMessage();
+      if (!alive || loadedLatestHistory) return;
+      initConversation();
+    };
+
+    bootstrapConversation();
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -328,6 +406,7 @@ export default function ChatWindow({
     setMessages([]);
     setHistoryHasMore(false);
     setHistoryError(null);
+    latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);
     welcomePlayedRef.current = true; // 避免重播欢迎语
@@ -335,7 +414,11 @@ export default function ChatWindow({
   }, [conversationIdProp, conversationId, loadHistory]);
 
   useEffect(() => {
-    if (conversationIdProp !== null) return;
+    const prevConversationIdProp = prevConversationIdPropRef.current;
+    prevConversationIdPropRef.current = conversationIdProp ?? null;
+
+    const switchedToNewChat = prevConversationIdProp !== null && conversationIdProp === null;
+    if (!switchedToNewChat) return;
     if (conversationId === null && messages.length === 0) return;
 
     abortRef.current?.abort();
@@ -343,6 +426,7 @@ export default function ChatWindow({
     setMessages([]);
     setHistoryHasMore(false);
     setHistoryError(null);
+    latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);
     welcomePlayedRef.current = false;
@@ -350,18 +434,34 @@ export default function ChatWindow({
   }, [conversationIdProp, conversationId, messages.length]);
 
   useEffect(() => {
+    if (conversationId || messages.length > 0) return;
     if (!hasUserChatted) {
       initConversation();
     }
-  }, [i18n.language, hasUserChatted]);
+  }, [conversationId, i18n.language, hasUserChatted, messages.length]);
 
   useEffect(() => {
     if (lastAuthedRef.current === null) return;
     const authed = getCurrentAuthed();
-    if (authed !== lastAuthedRef.current) {
+    if (authed === lastAuthedRef.current) return;
+
+    let alive = true;
+
+    const handleAuthedChanged = async () => {
+      if (authed && !conversationIdProp) {
+        const loadedLatestHistory = await loadLatestHistoryMessage();
+        if (!alive) return;
+        if (loadedLatestHistory) return;
+      }
       initConversation(true);
-    }
-  }, [isAuthedProp]);
+    };
+
+    handleAuthedChanged();
+
+    return () => {
+      alive = false;
+    };
+  }, [conversationIdProp, isAuthedProp, loadLatestHistoryMessage]);
 
   const [autoScroll, setAutoScroll] = useState(true);
 
