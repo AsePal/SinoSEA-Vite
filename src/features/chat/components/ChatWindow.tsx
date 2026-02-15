@@ -399,19 +399,26 @@ export default function ChatWindow({
 
   useEffect(() => {
     if (!conversationIdProp) return;
-    if (conversationIdProp === conversationId) return;
 
-    abortRef.current?.abort();
-    setConversationId(conversationIdProp);
-    setMessages([]);
-    setHistoryHasMore(false);
-    setHistoryError(null);
-    latestOnlyBootstrappedRef.current = false;
-    historyLoadingRef.current = false;
-    setHistoryLoading(false);
-    welcomePlayedRef.current = true; // 避免重播欢迎语
-    loadHistory(conversationIdProp, true);
-  }, [conversationIdProp, conversationId, loadHistory]);
+    if (conversationIdProp !== conversationId) {
+      abortRef.current?.abort();
+      setConversationId(conversationIdProp);
+      setMessages([]);
+      setHistoryHasMore(false);
+      setHistoryError(null);
+      latestOnlyBootstrappedRef.current = false;
+      historyLoadingRef.current = false;
+      setHistoryLoading(false);
+      welcomePlayedRef.current = true; // 避免重播欢迎语
+      loadHistory(conversationIdProp, true);
+      return;
+    }
+
+    if (messages.length === 0 && !historyLoadingRef.current) {
+      welcomePlayedRef.current = true; // 避免重播欢迎语
+      loadHistory(conversationIdProp, true);
+    }
+  }, [conversationIdProp, conversationId, messages.length, loadHistory]);
 
   useEffect(() => {
     const prevConversationIdProp = prevConversationIdPropRef.current;
