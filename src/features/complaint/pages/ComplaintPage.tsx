@@ -29,21 +29,6 @@ export default function ComplaintPage() {
     }
   }, [user, userLoaded]);
 
-  if (showLoginRequiredModal) {
-    return (
-      <LoginErrorModal
-        open={showLoginRequiredModal}
-        onConfirm={() => {
-          navigate('/login');
-        }}
-        onCancel={() => {
-          setShowLoginRequiredModal(false);
-          navigate('/chat');
-        }}
-      />
-    );
-  }
-
   return (
     <div className="w-full min-h-full bg-white dark:bg-gray-900">
       {/* 内容区域 */}
@@ -61,6 +46,18 @@ export default function ComplaintPage() {
         onConfirm={() => {
           localStorage.removeItem('auth_token');
           navigate('/chat');
+        }}
+      />
+
+      <LoginErrorModal
+        open={showLoginRequiredModal}
+        onConfirm={() => {
+          setShowLoginRequiredModal(false);
+          setTimeout(() => navigate('/login'), 220);
+        }}
+        onCancel={() => {
+          setShowLoginRequiredModal(false);
+          setTimeout(() => navigate('/chat'), 220);
         }}
       />
     </div>
