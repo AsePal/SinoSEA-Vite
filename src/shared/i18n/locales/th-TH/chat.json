@@ -60,6 +60,8 @@
     "conversationError": "ไม่สามารถโหลดรายการสนทนา",
     "untitledConversation": "การสนทนาไม่มีชื่อ",
     "rename": "เปลี่ยนชื่อ",
+    "renameConfirm": "ยืนยันการเปลี่ยนชื่อ",
+    "renameCancel": "ยกเลิกการเปลี่ยนชื่อ",
     "renamePrompt": "กรอกชื่อการสนทนาใหม่",
     "renameEmptyError": "ชื่อห้ามเว้นว่าง",
     "renameError": "เปลี่ยนชื่อไม่สำเร็จ โปรดลองอีกครั้ง",

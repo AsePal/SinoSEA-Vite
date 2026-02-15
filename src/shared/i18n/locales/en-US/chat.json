@@ -60,6 +60,8 @@
     "conversationError": "Failed to load conversations",
     "untitledConversation": "Untitled conversation",
     "rename": "Rename",
+    "renameConfirm": "Confirm rename",
+    "renameCancel": "Cancel rename",
     "renamePrompt": "Enter a new conversation title",
     "renameEmptyError": "Title cannot be empty",
     "renameError": "Failed to rename. Please try again.",

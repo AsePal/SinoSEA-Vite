@@ -65,6 +65,8 @@
     "conversationError": "Không thể tải danh sách cuộc trò chuyện",
     "untitledConversation": "Cuộc trò chuyện chưa có tiêu đề",
     "rename": "Đổi tên",
+    "renameConfirm": "Xác nhận đổi tên",
+    "renameCancel": "Hủy đổi tên",
     "renamePrompt": "Nhập tiêu đề cuộc trò chuyện mới",
     "renameEmptyError": "Tiêu đề không được để trống",
     "renameError": "Đổi tên thất bại, vui lòng thử lại sau",

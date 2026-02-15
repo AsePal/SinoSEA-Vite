@@ -74,6 +74,8 @@ export default function Sidebar({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [renameLoadingId, setRenameLoadingId] = useState<string | null>(null);
   const [renameError, setRenameError] = useState<string | null>(null);
+  const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
   const [showLoginRequiredModal, setShowLoginRequiredModal] = useState(false);
   const langButtonRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
@@ -204,6 +206,8 @@ export default function Sidebar({
       setDeleteConfirmId(null);
       setRenameError(null);
       setRenameLoadingId(null);
+      setEditingConversationId(null);
+      setEditingTitle('');
     }
   }, [user]);
 
@@ -245,18 +249,32 @@ export default function Sidebar({
     }
   };
 
+  const startRenameConversation = (conversation: ChatConversation) => {
+    setRenameError(null);
+    setDeleteError(null);
+    setEditingConversationId(conversation.id);
+    setEditingTitle(conversation.title || '');
+  };
+
+  const cancelRenameConversation = () => {
+    setEditingConversationId(null);
+    setEditingTitle('');
+  };
+
   const handleRenameConversation = async (conversation: ChatConversation) => {
-    const nextName = window.prompt(t('sidebar.renamePrompt'), conversation.title || '')?.trim();
-    if (nextName === undefined) return;
+    const nextName = editingTitle.trim();
 
     setRenameError(null);
 
     if (!nextName) {
-      setRenameError(t('sidebar.renameEmptyError'));
+      cancelRenameConversation();
       return;
     }
 
-    if (nextName === conversation.title) return;
+    if (nextName === conversation.title) {
+      cancelRenameConversation();
+      return;
+    }
 
     setRenameLoadingId(conversation.id);
     try {
@@ -272,6 +290,8 @@ export default function Sidebar({
             : item,
         ),
       );
+      setEditingConversationId(null);
+      setEditingTitle('');
     } catch (err) {
       setRenameError(t('sidebar.renameError'));
     } finally {
@@ -576,6 +596,7 @@ export default function Sidebar({
                           <li
                             key={item.id}
                             onClick={() => {
+                              if (editingConversationId === item.id) return;
                               setDeleteButtonFor(item.id);
                               onSelectConversation?.(item.id);
                             }}
@@ -591,9 +612,45 @@ export default function Sidebar({
                           >
                             <div className="flex items-start gap-2">
                               <div className="flex-1 min-w-0">
-                                <div className="truncate font-medium">
-                                  {item.title || t('sidebar.untitledConversation')}
-                                </div>
+                                {editingConversationId === item.id ? (
+                                  <input
+                                    type="text"
+                                    value={editingTitle}
+                                    autoFocus
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onChange={(e) => setEditingTitle(e.target.value)}
+                                    onBlur={() => {
+                                      if (renameLoadingId !== item.id) {
+                                        void handleRenameConversation(item);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        void handleRenameConversation(item);
+                                        return;
+                                      }
+                                      if (e.key === 'Escape') {
+                                        e.preventDefault();
+                                        cancelRenameConversation();
+                                      }
+                                    }}
+                                    disabled={renameLoadingId === item.id}
+                                    className="
+                                      w-full rounded-md border border-blue-500 dark:border-blue-400
+                                      bg-white dark:bg-gray-800
+                                      px-2 py-1 text-sm font-medium
+                                      text-gray-900 dark:text-gray-100
+                                      outline-none
+                                      disabled:opacity-60 disabled:cursor-not-allowed
+                                    "
+                                  />
+                                ) : (
+                                  <div className="truncate font-medium">
+                                    {item.title || t('sidebar.untitledConversation')}
+                                  </div>
+                                )}
                                 <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
                                   {new Date(item.updatedAt).toLocaleString()}
                                 </div>
@@ -601,40 +658,45 @@ export default function Sidebar({
 
                               {deleteButtonFor === item.id && (
                                 <div className="shrink-0 flex items-center">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      void handleRenameConversation(item);
-                                    }}
-                                    disabled={renameLoadingId === item.id || deleteLoading}
-                                    className="
-                                      w-8 h-8 flex items-center justify-center
-                                      text-gray-600 dark:text-gray-300
-                                      hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
-                                      transition-opacity
-                                    "
-                                    aria-label={t('sidebar.rename')}
-                                  >
-                                    <PencilSquareIcon className="w-4 h-4" />
-                                  </button>
+                                  {editingConversationId !== item.id && (
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          startRenameConversation(item);
+                                        }}
+                                        disabled={renameLoadingId === item.id || deleteLoading}
+                                        className="
+                                          w-8 h-8 flex items-center justify-center
+                                          text-gray-600 dark:text-gray-300
+                                          hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
+                                          transition-opacity
+                                        "
+                                        aria-label={t('sidebar.rename')}
+                                      >
+                                        <PencilSquareIcon className="w-4 h-4" />
+                                      </button>
 
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setDeleteConfirmId(item.id);
-                                    }}
-                                    className="
-                                      w-8 h-8 flex items-center justify-center
-                                      text-red-600 dark:text-red-300
-                                      hover:opacity-70
-                                      transition-opacity
-                                    "
-                                    aria-label={t('sidebar.delete')}
-                                  >
-                                    <TrashIcon className="w-4 h-4" />
-                                  </button>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDeleteConfirmId(item.id);
+                                        }}
+                                        disabled={renameLoadingId === item.id}
+                                        className="
+                                          w-8 h-8 flex items-center justify-center
+                                          text-red-600 dark:text-red-300
+                                          hover:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed
+                                          transition-opacity
+                                        "
+                                        aria-label={t('sidebar.delete')}
+                                      >
+                                        <TrashIcon className="w-4 h-4" />
+                                      </button>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </div>

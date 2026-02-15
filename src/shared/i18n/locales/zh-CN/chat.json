@@ -65,6 +65,8 @@
     "conversationError": "对话列表加载失败",
     "untitledConversation": "未命名对话",
     "rename": "重命名",
+    "renameConfirm": "确认重命名",
+    "renameCancel": "取消重命名",
     "renamePrompt": "请输入新的会话标题",
     "renameEmptyError": "标题不能为空",
     "renameError": "重命名失败，请稍后重试",
