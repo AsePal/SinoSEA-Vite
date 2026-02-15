@@ -55,12 +55,15 @@ export default function TopNav({
           aria-label={sidebarTooltip}
           data-tooltip={sidebarTooltip}
         >
-          <svg
+          <motion.svg
             viewBox="0 0 24 24"
             className="w-6 h-6 text-gray-700 dark:text-gray-300"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
+            initial={false}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 28 }}
           >
             <rect
               x="3"
@@ -71,40 +74,31 @@ export default function TopNav({
               stroke="currentColor"
               strokeWidth="1.6"
             />
-            {sidebarOpen ? (
-              <>
-                <path
-                  d="M16 6.5V17.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M11.5 9L8.5 12L11.5 15"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </>
-            ) : (
-              <>
-                <path
-                  d="M8 6.5V17.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M12.5 9L15.5 12L12.5 15"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </>
-            )}
-          </svg>
+            <motion.line
+              y1="6.5"
+              y2="17.5"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              initial={false}
+              animate={{ x1: sidebarOpen ? 16 : 8, x2: sidebarOpen ? 16 : 8 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 26 }}
+            />
+            <motion.path
+              d="M11.5 9L14.5 12L11.5 15"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={false}
+              animate={{
+                rotate: sidebarOpen ? 180 : 0,
+                x: sidebarOpen ? -1.2 : 1.2,
+              }}
+              transition={{ type: 'spring', stiffness: 360, damping: 24 }}
+              style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}
+            />
+          </motion.svg>
         </button>
 
         {isAuthed ? (
