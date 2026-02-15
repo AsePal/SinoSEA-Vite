@@ -347,7 +347,7 @@ export default function Sidebar({
                         x: 0,
                         filter: 'drop-shadow(0 0 8px #FFD700)',
                       }
-                    : { scale: 0.7, rotate: 45, opacity: 0, x: 24, filter: 'none' }
+                    : { scale: 0.7, rotate: 45, opacity: 0, x: -24, filter: 'none' }
                 }
                 transition={{
                   scale: { type: 'spring', stiffness: 320, damping: 22 },
