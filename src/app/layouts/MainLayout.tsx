@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import type { UserInfo } from '../../shared/types/user.types';
 
-import TopNav from '../../features/chat/components/TopNav';
-import Sidebar from '../../features/chat/components/Sidebar';
+import { TopNav, Sidebar } from '../../features/chat';
 import {
   LogoutConfirmModal,
   AvatarEditorModal,
@@ -150,14 +149,14 @@ export default function MainLayout() {
           className={`
               fixed top-14 left-0 bottom-0 z-50
               transition-transform duration-300 ease-out
-              ${sidebarOpen ? 'translate-x-0' : '-translate-x-[260px]'}
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-65'}
             `}
         >
           <Sidebar
             user={user}
             onClose={() => setSidebarOpen(false)}
             onOpenUserInfo={openUserInfo}
-            onSelectConversation={(id) => setActiveConversationId(id)}
+            onSelectConversation={(id: string | null) => setActiveConversationId(id)}
             activeConversationId={activeConversationId}
           />
         </div>

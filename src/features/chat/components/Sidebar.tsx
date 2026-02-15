@@ -13,6 +13,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 import { useTranslation } from 'react-i18next';
 import { fetchChatConversations, deleteChatConversation } from '../../../shared/api/chat';
@@ -70,13 +71,15 @@ export default function Sidebar({
   const lastConversationIdRef = useRef<string | null>(null);
   const convLoadingRef = useRef(false);
 
-  // 主题状态：只支持 'light' | 'dark'，默认为 'light'
+  const deleteTarget = deleteConfirmId
+    ? conversations.find((c) => c.id === deleteConfirmId)
+    : undefined;
+
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('themeMode');
     return (saved as 'light' | 'dark') || 'light';
   });
 
-  // 应用主题
   useEffect(() => {
     if (themeMode === 'dark') {
       document.documentElement.classList.add('dark');
@@ -85,7 +88,6 @@ export default function Sidebar({
     }
   }, [themeMode]);
 
-  // 点击外部关闭语言菜单
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (langButtonRef.current && !langButtonRef.current.contains(e.target as Node)) {
@@ -104,7 +106,6 @@ export default function Sidebar({
   }
 
   function toggleTheme() {
-    // 在 light 和 dark 之间切换
     const newMode = themeMode === 'dark' ? 'light' : 'dark';
     setThemeMode(newMode);
     localStorage.setItem('themeMode', newMode);
@@ -579,6 +580,7 @@ export default function Sidebar({
       <ConfirmDeleteModal
         open={Boolean(deleteConfirmId)}
         loading={deleteLoading}
+        conversationTitle={deleteTarget?.title || t('sidebar.untitledConversation')}
         onCancel={() => setDeleteConfirmId(null)}
         onConfirm={handleDeleteConversation}
         title={t('sidebar.deleteConfirmTitle')}
@@ -645,9 +647,7 @@ function DropdownMenu({
                   transition-all duration-300 ease-out
                   ${isOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}
                 `}
-                style={{
-                  transitionDelay: isOpen ? `${index * 50}ms` : '0ms',
-                }}
+                style={{ transitionDelay: isOpen ? `${index * 50}ms` : '0ms' }}
               >
                 {child}
               </div>
@@ -708,6 +708,7 @@ function ConfirmDeleteModal({
   onCancel,
   title,
   description,
+  conversationTitle,
   confirmText,
   cancelText,
 }: {
@@ -717,27 +718,37 @@ function ConfirmDeleteModal({
   onCancel: () => void;
   title: string;
   description: string;
+  conversationTitle?: string;
   confirmText: string;
   cancelText: string;
 }) {
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  return createPortal(
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700">
         <div className="flex flex-col space-y-3 mb-6">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{description}</p>
+          {conversationTitle && (
+            <div className="text-base font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 shadow-inner">
+              "{conversationTitle}"
+            </div>
+          )}
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-between items-center">
           <button
             type="button"
             onClick={onCancel}
             className="
-              px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700
-              text-sm font-medium text-gray-700 dark:text-gray-200
-              hover:bg-gray-100 dark:hover:bg-gray-800
+              px-5 py-2.5
+              rounded-lg
+              text-sm font-medium
+              border border-blue-500/60
+              text-blue-400
+              hover:bg-blue-500
+              hover:text-white
               transition-colors
             "
           >
@@ -748,17 +759,18 @@ function ConfirmDeleteModal({
             onClick={onConfirm}
             disabled={loading}
             className="
-              px-4 py-2 rounded-lg
+              px-5 py-2.5 rounded-lg
               bg-red-600 hover:bg-red-700
               disabled:opacity-70 disabled:cursor-not-allowed
               text-sm font-semibold text-white
               transition-colors
             "
           >
-            {loading ? '…' : confirmText}
+            {loading ? '...' : confirmText}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
