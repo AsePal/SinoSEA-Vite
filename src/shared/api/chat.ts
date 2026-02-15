@@ -50,3 +50,11 @@ export async function fetchChatMessages(params: FetchMessagesParams) {
   }
   return (await res.json()) as ChatHistoryResponse;
 }
+
+export async function deleteChatConversation(conversationId: string) {
+  const url = `${API.chat.conversations}/${conversationId}`;
+  const res = await apiRequest(url, { method: 'DELETE' });
+  if (!res.ok) {
+    throw new Error('CONVERSATION_DELETE_FAILED');
+  }
+}

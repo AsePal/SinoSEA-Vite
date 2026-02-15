@@ -7,6 +7,7 @@ import {
   SunIcon,
   MoonIcon,
   GlobeAltIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -14,7 +15,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useTranslation } from 'react-i18next';
-import { fetchChatConversations } from '../../../shared/api/chat';
+import { fetchChatConversations, deleteChatConversation } from '../../../shared/api/chat';
 import type { ChatConversation } from '../types/chat.types';
 import type { UserInfo } from '../../../shared/types/user.types';
 
@@ -22,7 +23,7 @@ type SidebarProps = {
   user?: UserInfo | null;
   onClose?: () => void;
   onOpenUserInfo?: () => void;
-  onSelectConversation?: (id: string) => void;
+  onSelectConversation?: (id: string | null) => void;
   activeConversationId?: string | null;
 };
 
@@ -61,6 +62,10 @@ export default function Sidebar({
   const [hasMoreConversations, setHasMoreConversations] = useState(false);
   const [convLoading, setConvLoading] = useState(false);
   const [convError, setConvError] = useState<string | null>(null);
+  const [deleteButtonFor, setDeleteButtonFor] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const langButtonRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
   const convLoadingRef = useRef(false);
@@ -96,7 +101,6 @@ export default function Sidebar({
 
   function go(path: string) {
     navigate(path);
-    onClose?.();
   }
 
   function toggleTheme() {
@@ -128,6 +132,7 @@ export default function Sidebar({
       }
 
       setConvError(null);
+      setDeleteError(null);
       setConvLoading(true);
       convLoadingRef.current = true;
 
@@ -165,6 +170,14 @@ export default function Sidebar({
     loadConversations(true);
   }, [user, loadConversations]);
 
+  useEffect(() => {
+    if (!user) {
+      setDeleteButtonFor(null);
+      setDeleteError(null);
+      setDeleteConfirmId(null);
+    }
+  }, [user]);
+
   const current = i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN';
 
   const DEFAULT_AVATAR = '/userlogo.ico';
@@ -173,6 +186,35 @@ export default function Sidebar({
   const displayPhone = isAuthed
     ? user?.phone || t('userInfoModal.unboundPhone')
     : t('sidebar.notLoggedIn');
+
+  const handleDeleteConversation = async () => {
+    if (!deleteConfirmId) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      await deleteChatConversation(deleteConfirmId);
+      setConversations((prev) => {
+        const next = prev.filter((c) => c.id !== deleteConfirmId);
+        const tail = next.length ? next[next.length - 1].id : null;
+        lastConversationIdRef.current = tail;
+        return next;
+      });
+
+      if (activeConversationId === deleteConfirmId) {
+        onSelectConversation?.(null);
+      }
+
+      if (deleteButtonFor === deleteConfirmId) {
+        setDeleteButtonFor(null);
+      }
+
+      setDeleteConfirmId(null);
+    } catch (err) {
+      setDeleteError(t('sidebar.deleteError'));
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <aside
@@ -445,8 +487,8 @@ export default function Sidebar({
                           <li
                             key={item.id}
                             onClick={() => {
+                              setDeleteButtonFor(item.id);
                               onSelectConversation?.(item.id);
-                              onClose?.();
                             }}
                             className={`
                             rounded-md border px-3 py-2
@@ -458,11 +500,35 @@ export default function Sidebar({
                             }
                           `}
                           >
-                            <div className="truncate font-medium">
-                              {item.title || t('sidebar.untitledConversation')}
-                            </div>
-                            <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                              {new Date(item.updatedAt).toLocaleString()}
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="truncate font-medium">
+                                  {item.title || t('sidebar.untitledConversation')}
+                                </div>
+                                <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                                  {new Date(item.updatedAt).toLocaleString()}
+                                </div>
+                              </div>
+
+                              {deleteButtonFor === item.id && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteConfirmId(item.id);
+                                  }}
+                                  className="
+                                    shrink-0 w-8 h-8 flex items-center justify-center
+                                    rounded-md border border-red-200 dark:border-red-700
+                                    text-red-600 dark:text-red-300
+                                    hover:bg-red-50 dark:hover:bg-red-900/40
+                                    transition-colors
+                                  "
+                                  aria-label={t('sidebar.delete')}
+                                >
+                                  <TrashIcon className="w-4 h-4" />
+                                </button>
+                              )}
                             </div>
                           </li>
                         ))}
@@ -473,6 +539,10 @@ export default function Sidebar({
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {t('sidebar.loadingHistory')}
                       </div>
+                    )}
+
+                    {deleteError && !convError && (
+                      <div className="text-xs text-red-500 dark:text-red-400">{deleteError}</div>
                     )}
                   </>
                 )}
@@ -505,6 +575,17 @@ export default function Sidebar({
           </div>
         </DropdownMenu>
       </div>
+
+      <ConfirmDeleteModal
+        open={Boolean(deleteConfirmId)}
+        loading={deleteLoading}
+        onCancel={() => setDeleteConfirmId(null)}
+        onConfirm={handleDeleteConversation}
+        title={t('sidebar.deleteConfirmTitle')}
+        description={t('sidebar.deleteConfirmDesc')}
+        confirmText={t('sidebar.deleteConfirm')}
+        cancelText={t('sidebar.deleteCancel')}
+      />
     </aside>
   );
 }
@@ -616,6 +697,68 @@ function MenuItem({
     >
       <Icon className="w-5 h-5 shrink-0 opacity-80" />
       <span>{children}</span>
+    </div>
+  );
+}
+
+function ConfirmDeleteModal({
+  open,
+  loading,
+  onConfirm,
+  onCancel,
+  title,
+  description,
+  confirmText,
+  cancelText,
+}: {
+  open: boolean;
+  loading: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  title: string;
+  description: string;
+  confirmText: string;
+  cancelText: string;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="w-[92%] max-w-md rounded-2xl bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-8 py-7 shadow-xl border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col space-y-3 mb-6">
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="
+              px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+              text-sm font-medium text-gray-700 dark:text-gray-200
+              hover:bg-gray-100 dark:hover:bg-gray-800
+              transition-colors
+            "
+          >
+            {cancelText}
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={loading}
+            className="
+              px-4 py-2 rounded-lg
+              bg-red-600 hover:bg-red-700
+              disabled:opacity-70 disabled:cursor-not-allowed
+              text-sm font-semibold text-white
+              transition-colors
+            "
+          >
+            {loading ? '…' : confirmText}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

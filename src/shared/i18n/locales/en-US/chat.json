@@ -55,7 +55,13 @@
     "loadedAll": "All loaded",
     "loadingHistory": "Loading conversations…",
     "conversationError": "Failed to load conversations",
-    "untitledConversation": "Untitled conversation"
+    "untitledConversation": "Untitled conversation",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete this conversation?",
+    "deleteConfirmDesc": "This action cannot be undone.",
+    "deleteConfirm": "Delete",
+    "deleteCancel": "Cancel",
+    "deleteError": "Failed to delete. Please try again."
   },
 
   "message": {

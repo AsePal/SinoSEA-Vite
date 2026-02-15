@@ -335,6 +335,21 @@ export default function ChatWindow({
   }, [conversationIdProp, conversationId, loadHistory]);
 
   useEffect(() => {
+    if (conversationIdProp !== null) return;
+    if (conversationId === null && messages.length === 0) return;
+
+    abortRef.current?.abort();
+    setConversationId(null);
+    setMessages([]);
+    setHistoryHasMore(false);
+    setHistoryError(null);
+    historyLoadingRef.current = false;
+    setHistoryLoading(false);
+    welcomePlayedRef.current = false;
+    initConversation(true);
+  }, [conversationIdProp, conversationId, messages.length]);
+
+  useEffect(() => {
     if (!hasUserChatted) {
       initConversation();
     }
