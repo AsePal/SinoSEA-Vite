@@ -529,10 +529,9 @@ export default function Sidebar({
                                   }}
                                   className="
                                     shrink-0 w-8 h-8 flex items-center justify-center
-                                    rounded-md border border-red-200 dark:border-red-700
                                     text-red-600 dark:text-red-300
-                                    hover:bg-red-50 dark:hover:bg-red-900/40
-                                    transition-colors
+                                    hover:opacity-70
+                                    transition-opacity
                                   "
                                   aria-label={t('sidebar.delete')}
                                 >
