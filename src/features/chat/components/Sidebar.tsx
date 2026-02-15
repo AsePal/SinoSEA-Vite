@@ -172,6 +172,15 @@ export default function Sidebar({
   }, [user, loadConversations]);
 
   useEffect(() => {
+    if (!user || !activeConversationId || convLoadingRef.current) return;
+
+    const exists = conversations.some((conversation) => conversation.id === activeConversationId);
+    if (exists) return;
+
+    loadConversations(true);
+  }, [user, activeConversationId, conversations, loadConversations]);
+
+  useEffect(() => {
     if (!user) {
       setDeleteButtonFor(null);
       setDeleteError(null);
