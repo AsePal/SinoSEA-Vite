@@ -355,6 +355,9 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
             : item,
         ),
       );
+      if (activeConversationId === conversation.id) {
+        onSelectConversation?.(conversation.id, renamed.title || t('sidebar.untitledConversation'));
+      }
       setEditingConversationId(null);
       setEditingTitle('');
     } catch (err) {
