@@ -43,13 +43,15 @@ type ChatWindowProps = {
   userAvatar?: string;
   isAuthed?: boolean;
   conversationId?: string | null;
-  onConversationIdChange?: (id: string | null) => void;
+  conversationTitle?: string | null;
+  onConversationIdChange?: (id: string | null, title?: string | null) => void;
 };
 
 export default function ChatWindow({
   userAvatar,
   isAuthed: isAuthedProp,
   conversationId: conversationIdProp,
+  conversationTitle: conversationTitleProp,
   onConversationIdChange,
 }: ChatWindowProps) {
   const { t, i18n } = useTranslation('chat');
@@ -66,6 +68,9 @@ export default function ChatWindow({
   const hasUserChatted = messages.some((m) => m.role === 'user');
   const [input, setInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(conversationIdProp ?? null);
+  const [conversationTitle, setConversationTitle] = useState<string | null>(
+    conversationTitleProp ?? null,
+  );
   const [loading, setLoading] = useState(false);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
 
@@ -303,8 +308,12 @@ export default function ChatWindow({
       }
 
       setConversationId(latestConversation.id);
+      setConversationTitle(latestConversation.title || t('sidebar.untitledConversation'));
       pendingBootstrapConversationSyncRef.current = latestConversation.id;
-      onConversationIdChange?.(latestConversation.id);
+      onConversationIdChange?.(
+        latestConversation.id,
+        latestConversation.title || t('sidebar.untitledConversation'),
+      );
       bootstrapBufferedOlderMessagesRef.current = overflowOlderMessages;
       bootstrapRemoteHasMoreRef.current = messageRes.data.hasMore;
       setHistoryHasMore(bootstrapHasMore);
@@ -376,8 +385,9 @@ export default function ChatWindow({
     lastLangRef.current = null;
 
     setConversationId(null);
+    setConversationTitle(null);
     setMessages([]);
-    onConversationIdChange?.(null);
+    onConversationIdChange?.(null, null);
     initConversation(true);
   }
 
@@ -417,7 +427,8 @@ export default function ChatWindow({
           // start 事件：保存 conversationId（首次对话时）
           if (event.type === 'start' && !conversationId) {
             setConversationId(event.conversationId);
-            onConversationIdChange?.(event.conversationId);
+            setConversationTitle((prev) => prev ?? t('sidebar.untitledConversation'));
+            onConversationIdChange?.(event.conversationId, null);
           }
           if (event.type === 'delta') {
             streamBufferRef.current += event.text;
@@ -425,7 +436,8 @@ export default function ChatWindow({
           // end 事件：也保存 conversationId（兜底）
           if (event.type === 'end') {
             setConversationId(event.conversationId);
-            onConversationIdChange?.(event.conversationId);
+            setConversationTitle((prev) => prev ?? t('sidebar.untitledConversation'));
+            onConversationIdChange?.(event.conversationId, null);
           }
         },
         { signal: controller.signal },
@@ -476,6 +488,10 @@ export default function ChatWindow({
   }, []);
 
   useEffect(() => {
+    setConversationTitle(conversationTitleProp ?? null);
+  }, [conversationTitleProp]);
+
+  useEffect(() => {
     if (!conversationIdProp) return;
 
     if (pendingBootstrapConversationSyncRef.current === conversationIdProp) {
@@ -518,6 +534,7 @@ export default function ChatWindow({
 
     abortRef.current?.abort();
     setConversationId(null);
+    setConversationTitle(null);
     setMessages([]);
     setHistoryHasMore(false);
     setHistoryError(null);
@@ -614,7 +631,9 @@ export default function ChatWindow({
       <div className="w-full h-full flex flex-col">
         {/* Header */}
         <div className="px-4 py-4 text-sm font-semibold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
-          {conversationId ? conversationId.substring(0, 8) : '...'}
+          {conversationId
+            ? (conversationTitle?.trim() ?? t('sidebar.untitledConversation'))
+            : '...'}
         </div>
 
         {/* Messages */}

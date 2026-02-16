@@ -25,6 +25,7 @@ export default function MainLayout() {
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [activeConversationTitle, setActiveConversationTitle] = useState<string | null>(null);
   const [showSessionExpired, setShowSessionExpired] = useState(false);
   const sidebarRef = useRef<SidebarHandle | null>(null);
   const skipNextSidebarCloseRef = useRef(false);
@@ -42,6 +43,11 @@ export default function MainLayout() {
       return;
     }
     setSidebarOpen(false);
+  }
+
+  function handleConversationChange(id: string | null, title?: string | null) {
+    setActiveConversationId(id);
+    setActiveConversationTitle(title ?? null);
   }
 
   function fetchUserInfo() {
@@ -180,7 +186,7 @@ export default function MainLayout() {
             user={user}
             onClose={() => setSidebarOpen(false)}
             onOpenUserInfo={openUserInfo}
-            onSelectConversation={(id: string | null) => setActiveConversationId(id)}
+            onSelectConversation={handleConversationChange}
             activeConversationId={activeConversationId}
           />
         </motion.div>
@@ -196,7 +202,8 @@ export default function MainLayout() {
               userLoaded,
               refreshUser: fetchUserInfo,
               activeConversationId,
-              setActiveConversationId,
+              activeConversationTitle,
+              setActiveConversationId: handleConversationChange,
             }}
           />
         </main>
@@ -212,6 +219,7 @@ export default function MainLayout() {
           localStorage.removeItem('auth_token');
           setUser(null);
           setActiveConversationId(null);
+          setActiveConversationTitle(null);
           setShowUserInfoModal(false);
           setShowLogoutModal(false);
           navigate('/chat');
@@ -253,6 +261,7 @@ export default function MainLayout() {
           localStorage.removeItem('auth_token');
           setUser(null);
           setActiveConversationId(null);
+          setActiveConversationTitle(null);
           setShowSessionExpired(false);
           navigate('/login');
         }}
@@ -260,6 +269,7 @@ export default function MainLayout() {
           localStorage.removeItem('auth_token');
           setUser(null);
           setActiveConversationId(null);
+          setActiveConversationTitle(null);
           setShowSessionExpired(false);
           navigate('/');
         }}

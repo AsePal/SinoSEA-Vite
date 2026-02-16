@@ -30,7 +30,7 @@ type SidebarProps = {
   user?: UserInfo | null;
   onClose?: () => void;
   onOpenUserInfo?: () => void;
-  onSelectConversation?: (id: string | null) => void;
+  onSelectConversation?: (id: string | null, title?: string | null) => void;
   activeConversationId?: string | null;
 };
 
@@ -298,7 +298,7 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
       });
 
       if (activeConversationId === deleteConfirmId) {
-        onSelectConversation?.(null);
+        onSelectConversation?.(null, null);
       }
 
       if (deleteButtonFor === deleteConfirmId) {
@@ -698,7 +698,10 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
                               if (editingConversationId === item.id) return;
                               setDeleteButtonFor(item.id);
                               setHistoryActionMenu(null);
-                              onSelectConversation?.(item.id);
+                              onSelectConversation?.(
+                                item.id,
+                                item.title || t('sidebar.untitledConversation'),
+                              );
                             }}
                             className={`
                             rounded-md border px-3 py-2
