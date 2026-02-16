@@ -47,6 +47,7 @@ const CONVERSATION_PAGE_SIZE = 8;
 const HISTORY_ACTION_MENU_HEIGHT = 92;
 const HISTORY_ACTION_MENU_GAP = 6;
 const HISTORY_ACTION_MENU_SIDE_GAP = 8;
+const SIDEBAR_HEADER_HEIGHT = 72;
 
 type HistoryActionMenuState = {
   conversationId: string;
@@ -382,14 +383,23 @@ export default function Sidebar({
         <div className="flex items-center gap-2">
           {/* 语言切换按钮容器 */}
           <div ref={langButtonRef} className="relative">
-            <button
+            <motion.button
+              type="button"
               onClick={() => setIsLangOpen(!isLangOpen)}
               className="ui-tooltip p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={t('tooltips.toggleLanguage')}
               data-tooltip={t('tooltips.toggleLanguage')}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 24 }}
             >
-              <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
+              <motion.span
+                className="inline-flex"
+                animate={{ rotate: isLangOpen ? 12 : 0, scale: isLangOpen ? 1.06 : 1 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+              >
+                <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </motion.span>
+            </motion.button>
 
             {/* 语言选择窗口 */}
             <AnimatePresence>
@@ -399,7 +409,11 @@ export default function Sidebar({
                   animate={{ x: 0 }}
                   exit={{ x: -260 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  className="fixed left-0 top-0 w-65 h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col"
+                  className="fixed left-0 w-65 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col"
+                  style={{
+                    top: SIDEBAR_HEADER_HEIGHT,
+                    height: `calc(100vh - ${SIDEBAR_HEADER_HEIGHT}px)`,
+                  }}
                 >
                   {/* 窗口顶部标题栏 */}
                   <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">

@@ -29,10 +29,10 @@ export default function LanguageSwitcher({ variant = 'auto' }: Props) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDocDark, setIsDocDark] = useState(false);
-
   const [current, setCurrent] = useState(i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN');
-
   const currentLang = LANGS.find((lang) => current.startsWith(getLangKey(lang.code)));
+  // 动画状态
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const onChanged = (lng: string) => setCurrent(lng);
@@ -68,10 +68,11 @@ export default function LanguageSwitcher({ variant = 'auto' }: Props) {
   async function switchLang(lang: Lang) {
     const now = i18n.resolvedLanguage || i18n.language;
     if (now === lang) return;
-
+    setIsAnimating(true);
     localStorage.setItem('lang', lang);
     await i18n.changeLanguage(lang);
     setOpen(false);
+    setTimeout(() => setIsAnimating(false), 600); // 动画持续600ms
   }
 
   return (
@@ -92,22 +93,19 @@ export default function LanguageSwitcher({ variant = 'auto' }: Props) {
           }
         `}
       >
-        {/* 语言选择样式 */}
-        {/* <span>
-          Language{currentLang && ` / ${currentLang.label}`}
-        </span> */}
         <span>{currentLang && `  ${currentLang.label}`}</span>
+        {/* 地球图标动画 */}
         <svg
-          className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 language-switch-icon ${isAnimating ? 'animate-spin-custom' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
           <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            d="M2 12h20M12 2v20M4 4c4 4 12 4 16 0M4 20c4-4 12-4 16 0"
+            stroke="currentColor"
+            strokeWidth="1.5"
           />
         </svg>
       </button>
