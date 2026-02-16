@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { UserInfo } from '../../shared/types/user.types';
+import type { SidebarHandle } from '../../features/chat/components/Sidebar';
 
 import { TopNav, Sidebar } from '../../features/chat';
 import {
@@ -25,9 +26,23 @@ export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [showSessionExpired, setShowSessionExpired] = useState(false);
+  const sidebarRef = useRef<SidebarHandle | null>(null);
+  const skipNextSidebarCloseRef = useRef(false);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
+
+  function handleSidebarOverlayMouseDown() {
+    skipNextSidebarCloseRef.current = sidebarRef.current?.closeTransientMenus() ?? false;
+  }
+
+  function handleSidebarOverlayClick() {
+    if (skipNextSidebarCloseRef.current) {
+      skipNextSidebarCloseRef.current = false;
+      return;
+    }
+    setSidebarOpen(false);
+  }
 
   function fetchUserInfo() {
     const token = localStorage.getItem('auth_token');
@@ -142,7 +157,8 @@ export default function MainLayout() {
               bg-black/20 transition-opacity duration-300
               ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
             `}
-          onClick={() => setSidebarOpen(false)}
+          onMouseDown={handleSidebarOverlayMouseDown}
+          onClick={handleSidebarOverlayClick}
         />
 
         {/* Sidebar */}
@@ -160,6 +176,7 @@ export default function MainLayout() {
             `}
         >
           <Sidebar
+            ref={sidebarRef}
             user={user}
             onClose={() => setSidebarOpen(false)}
             onOpenUserInfo={openUserInfo}

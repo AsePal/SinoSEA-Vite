@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
@@ -32,6 +32,10 @@ type SidebarProps = {
   onOpenUserInfo?: () => void;
   onSelectConversation?: (id: string | null) => void;
   activeConversationId?: string | null;
+};
+
+export type SidebarHandle = {
+  closeTransientMenus: () => boolean;
 };
 
 type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
@@ -63,13 +67,10 @@ function getLangKey(lng: string) {
   return 'en';
 }
 
-export default function Sidebar({
-  user,
-  onClose,
-  onOpenUserInfo,
-  onSelectConversation,
-  activeConversationId,
-}: SidebarProps) {
+const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
+  { user, onClose, onOpenUserInfo, onSelectConversation, activeConversationId }: SidebarProps,
+  ref,
+) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation('chat');
@@ -103,6 +104,25 @@ export default function Sidebar({
     const saved = localStorage.getItem('themeMode');
     return (saved as 'light' | 'dark') || 'light';
   });
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      closeTransientMenus: () => {
+        let closedAny = false;
+        if (isLangOpen) {
+          setIsLangOpen(false);
+          closedAny = true;
+        }
+        if (historyActionMenu) {
+          setHistoryActionMenu(null);
+          closedAny = true;
+        }
+        return closedAny;
+      },
+    }),
+    [isLangOpen, historyActionMenu],
+  );
 
   useEffect(() => {
     if (themeMode === 'dark') {
@@ -146,12 +166,10 @@ export default function Sidebar({
   async function switchLang(lang: Lang) {
     const now = i18n.resolvedLanguage || i18n.language;
     if (now === lang) {
-      setIsLangOpen(false);
       return;
     }
     localStorage.setItem('lang', lang);
     await i18n.changeLanguage(lang);
-    setIsLangOpen(false);
   }
 
   const loadConversations = useCallback(
@@ -913,7 +931,9 @@ export default function Sidebar({
       />
     </aside>
   );
-}
+});
+
+export default Sidebar;
 
 function DropdownMenu({
   title,
