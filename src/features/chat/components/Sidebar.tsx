@@ -800,67 +800,82 @@ export default function Sidebar({
         </DropdownMenu>
       </div>
 
-      {historyActionMenu &&
-        createPortal(
-          <div
-            ref={historyActionMenuRef}
-            className="
-              fixed z-999 min-w-33
-              rounded-lg border border-gray-200 dark:border-gray-700
-              bg-white dark:bg-gray-800
-              shadow-lg
-              py-1
-            "
-            style={{
-              top: historyActionMenu.top,
-              left: historyActionMenu.left,
-              transform: historyActionMenu.openUpward ? 'translate(0, -100%)' : 'translate(0, 0)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => {
-                const conversation = conversations.find(
-                  (conversationItem) => conversationItem.id === historyActionMenu.conversationId,
-                );
-                if (!conversation) {
+      {createPortal(
+        <AnimatePresence>
+          {historyActionMenu && (
+            <motion.div
+              ref={historyActionMenuRef}
+              className="
+                fixed z-999 min-w-33
+                rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-gray-800
+                shadow-lg
+                py-1
+              "
+              style={{
+                top: historyActionMenu.top,
+                left: historyActionMenu.left,
+                transform: historyActionMenu.openUpward ? 'translate(0, -100%)' : 'translate(0, 0)',
+              }}
+              initial={{
+                opacity: 0,
+                scale: 0.96,
+                y: historyActionMenu.openUpward ? 6 : -6,
+              }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{
+                opacity: 0,
+                scale: 0.96,
+                y: historyActionMenu.openUpward ? 6 : -6,
+              }}
+              transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.75 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  const conversation = conversations.find(
+                    (conversationItem) => conversationItem.id === historyActionMenu.conversationId,
+                  );
+                  if (!conversation) {
+                    setHistoryActionMenu(null);
+                    return;
+                  }
+                  startRenameConversation(conversation);
+                }}
+                disabled={renameLoadingId === historyActionMenu.conversationId || deleteLoading}
+                className="
+                  w-full flex items-center gap-2 px-3 py-2 text-sm text-left
+                  text-gray-700 dark:text-gray-200
+                  hover:bg-gray-100 dark:hover:bg-gray-700
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                "
+              >
+                <PencilSquareIcon className="w-4 h-4" />
+                <span>{t('sidebar.rename')}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteConfirmId(historyActionMenu.conversationId);
                   setHistoryActionMenu(null);
-                  return;
-                }
-                startRenameConversation(conversation);
-              }}
-              disabled={renameLoadingId === historyActionMenu.conversationId || deleteLoading}
-              className="
-                w-full flex items-center gap-2 px-3 py-2 text-sm text-left
-                text-gray-700 dark:text-gray-200
-                hover:bg-gray-100 dark:hover:bg-gray-700
-                disabled:opacity-50 disabled:cursor-not-allowed
-              "
-            >
-              <PencilSquareIcon className="w-4 h-4" />
-              <span>{t('sidebar.rename')}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setDeleteConfirmId(historyActionMenu.conversationId);
-                setHistoryActionMenu(null);
-              }}
-              disabled={renameLoadingId === historyActionMenu.conversationId}
-              className="
-                w-full flex items-center gap-2 px-3 py-2 text-sm text-left
-                text-red-600 dark:text-red-300
-                hover:bg-red-50 dark:hover:bg-red-900/30
-                disabled:opacity-50 disabled:cursor-not-allowed
-              "
-            >
-              <TrashIcon className="w-4 h-4" />
-              <span>{t('sidebar.delete')}</span>
-            </button>
-          </div>,
-          document.body,
-        )}
+                }}
+                disabled={renameLoadingId === historyActionMenu.conversationId}
+                className="
+                  w-full flex items-center gap-2 px-3 py-2 text-sm text-left
+                  text-red-600 dark:text-red-300
+                  hover:bg-red-50 dark:hover:bg-red-900/30
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                "
+              >
+                <TrashIcon className="w-4 h-4" />
+                <span>{t('sidebar.delete')}</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
 
       <ConfirmDeleteModal
         open={Boolean(deleteConfirmId)}
