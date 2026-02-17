@@ -12,6 +12,7 @@
   "input": {
     "placeholder": "Ask me anything",
     "placeholder_authed": "Press Enter to send, Shift + Enter for a new line",
+    "send": "Send message",
     "newConversation": "New conversation",
     "login_required": " Please sign in to use this feature"
   },
