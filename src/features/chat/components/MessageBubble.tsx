@@ -17,6 +17,14 @@ export default function MessageBubble({
   onActivate?: () => void;
 }) {
   const isUser = message.role === 'user';
+  const normalizedContent = message.content.trim();
+  const waitingTextMatch = normalizedContent.match(/^(.*?)(?:\.\.\.|…)\s*$/);
+  const shouldAnimateWaitingDots =
+    !isUser &&
+    (normalizedContent === '...' ||
+      (normalizedContent.startsWith('AsePal') && Boolean(waitingTextMatch)));
+  const waitingText =
+    normalizedContent === '...' ? '' : (waitingTextMatch?.[1] ?? normalizedContent);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuVisible, setMenuVisible] = useState(Boolean(isActive));
@@ -117,7 +125,30 @@ export default function MessageBubble({
               ${isUser ? 'text-white dark:text-gray-900' : 'text-gray-800 dark:text-gray-100'}
             `}
           >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+            {shouldAnimateWaitingDots ? (
+              <span className="inline-flex items-center gap-0.5">
+                {waitingText ? <span>{waitingText}</span> : null}
+                <span className="inline-flex" aria-hidden="true">
+                  {[0, 1, 2].map((index) => (
+                    <motion.span
+                      key={index}
+                      className="inline-block text-[18px] leading-none"
+                      animate={{ y: [0, -3, 0], opacity: [0.45, 1, 0.45] }}
+                      transition={{
+                        duration: 0.75,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: index * 0.15,
+                      }}
+                    >
+                      .
+                    </motion.span>
+                  ))}
+                </span>
+              </span>
+            ) : (
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+            )}
           </div>
         </div>
 
