@@ -428,7 +428,7 @@ export default function ChatWindow({
           if (event.type === 'start' && !conversationId) {
             setConversationId(event.conversationId);
             setConversationTitle((prev) => prev ?? t('sidebar.untitledConversation'));
-            onConversationIdChange?.(event.conversationId, null);
+            onConversationIdChange?.(event.conversationId);
           }
           if (event.type === 'delta') {
             streamBufferRef.current += event.text;
@@ -437,7 +437,7 @@ export default function ChatWindow({
           if (event.type === 'end') {
             setConversationId(event.conversationId);
             setConversationTitle((prev) => prev ?? t('sidebar.untitledConversation'));
-            onConversationIdChange?.(event.conversationId, null);
+            onConversationIdChange?.(event.conversationId);
           }
         },
         { signal: controller.signal },

@@ -95,6 +95,7 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
   const historyActionMenuRef = useRef<HTMLDivElement>(null);
   const lastConversationIdRef = useRef<string | null>(null);
   const convLoadingRef = useRef(false);
+  const lastSyncedConversationRef = useRef<{ id: string; title: string } | null>(null);
 
   const deleteTarget = deleteConfirmId
     ? conversations.find((c) => c.id === deleteConfirmId)
@@ -230,6 +231,22 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
 
     loadConversations(true);
   }, [user, activeConversationId, conversations, loadConversations]);
+
+  useEffect(() => {
+    if (!user || !activeConversationId) return;
+
+    const activeConversation = conversations.find(
+      (conversation) => conversation.id === activeConversationId,
+    );
+    if (!activeConversation) return;
+
+    const nextTitle = activeConversation.title || t('sidebar.untitledConversation');
+    const lastSynced = lastSyncedConversationRef.current;
+    if (lastSynced?.id === activeConversationId && lastSynced.title === nextTitle) return;
+
+    lastSyncedConversationRef.current = { id: activeConversationId, title: nextTitle };
+    onSelectConversation?.(activeConversationId, nextTitle);
+  }, [user, activeConversationId, conversations, onSelectConversation, t]);
 
   useEffect(() => {
     if (!user) {

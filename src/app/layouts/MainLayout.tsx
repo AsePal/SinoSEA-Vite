@@ -47,7 +47,13 @@ export default function MainLayout() {
 
   function handleConversationChange(id: string | null, title?: string | null) {
     setActiveConversationId(id);
-    setActiveConversationTitle(title ?? null);
+    if (title !== undefined) {
+      setActiveConversationTitle(title);
+      return;
+    }
+    if (id === null) {
+      setActiveConversationTitle(null);
+    }
   }
 
   function fetchUserInfo() {
