@@ -169,7 +169,7 @@ export default function Register() {
             {t('register.title')}
           </h1>
           <span className="text-base text-gray-500 dark:text-gray-400 mt-1">
-            从这里开始你的旅程
+            {t('register.subtitle')}
           </span>
         </div>
       </div>

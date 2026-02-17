@@ -126,7 +126,7 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
             {t('title')}
           </h1>
-          <span className="text-base text-gray-500 dark:text-gray-400 mt-1">很高兴再次见到你</span>
+          <span className="text-base text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</span>
         </div>
       </div>
 
