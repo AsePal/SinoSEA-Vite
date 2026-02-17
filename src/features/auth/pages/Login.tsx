@@ -117,17 +117,18 @@ export default function Login() {
 
   return (
     <div className="w-full max-w-lg px-4">
-      {/* Logo 图标 */}
-      <div className="flex justify-center mb-6">
-        <div className="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+      {/* Logo+标题 左右结构 */}
+      <div className="flex items-center justify-center mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mr-4">
           <SparklesIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
         </div>
+        <div className="flex flex-col justify-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+            {t('title')}
+          </h1>
+          <span className="text-base text-gray-500 dark:text-gray-400 mt-1">很高兴再次见到你</span>
+        </div>
       </div>
-
-      {/* 标题 */}
-      <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mb-8">
-        {t('title')}
-      </h1>
 
       {/* 表单卡片 */}
       <div
