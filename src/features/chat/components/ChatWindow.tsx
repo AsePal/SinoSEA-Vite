@@ -555,6 +555,17 @@ export default function ChatWindow({
   }, [conversationId, i18n.language, hasUserChatted, messages.length]);
 
   useEffect(() => {
+    if (conversationId) return;
+    if (hasUserChatted) return;
+    if (messages.length === 0) return;
+
+    const isOnlyAssistantMessages = messages.every((message) => message.role === 'assistant');
+    if (!isOnlyAssistantMessages) return;
+
+    initConversation(true);
+  }, [conversationId, hasUserChatted, i18n.language, i18n.resolvedLanguage, messages]);
+
+  useEffect(() => {
     if (lastAuthedRef.current === null) return;
     const authed = getCurrentAuthed();
     if (authed === lastAuthedRef.current) return;
