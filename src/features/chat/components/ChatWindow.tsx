@@ -228,9 +228,7 @@ export default function ChatWindow({
         }
 
         // 找出当前最旧的消息 ID 作为游标
-        const oldestMessageWithId = messages
-          .filter((m) => Boolean(m.messageId))
-          .at(0);
+        const oldestMessageWithId = messages.filter((m) => Boolean(m.messageId)).at(0);
         const firstId = reset ? undefined : oldestMessageWithId?.messageId;
 
         // 如果是从 latestOnly 模式加载更多，退出该模式
