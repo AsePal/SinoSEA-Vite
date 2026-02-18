@@ -141,6 +141,22 @@ export default function MainLayout() {
     };
   }, []);
 
+  useEffect(() => {
+    const body = document.body;
+    const previousOverflow = body.style.overflow;
+    const previousTouchAction = body.style.touchAction;
+
+    if (sidebarOpen) {
+      body.style.overflow = 'hidden';
+      body.style.touchAction = 'none';
+    }
+
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.touchAction = previousTouchAction;
+    };
+  }, [sidebarOpen]);
+
   const openUserInfo = () => {
     setShowUserInfoModal(true);
   };
@@ -200,7 +216,9 @@ export default function MainLayout() {
         {/* 页面内容：通过 Outlet 渲染子路由 */}
         <main
           id="app-scroll-container"
-          className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden"
+          className={`flex-1 flex flex-col overflow-x-hidden ${
+            sidebarOpen ? 'overflow-hidden' : 'overflow-y-auto'
+          }`}
         >
           <Outlet
             context={{
