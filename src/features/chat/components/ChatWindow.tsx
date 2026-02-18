@@ -97,6 +97,7 @@ export default function ChatWindow({
   const [historyLoading, setHistoryLoading] = useState(false);
   const historyLoadingRef = useRef(false);
   const latestOnlyBootstrappedRef = useRef(false);
+  const latestOnlyFetchLimitRef = useRef(BOOTSTRAP_RECENT_MESSAGE_LIMIT);
   const bootstrapBufferedOlderMessagesRef = useRef<ChatMessage[]>([]);
   const bootstrapRemoteHasMoreRef = useRef(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
@@ -226,16 +227,16 @@ export default function ChatWindow({
           return;
         }
 
-        const isLoadMoreFromLatestOnly = !reset && latestOnlyBootstrappedRef.current;
-        const firstId = isLoadMoreFromLatestOnly
-          ? messages.length > 0
-            ? messages[0].messageId
-            : undefined
-          : reset
-            ? undefined
-            : messages.length > 0
-              ? messages[0].messageId
-              : undefined;
+        // 找出当前最旧的消息 ID 作为游标
+        const oldestMessageWithId = messages
+          .filter((m) => Boolean(m.messageId))
+          .at(0);
+        const firstId = reset ? undefined : oldestMessageWithId?.messageId;
+
+        // 如果是从 latestOnly 模式加载更多，退出该模式
+        if (latestOnlyBootstrappedRef.current) {
+          latestOnlyBootstrappedRef.current = false;
+        }
 
         const res = await fetchChatMessages({
           conversationId: conversationIdValue,
@@ -264,7 +265,10 @@ export default function ChatWindow({
         });
         latestOnlyBootstrappedRef.current = false;
       } catch (err) {
-        setHistoryError(t('system.error'));
+        console.error('[loadHistory error]', err);
+        setHistoryError(t('sidebar.loadMoreError'));
+        // 发生错误时停止显示加载更多按钮，避免用户重复触发相同错误
+        setHistoryHasMore(false);
       } finally {
         historyLoadingRef.current = false;
         setHistoryLoading(false);
@@ -316,6 +320,7 @@ export default function ChatWindow({
       );
       bootstrapBufferedOlderMessagesRef.current = overflowOlderMessages;
       bootstrapRemoteHasMoreRef.current = messageRes.data.hasMore;
+      latestOnlyFetchLimitRef.current = BOOTSTRAP_RECENT_MESSAGE_LIMIT;
       setHistoryHasMore(bootstrapHasMore);
       latestOnlyBootstrappedRef.current = true;
       setMessages(bootstrapMessages);
@@ -376,6 +381,7 @@ export default function ChatWindow({
     setHistoryError(null);
     bootstrapBufferedOlderMessagesRef.current = [];
     bootstrapRemoteHasMoreRef.current = false;
+    latestOnlyFetchLimitRef.current = BOOTSTRAP_RECENT_MESSAGE_LIMIT;
     latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);
@@ -510,6 +516,7 @@ export default function ChatWindow({
       setHistoryError(null);
       bootstrapBufferedOlderMessagesRef.current = [];
       bootstrapRemoteHasMoreRef.current = false;
+      latestOnlyFetchLimitRef.current = BOOTSTRAP_RECENT_MESSAGE_LIMIT;
       latestOnlyBootstrappedRef.current = false;
       historyLoadingRef.current = false;
       setHistoryLoading(false);
@@ -540,6 +547,7 @@ export default function ChatWindow({
     setHistoryError(null);
     bootstrapBufferedOlderMessagesRef.current = [];
     bootstrapRemoteHasMoreRef.current = false;
+    latestOnlyFetchLimitRef.current = BOOTSTRAP_RECENT_MESSAGE_LIMIT;
     latestOnlyBootstrappedRef.current = false;
     historyLoadingRef.current = false;
     setHistoryLoading(false);

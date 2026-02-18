@@ -56,6 +56,7 @@
     "historyLoginTip": "Sign in to view your past chats",
     "noHistory": "No conversations yet",
     "loadMore": "Load more",
+    "loadMoreError": "Something went wrong. Please try again later.",
     "loadedAll": "All loaded",
     "loadingHistory": "Loading conversations…",
     "conversationError": "Failed to load conversations",

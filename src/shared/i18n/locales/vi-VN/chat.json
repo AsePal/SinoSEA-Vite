@@ -61,6 +61,7 @@
     "historyLoginTip": "Đăng nhập để xem lịch sử trò chuyện",
     "noHistory": "Chưa có cuộc trò chuyện nào",
     "loadMore": "Tải thêm",
+    "loadMoreError": "Đã xảy ra sự cố. Vui lòng thử lại sau.",
     "loadedAll": "Đã tải xong",
     "loadingHistory": "Đang tải danh sách cuộc trò chuyện…",
     "conversationError": "Không thể tải danh sách cuộc trò chuyện",

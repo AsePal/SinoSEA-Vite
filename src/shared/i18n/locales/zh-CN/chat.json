@@ -61,6 +61,7 @@
     "historyLoginTip": "登录后查看历史对话",
     "noHistory": "暂时没有对话记录",
     "loadMore": "加载更多",
+    "loadMoreError": "出现了一点问题，请稍后再试。",
     "loadedAll": "已加载完毕",
     "loadingHistory": "正在加载对话…",
     "conversationError": "对话列表加载失败",
