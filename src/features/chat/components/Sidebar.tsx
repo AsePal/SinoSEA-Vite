@@ -823,34 +823,32 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
                     {renameError && !convError && (
                       <div className="text-xs text-red-500 dark:text-red-400">{renameError}</div>
                     )}
+
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => loadConversations(false)}
+                        disabled={convLoading || (!hasMoreConversations && !convError)}
+                        className="
+                          w-full text-xs font-medium
+                          px-3 py-2
+                          rounded-md border border-gray-200 dark:border-gray-700
+                          text-gray-700 dark:text-gray-200
+                          hover:bg-gray-100 dark:hover:bg-gray-800
+                          disabled:opacity-60 disabled:cursor-not-allowed
+                        "
+                      >
+                        {convLoading
+                          ? t('sidebar.loadingHistory')
+                          : !hasMoreConversations && !convError
+                            ? t('sidebar.loadedAll')
+                            : t('sidebar.loadMore')}
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
             </div>
-
-            {isAuthed && (
-              <div className="pt-2 pb-1 shrink-0 bg-gray-50 dark:bg-gray-900">
-                <button
-                  type="button"
-                  onClick={() => loadConversations(false)}
-                  disabled={convLoading || (!hasMoreConversations && !convError)}
-                  className="
-                    w-full text-xs font-medium
-                    px-3 py-2
-                    rounded-md border border-gray-200 dark:border-gray-700
-                    text-gray-700 dark:text-gray-200
-                    hover:bg-gray-100 dark:hover:bg-gray-800
-                    disabled:opacity-60 disabled:cursor-not-allowed
-                  "
-                >
-                  {convLoading
-                    ? t('sidebar.loadingHistory')
-                    : !hasMoreConversations && !convError
-                      ? t('sidebar.loadedAll')
-                      : t('sidebar.loadMore')}
-                </button>
-              </div>
-            )}
           </div>
         </DropdownMenu>
       </div>
