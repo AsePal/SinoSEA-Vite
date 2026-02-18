@@ -131,7 +131,11 @@ export default function Login() {
       </div>
 
       {/* 表单卡片 */}
-      <div
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
         className={`
           rounded-2xl bg-white dark:bg-gray-800
           shadow-xl dark:shadow-gray-900/50
@@ -152,6 +156,8 @@ export default function Login() {
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             placeholder={t('placeholder.account')}
             value={account}
+            name="identifier"
+            autoComplete="username"
             onChange={(e) => setAccount(e.currentTarget.value.replace(/\s/g, ''))}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -180,6 +186,8 @@ export default function Login() {
           </div>
           <input
             type={showPassword ? 'text' : 'password'}
+            name="password"
+            autoComplete="current-password"
             className="w-full pl-12 pr-12 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             placeholder={t('placeholder.password')}
             value={password}
@@ -221,7 +229,7 @@ export default function Login() {
 
         {/* 登录按钮 */}
         <button
-          onClick={handleLogin}
+          type="submit"
           disabled={loading || !agreed || loginAnim === 'success'}
           className={`
             relative w-full h-12 rounded-xl
@@ -295,7 +303,7 @@ export default function Login() {
             />
           </span>
         </label>
-      </div>
+      </form>
 
       {/* 注册链接 */}
       <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">

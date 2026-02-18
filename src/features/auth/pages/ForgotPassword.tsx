@@ -172,7 +172,13 @@ export default function ForgotPassword() {
       </div>
 
       {/* 表单卡片 */}
-      <div className="rounded-2xl bg-white dark:bg-gray-800 shadow-xl dark:shadow-gray-900/50 px-8 py-8">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleReset();
+        }}
+        className="rounded-2xl bg-white dark:bg-gray-800 shadow-xl dark:shadow-gray-900/50 px-8 py-8"
+      >
         {/* 验证方式选择 */}
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {t('forgot.label.method')}
@@ -240,6 +246,8 @@ export default function ForgotPassword() {
           </div>
           <input
             disabled={!method}
+            name={method === 'email' ? 'email' : method === 'phone' ? 'tel' : undefined}
+            autoComplete={method === 'email' ? 'email' : method === 'phone' ? 'tel' : undefined}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition disabled:opacity-50"
             placeholder={
               method === 'email'
@@ -322,6 +330,8 @@ export default function ForgotPassword() {
           <input
             disabled={!codeSent}
             type="password"
+            name="newPassword"
+            autoComplete="new-password"
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition disabled:opacity-50"
             placeholder={t('forgot.placeholder.newPassword')}
             value={newPassword}
@@ -340,6 +350,8 @@ export default function ForgotPassword() {
           <input
             disabled={!codeSent}
             type="password"
+            name="confirmPassword"
+            autoComplete="new-password"
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition disabled:opacity-50"
             placeholder={t('forgot.placeholder.confirmPassword')}
             value={confirmPassword}
@@ -352,7 +364,7 @@ export default function ForgotPassword() {
 
         {/* 重置密码按钮 */}
         <button
-          onClick={handleReset}
+          type="submit"
           disabled={!codeSent || loading || verificationCode.length !== 6}
           className={`w-full h-12 rounded-xl font-medium transition-all duration-300 ${
             !codeSent || verificationCode.length !== 6
@@ -372,7 +384,7 @@ export default function ForgotPassword() {
             {t('forgot.action.back')}
           </Link>
         </div>
-      </div>
+      </form>
 
       {/* Toast 提示 */}
       <SuccessToastModal
