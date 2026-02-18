@@ -300,6 +300,7 @@ export default function ForgotPassword() {
               type="text"
               inputMode="numeric"
               maxLength={1}
+              autoComplete={index === 0 ? 'one-time-code' : 'off'}
               disabled={!codeSent}
               value={digit}
               onChange={(e) => handleCodeChange(index, e.target.value)}
