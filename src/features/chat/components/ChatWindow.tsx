@@ -12,6 +12,17 @@ import type { ChatMessage, SSEEvent, ChatHistoryMessage } from '../types/chat.ty
 import { sendChatSSE } from '../../../shared/api/chatSSE';
 import type { TFunction } from 'i18next';
 import { fetchChatConversations, fetchChatMessages } from '../../../shared/api/chat';
+
+/** 生成消息的唯一标识（兼容 user/assistant 共享同一 messageId 的场景） */
+function getMessageUniqueKey(msg: ChatMessage, fallbackIndex: number): string {
+  if (msg.messageId) return `${msg.messageId}-${msg.role}`;
+  return `index-${fallbackIndex}`;
+}
+
+/** 用于去重的 key（仅 messageId+role） */
+function getMessageDedupeKey(msg: ChatMessage): string | null {
+  return msg.messageId ? `${msg.messageId}-${msg.role}` : null;
+}
 function getWelcomeSteps(t: TFunction, authed: boolean): WelcomeStep[] {
   if (authed) {
     return [
@@ -214,11 +225,12 @@ export default function ChatWindow({
           bootstrapBufferedOlderMessagesRef.current = [];
 
           setMessages((prev) => {
-            const seenMessageIds = new Set<string>();
+            const seenKeys = new Set<string>();
             return [...bufferedOlderMessages, ...prev].filter((message) => {
-              if (!message.messageId) return true;
-              if (seenMessageIds.has(message.messageId)) return false;
-              seenMessageIds.add(message.messageId);
+              const key = getMessageDedupeKey(message);
+              if (!key) return true;
+              if (seenKeys.has(key)) return false;
+              seenKeys.add(key);
               return true;
             });
           });
@@ -253,11 +265,12 @@ export default function ChatWindow({
         setMessages((prev) => {
           if (reset) return mapped;
 
-          const seenMessageIds = new Set<string>();
+          const seenKeys = new Set<string>();
           return [...mapped, ...prev].filter((message) => {
-            if (!message.messageId) return true;
-            if (seenMessageIds.has(message.messageId)) return false;
-            seenMessageIds.add(message.messageId);
+            const key = getMessageDedupeKey(message);
+            if (!key) return true;
+            if (seenKeys.has(key)) return false;
+            seenKeys.add(key);
             return true;
           });
         });
@@ -606,7 +619,7 @@ export default function ChatWindow({
       return;
     }
     const lastIndex = messages.length - 1;
-    const lastMessageId = messages[lastIndex].messageId ?? `index-${lastIndex}`;
+    const lastMessageId = getMessageUniqueKey(messages[lastIndex], lastIndex);
     setActiveMessageId(lastMessageId);
   }, [messages]);
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -683,16 +696,16 @@ export default function ChatWindow({
           )}
 
           {messages.map((msg, i) => {
-            const messageId = msg.messageId ?? `index-${i}`;
-            const isActive = messageId === activeMessageId;
+            const uniqueKey = getMessageUniqueKey(msg, i);
+            const isActive = uniqueKey === activeMessageId;
 
             return (
               <MessageBubble
-                key={messageId}
+                key={uniqueKey}
                 message={msg}
                 userAvatar={userAvatar}
                 isActive={isActive}
-                onActivate={() => setActiveMessageId(messageId)}
+                onActivate={() => setActiveMessageId(uniqueKey)}
               />
             );
           })}
