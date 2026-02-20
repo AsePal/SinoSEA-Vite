@@ -427,19 +427,21 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
             <motion.button
               type="button"
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="ui-tooltip p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              className="ui-tooltip relative p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={t('tooltips.toggleLanguage')}
               data-tooltip={t('tooltips.toggleLanguage')}
               whileTap={{ scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 420, damping: 24 }}
             >
-              <motion.span
-                className="inline-flex"
-                animate={{ rotate: isLangOpen ? 12 : 0, scale: isLangOpen ? 1.06 : 1 }}
-                transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-              >
-                <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </motion.span>
+              <div className="relative w-5 h-5 overflow-visible">
+                <motion.span
+                  className="absolute inset-0 flex items-center justify-center"
+                  animate={{ rotate: isLangOpen ? 12 : 0, scale: isLangOpen ? 1.06 : 1 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                >
+                  <GlobeAltIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </motion.span>
+              </div>
             </motion.button>
 
             {/* 语言选择窗口 */}
