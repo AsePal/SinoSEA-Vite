@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-theme-transition">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/sionsealogo.ico" />
@@ -12,6 +12,22 @@
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+    <script>
+      // 页面加载后移除 no-theme-transition 类以启用过渡
+      (function () {
+        function enableThemeTransition() {
+          requestAnimationFrame(function () {
+            document.documentElement.classList.remove('no-theme-transition');
+          });
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          enableThemeTransition();
+        } else {
+          document.addEventListener('DOMContentLoaded', enableThemeTransition);
         }
       })();
     </script>

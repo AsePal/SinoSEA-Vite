@@ -1,6 +1,37 @@
 @config "../../../tailwind.config.js";
 @import 'tailwindcss';
 
+/* Theme transition helpers ------------------------------------------------- */
+/* Prevent transitions during initial paint to avoid flash */
+.no-theme-transition * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+:root {
+  --theme-transition-duration: 0.22s;
+}
+
+/* Transition common color-related properties for a smooth theme switch */
+*,
+*::before,
+*::after {
+  transition-property: background-color, color, border-color, fill, stroke, box-shadow;
+  transition-duration: var(--theme-transition-duration);
+  transition-timing-function: ease;
+}
+
+/* End theme helpers ------------------------------------------------------ */
+
 @theme {
   /* Tailwind v4: 启用 dark mode 支持 */
   --color-scheme: light dark;
