@@ -9,6 +9,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { maskPhone } from '../../utils';
 import type { UserInfo } from '../../types/user.types';
 
 export default function UserInfoModal({
@@ -32,7 +33,8 @@ export default function UserInfoModal({
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const displayName = user?.nickname || t('userInfoModal.guestName');
-  const displayPhone = user?.phone || t('userInfoModal.unboundPhone');
+
+  const displayPhone = user?.phone ? maskPhone(user.phone) : t('userInfoModal.unboundPhone');
 
   return createPortal(
     <AnimatePresence>

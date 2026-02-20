@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
 import { useTranslation } from 'react-i18next';
+import { maskPhone } from '../../../shared/utils';
 import {
   fetchChatConversations,
   deleteChatConversation,
@@ -298,7 +299,9 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
   const isAuthed = Boolean(user);
   const displayName = user?.nickname || t('topnav.login');
   const displayPhone = isAuthed
-    ? user?.phone || t('userInfoModal.unboundPhone')
+    ? user?.phone
+      ? maskPhone(user.phone)
+      : t('userInfoModal.unboundPhone')
     : t('sidebar.notLoggedIn');
 
   const handleDeleteConversation = async () => {
