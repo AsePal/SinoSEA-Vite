@@ -8,6 +8,7 @@ import { TopNav, Sidebar } from '../../features/chat';
 import {
   LogoutConfirmModal,
   AvatarEditorModal,
+  EditNicknameModal,
   SuccessToastModal,
   UserInfoModal,
   SessionExpiredModal,
@@ -21,6 +22,7 @@ export default function MainLayout() {
   const [userLoaded, setUserLoaded] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
+  const [showEditNickname, setShowEditNickname] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -262,6 +264,19 @@ export default function MainLayout() {
         }}
       />
 
+      {/* 修改昵称弹窗 */}
+      <EditNicknameModal
+        open={showEditNickname}
+        currentUsername={user?.nickname || ''}
+        onClose={() => setShowEditNickname(false)}
+        onSuccess={() => {
+          setShowEditNickname(false);
+          fetchUserInfo();
+          setShowSuccessToast(true);
+          setTimeout(() => setShowSuccessToast(false), 1800);
+        }}
+      />
+
       <SuccessToastModal
         open={showSuccessToast}
         title="头像更新成功"
@@ -273,6 +288,9 @@ export default function MainLayout() {
         user={user}
         onClose={closeUserInfo}
         onEditAvatar={() => setShowAvatarEditor(true)}
+        onEditNickname={() => {
+          setShowEditNickname(true);
+        }}
         onLogout={() => {
           setShowLogoutModal(true);
         }}

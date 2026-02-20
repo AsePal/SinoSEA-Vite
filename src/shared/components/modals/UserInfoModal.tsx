@@ -18,6 +18,7 @@ export default function UserInfoModal({
   onEditAvatar,
   onLogout,
   onEditEmail,
+  onEditNickname,
 }: {
   open: boolean;
   user: UserInfo | null | undefined;
@@ -25,6 +26,7 @@ export default function UserInfoModal({
   onEditAvatar?: () => void;
   onLogout?: () => void;
   onEditEmail?: () => void;
+  onEditNickname?: () => void;
 }) {
   const { t } = useTranslation('chat');
 
@@ -93,6 +95,9 @@ export default function UserInfoModal({
                 </button>
                 <button
                   type="button"
+                  onClick={() => {
+                    onEditNickname?.();
+                  }}
                   className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
                 >
                   <UserCircleIcon className="w-4 h-4" />
