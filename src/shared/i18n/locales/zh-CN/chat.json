@@ -108,6 +108,7 @@
     "editAvatar": "修改头像",
     "editNickname": "修改昵称",
     "editPhone": "修改手机号",
+    "editEmail": "修改邮箱",
     "logout": "退出登录"
   }
 }

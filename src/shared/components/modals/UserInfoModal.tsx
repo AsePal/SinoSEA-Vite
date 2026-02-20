@@ -1,9 +1,10 @@
 import {
-  XMarkIcon,
-  PencilSquareIcon,
   ArrowLeftOnRectangleIcon,
-  UserCircleIcon,
+  EnvelopeIcon,
+  PencilSquareIcon,
   PhoneIcon,
+  UserCircleIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -16,12 +17,14 @@ export default function UserInfoModal({
   onClose,
   onEditAvatar,
   onLogout,
+  onEditEmail,
 }: {
   open: boolean;
   user: UserInfo | null | undefined;
   onClose: () => void;
   onEditAvatar?: () => void;
   onLogout?: () => void;
+  onEditEmail?: () => void;
 }) {
   const { t } = useTranslation('chat');
 
@@ -101,6 +104,16 @@ export default function UserInfoModal({
                 >
                   <PhoneIcon className="w-4 h-4" />
                   {t('userInfoModal.editPhone')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onEditEmail?.();
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
+                >
+                  <EnvelopeIcon className="w-4 h-4" />
+                  {t('userInfoModal.editEmail')}
                 </button>
 
                 {onLogout && (

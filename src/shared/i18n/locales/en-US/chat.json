@@ -108,6 +108,7 @@
     "editAvatar": "Change avatar",
     "editNickname": "Edit nickname",
     "editPhone": "Edit phone number",
+    "editEmail": "Edit email",
     "logout": "Sign out"
   }
 }
