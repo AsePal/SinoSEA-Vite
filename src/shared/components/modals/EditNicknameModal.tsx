@@ -47,8 +47,19 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
 
       if (res.status === 409) {
         const data = await res.json().catch(() => null);
-        const message = data?.message || data?.error || '';
-        setError(message || t('editNicknameModal.taken'));
+        const message = (data?.message || data?.error || '') as string;
+        // Map backend conflict messages to localized strings when possible
+        const mapConflict = (msg: string) => {
+          if (!msg) return '';
+          const lower = msg.toLowerCase();
+          if (lower.includes('username')) return t('editNicknameModal.taken');
+          if (lower.includes('email')) return t('editNicknameModal.emailTaken');
+          if (lower.includes('phone')) return t('editNicknameModal.phoneTaken');
+          return '';
+        };
+
+        const localized = mapConflict(message);
+        setError(localized || message || t('editNicknameModal.taken'));
         return;
       }
 

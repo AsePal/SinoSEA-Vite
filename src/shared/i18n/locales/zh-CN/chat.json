@@ -122,7 +122,9 @@
     "taken": "该昵称已被占用",
     "updateFailed": "更新失败，请稍后重试",
     "successTitle": "昵称更新成功",
-    "successDesc": "你的新昵称已生效"
+    "successDesc": "你的新昵称已生效",
+    "emailTaken": "该邮箱已被占用",
+    "phoneTaken": "该手机号已被占用"
   },
 
   "successToast": {

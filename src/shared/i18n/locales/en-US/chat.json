@@ -122,7 +122,9 @@
     "taken": "This nickname is already taken",
     "updateFailed": "Update failed, please try again later",
     "successTitle": "Nickname updated",
-    "successDesc": "Your new nickname is now active"
+    "successDesc": "Your new nickname is now active",
+    "emailTaken": "Email already taken",
+    "phoneTaken": "Phone already taken"
   },
 
   "successToast": {
