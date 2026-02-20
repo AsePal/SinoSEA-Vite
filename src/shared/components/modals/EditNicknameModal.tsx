@@ -22,10 +22,12 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
   }, [currentUsername, open]);
 
   function validate(name: string) {
-    if (!name || name.trim().length === 0) return '昵称不能为空';
-    if (name.trim().length < 2 || name.trim().length > 30) return '昵称长度应在 2-30 个字符之间';
+    if (!name || name.trim().length === 0) return t('editNicknameModal.validate.empty');
+    if (name.trim().length < 2 || name.trim().length > 30)
+      return t('editNicknameModal.validate.length');
     // 禁止过多特殊字符（允许中文、字母、数字、下划线、空格）
-    if (!/^[\p{L}\p{N}_\-\s]{1,30}$/u.test(name.trim())) return '昵称包含不支持的字符';
+    if (!/^[\p{L}\p{N}_\-\s]{1,30}$/u.test(name.trim()))
+      return t('editNicknameModal.validate.invalidChars');
     return null;
   }
 
@@ -46,7 +48,7 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
       if (res.status === 409) {
         const data = await res.json().catch(() => null);
         const message = data?.message || data?.error || '';
-        setError(message || '该昵称已被占用');
+        setError(message || t('editNicknameModal.taken'));
         return;
       }
 
@@ -60,7 +62,7 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
       onSuccess(data.username ?? v);
       onClose();
     } catch (e: any) {
-      setError(e?.message || '更新失败，请稍后重试');
+      setError(e?.message || t('editNicknameModal.updateFailed'));
     } finally {
       setLoading(false);
     }
@@ -87,12 +89,14 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
             </h2>
 
             <div className="flex flex-col gap-3">
-              <label className="text-sm text-gray-500 dark:text-gray-400">昵称</label>
+              <label className="text-sm text-gray-500 dark:text-gray-400">
+                {t('editNicknameModal.label')}
+              </label>
               <input
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none"
-                placeholder="请输入新的昵称"
+                placeholder={t('editNicknameModal.placeholder')}
                 maxLength={30}
                 autoFocus
               />

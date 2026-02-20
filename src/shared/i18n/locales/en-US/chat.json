@@ -110,5 +110,16 @@
     "editPhone": "Edit phone number",
     "editEmail": "Edit email",
     "logout": "Sign out"
+  },
+  "editNicknameModal": {
+    "label": "Nickname",
+    "placeholder": "Enter a new nickname",
+    "validate": {
+      "empty": "Nickname cannot be empty",
+      "length": "Nickname must be 2–30 characters",
+      "invalidChars": "Nickname contains unsupported characters"
+    },
+    "taken": "This nickname is already taken",
+    "updateFailed": "Update failed, please try again later"
   }
 }
