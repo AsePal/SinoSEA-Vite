@@ -120,6 +120,12 @@
       "invalidChars": "Nickname contains unsupported characters"
     },
     "taken": "This nickname is already taken",
-    "updateFailed": "Update failed, please try again later"
+    "updateFailed": "Update failed, please try again later",
+    "successTitle": "Nickname updated",
+    "successDesc": "Your new nickname is now active"
+  },
+
+  "successToast": {
+    "avatarUpdated": "Your new avatar is now active"
   }
 }

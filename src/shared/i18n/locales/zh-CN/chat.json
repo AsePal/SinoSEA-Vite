@@ -120,6 +120,12 @@
       "invalidChars": "昵称包含不支持的字符"
     },
     "taken": "该昵称已被占用",
-    "updateFailed": "更新失败，请稍后重试"
+    "updateFailed": "更新失败，请稍后重试",
+    "successTitle": "昵称更新成功",
+    "successDesc": "你的新昵称已生效"
+  },
+
+  "successToast": {
+    "avatarUpdated": "你的新头像已生效"
   }
 }

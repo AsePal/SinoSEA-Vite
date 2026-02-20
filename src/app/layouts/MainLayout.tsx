@@ -5,6 +5,7 @@ import type { UserInfo } from '../../shared/types/user.types';
 import type { SidebarHandle } from '../../features/chat/components/Sidebar';
 
 import { TopNav, Sidebar } from '../../features/chat';
+import { useTranslation } from 'react-i18next';
 import {
   LogoutConfirmModal,
   AvatarEditorModal,
@@ -24,6 +25,10 @@ export default function MainLayout() {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [showEditNickname, setShowEditNickname] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [successToastContent, setSuccessToastContent] = useState<{
+    title?: string;
+    description?: string;
+  }>({});
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
@@ -34,6 +39,7 @@ export default function MainLayout() {
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const navigate = useNavigate();
+  const { t } = useTranslation('chat');
 
   function handleSidebarOverlayMouseDown() {
     skipNextSidebarCloseRef.current = sidebarRef.current?.closeTransientMenus() ?? false;
@@ -259,6 +265,10 @@ export default function MainLayout() {
         onClose={() => setShowAvatarEditor(false)}
         onSuccess={() => {
           fetchUserInfo();
+          setSuccessToastContent({
+            title: t('userInfoModal.editAvatar') || '头像更新成功',
+            description: t('successToast.avatarUpdated') || '你的新头像已生效',
+          });
           setShowSuccessToast(true);
           setTimeout(() => setShowSuccessToast(false), 1800);
         }}
@@ -272,6 +282,10 @@ export default function MainLayout() {
         onSuccess={() => {
           setShowEditNickname(false);
           fetchUserInfo();
+          setSuccessToastContent({
+            title: t('editNicknameModal.successTitle') || t('userMenu.editNickname') || '修改成功',
+            description: t('editNicknameModal.successDesc') || '',
+          });
           setShowSuccessToast(true);
           setTimeout(() => setShowSuccessToast(false), 1800);
         }}
@@ -279,8 +293,8 @@ export default function MainLayout() {
 
       <SuccessToastModal
         open={showSuccessToast}
-        title="头像更新成功"
-        description="你的新头像已生效"
+        title={successToastContent.title}
+        description={successToastContent.description}
       />
 
       <UserInfoModal
