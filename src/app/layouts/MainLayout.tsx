@@ -96,6 +96,8 @@ export default function MainLayout() {
           nickname: data.userName || data.username || fallbackNickname,
           avatar: data.avatarUrl ? `${data.avatarUrl}?t=${Date.now()}` : DEFAULT_AVATAR,
           phone: data.phone ?? null,
+          email: data.email ?? null,
+          schoolNickname: data.schoolNickname ?? data.schoolNickName ?? data.school_name ?? null,
         });
       })
       .catch(() => {

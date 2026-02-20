@@ -1,4 +1,5 @@
 import {
+  AcademicCapIcon,
   ArrowLeftOnRectangleIcon,
   EnvelopeIcon,
   PencilSquareIcon,
@@ -35,6 +36,8 @@ export default function UserInfoModal({
   const displayName = user?.nickname || t('userInfoModal.guestName');
 
   const displayPhone = user?.phone ? maskPhone(user.phone) : t('userInfoModal.unboundPhone');
+  const displayEmail = user?.email || t('userInfoModal.unboundEmail');
+  const displaySchoolNickname = user?.schoolNickname || t('userInfoModal.unboundSchoolNickname');
 
   return createPortal(
     <AnimatePresence>
@@ -67,19 +70,37 @@ export default function UserInfoModal({
             </div>
 
             <div className="px-6 py-5">
-              <div className="flex items-center gap-4">
-                <motion.img
-                  layoutId="user-info-avatar"
-                  src={user?.avatar || DEFAULT_AVATAR}
-                  alt="avatar"
-                  className="w-14 h-14 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
-                />
-                <div className="min-w-0">
-                  <div className="text-lg font-bold text-gray-900 dark:text-gray-100 truncate">
+              <div className="flex items-start gap-6">
+                <div className="w-28 flex-shrink-0 flex flex-col items-center text-center">
+                  <motion.img
+                    layoutId="user-info-avatar"
+                    src={user?.avatar || DEFAULT_AVATAR}
+                    alt="avatar"
+                    className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
+                  />
+                  <div className="mt-2 w-full text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
                     {displayName}
                   </div>
-                  <div className="text-base font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {displayPhone}
+                </div>
+
+                <div className="min-w-0 flex-1 space-y-2 pt-1">
+                  <div className="flex items-center gap-2 text-sm">
+                    <PhoneIcon className="w-4 h-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+                    <span className="min-w-0 truncate text-gray-900 dark:text-gray-100">
+                      {displayPhone}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <EnvelopeIcon className="w-4 h-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+                    <span className="min-w-0 truncate text-gray-900 dark:text-gray-100">
+                      {displayEmail}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <AcademicCapIcon className="w-4 h-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+                    <span className="min-w-0 truncate text-gray-900 dark:text-gray-100">
+                      {displaySchoolNickname}
+                    </span>
                   </div>
                 </div>
               </div>
