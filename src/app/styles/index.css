@@ -102,9 +102,11 @@ body {
   text-align: center;
 }
 /* ChatGPT 风格滚动条（全局） */
+/* ChatGPT 风格滚动条（全局） */
+/* 默认（浅色主题）：使用深色滚动条，确保可见 */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -132,12 +134,31 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
 
 *:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* 深色模式覆盖：支持常见的 dark 类或 data-theme 标识 */
+html.dark *,
+.dark *,
+[data-theme='dark'] * {
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+html.dark *::-webkit-scrollbar-thumb,
+.dark *::-webkit-scrollbar-thumb,
+[data-theme='dark'] *::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+html.dark *:hover::-webkit-scrollbar-thumb,
+.dark *:hover::-webkit-scrollbar-thumb,
+[data-theme='dark'] *:hover::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.45);
 }
 
