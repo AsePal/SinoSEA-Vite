@@ -280,19 +280,43 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   }
 
   log('8. 验证已退出登录');
-  try {
-    const signIn = page.locator(
-      'button:has-text("Go to sign in"), button:has-text("登录"), a:has-text("Sign in")',
-    );
-    await expect(signIn.first()).toBeVisible({ timeout: 5000 });
-    log('✓ 测试完成：已成功退出登录');
-  } catch {
-    // 用户名不可见也表示已登出
+  const signIn = page.locator(
+    'button:has-text("Go to sign in"), button:has-text("登录"), a:has-text("Sign in")',
+  );
+
+  // 采用轮询方式检查登录入口或用户名不可见，避免 Playwright 的 waitFor/expect 在超时抛出直接导致测试失败
+  const pollTimeout = 8000;
+  const pollInterval = 500;
+  const start = Date.now();
+  let passed = false;
+
+  async function locatorVisible(loc: import('@playwright/test').Locator) {
+    try {
+      return (await loc.count()) > 0 && (await loc.first().isVisible());
+    } catch {
+      return false;
+    }
+  }
+
+  while (Date.now() - start < pollTimeout) {
+    if (await locatorVisible(signIn)) {
+      log('✓ 测试完成：已成功退出登录（检测到登录入口）');
+      passed = true;
+      break;
+    }
+
     const userVisible = await page.locator(`text=${username}`).count();
     if (userVisible === 0) {
       log('✓ 测试完成：用户已退出（用户名不可见）');
-    } else {
-      console.warn('⚠️ 可能未成功退出登录');
+      passed = true;
+      break;
     }
+
+    await page.waitForTimeout(pollInterval);
+  }
+
+  if (!passed) {
+    console.warn('⚠️ 可能未成功退出登录（超时未检测到登录入口或用户名仍可见）');
+    throw new Error('可能未成功退出登录（超时）');
   }
 });
