@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "open:build": "node ./scripts/fake-build.cjs",
+    "demo:playwright": "playwright test tests/demo-chat.spec.ts --headed --project=chromium --timeout=300000"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
