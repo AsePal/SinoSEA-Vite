@@ -6,6 +6,9 @@ import { ArrowRightIcon, UserIcon, LockClosedIcon } from '@heroicons/react/24/ou
 import { SparklesIcon } from '@heroicons/react/24/solid';
 
 type LoginAnim = 'idle' | 'success' | 'error';
+const qqIcon = '/QQ%20LOGO.png';
+const wechatIcon = '/VX%20LOGO.png';
+const githubIcon = '/GITHUB%20LOGO%20.png';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -261,6 +264,58 @@ export default function Login() {
           >
             {t('link.backHome')}
           </button>
+        </div>
+
+        {/* 第三方登录分隔与按钮 */}
+        <div className="mt-4">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+            <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+              其他登录方式
+            </span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+          </div>
+
+          <div className="mt-3 flex items-center justify-center gap-6">
+            <div className="flex flex-col items-center gap-1">
+              <button
+                type="button"
+                aria-label="QQ 授权登录"
+                className="h-10 w-10 rounded-full bg-transparent hover:scale-105 hover:shadow-md transition flex items-center justify-center overflow-hidden"
+              >
+                <img src={qqIcon} alt="QQ" className="w-full h-full object-contain" />
+              </button>
+              <div className="text-xs text-gray-400 dark:text-gray-500">
+                {t('social.qq', { defaultValue: 'QQ' })}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-1">
+              <button
+                type="button"
+                aria-label="微信授权登录"
+                className="h-10 w-10 rounded-full bg-transparent hover:scale-105 hover:shadow-md transition flex items-center justify-center overflow-hidden"
+              >
+                <img src={wechatIcon} alt="WeChat" className="w-full h-full object-contain" />
+              </button>
+              <div className="text-xs text-gray-400 dark:text-gray-500">
+                {t('social.wechat', { defaultValue: '微信' })}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-1">
+              <button
+                type="button"
+                aria-label="GitHub 授权登录"
+                className="h-10 w-10 rounded-full bg-transparent hover:scale-105 hover:shadow-md transition flex items-center justify-center overflow-hidden"
+              >
+                <img src={githubIcon} alt="GitHub" className="w-full h-full object-contain" />
+              </button>
+              <div className="text-xs text-gray-400 dark:text-gray-500">
+                {t('social.github', { defaultValue: 'GitHub' })}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 记住我 */}
