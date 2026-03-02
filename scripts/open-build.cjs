@@ -75,7 +75,11 @@ async function run() {
       },
     ];
 
-    const bundling = sampleFiles.map((f) => ({ text: `${CYAN}> bundling module: ${f}${RESET}`, type: 'type', extraPause: 300 }));
+    const bundling = sampleFiles.map((f) => ({
+      text: `${CYAN}> bundling module: ${f}${RESET}`,
+      type: 'type',
+      extraPause: 300,
+    }));
 
     const end = [
       { text: `${DIM}// compiling JSX -> JS${RESET}`, type: 'type', extraPause: 200 },
@@ -167,7 +171,9 @@ async function run() {
       process.stdout.write(`\r${CYAN}${label}${RESET} ${bar} ${kbPerSec} KB/s`);
       await sleep(tick + Math.floor(Math.random() * 30));
     }
-    process.stdout.write(`\r${CYAN}${label}${RESET} ${progressBar(totalKB, totalKB, 28)} ${Math.round(totalKB / Math.max(0.1, (Date.now() - startTime) / 1000))} KB/s\n`);
+    process.stdout.write(
+      `\r${CYAN}${label}${RESET} ${progressBar(totalKB, totalKB, 28)} ${Math.round(totalKB / Math.max(0.1, (Date.now() - startTime) / 1000))} KB/s\n`,
+    );
     await sleep(100 + Math.floor(Math.random() * 120));
   }
 
@@ -214,7 +220,12 @@ async function run() {
             const ni = i + 1;
             if (ni >= lines.length) break;
             const nl = lines[ni];
-            if (nl && nl.type === 'type' && nl.text && nl.text.indexOf('> bundling module:') !== -1) {
+            if (
+              nl &&
+              nl.type === 'type' &&
+              nl.text &&
+              nl.text.indexOf('> bundling module:') !== -1
+            ) {
               process.stdout.write(nl.text + '\n');
               // mark as consumed by advancing i
               i = ni;

@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "preview": "vite preview",
-    "open:build": "node ./scripts/fake-build.cjs",
+    "open:build": "node ./scripts/open-build.cjs",
     "demo:playwright": "playwright test tests/demo-chat.spec.ts --headed --project=chromium --timeout=300000"
   },
   "dependencies": {
