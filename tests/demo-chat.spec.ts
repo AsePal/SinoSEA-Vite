@@ -9,12 +9,12 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   const username = 'Dev-test-001';
   const password = '456456456';
   const question = '请问从广西大学到南宁东站该怎么出发？';
-
+  log('检测本地开发服务....');
   log('0. 打开站点');
   await page.goto('http://localhost:5173/');
   await page.waitForLoadState('networkidle');
   await slow(800);
-
+  log('检查登录逻辑....');
   log('1. 点击底部输入触发登录弹窗');
   const bottomInput = page
     .locator('textarea[aria-label="message-input"], textarea, div[role="textbox"]')
@@ -23,7 +23,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
     await bottomInput.click().catch(() => {});
     await slow(800);
   }
-
+  log('检测登录按钮.....');
   log('2. 点击"Go to sign in"按钮');
   const goLoginBtn = page.locator('button:has-text("前往登录"), button:has-text("Go to sign in")');
   if ((await goLoginBtn.count()) > 0) {
@@ -44,7 +44,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
     await page.goto('http://localhost:5173/#/auth/login').catch(() => {});
     await slow(800);
   }
-
+  log('定位输入框....');
   log('3. 填写登录信息');
   const accountInput = page.locator('input[name="identifier"]');
   const pwdInput = page.locator('input[name="password"]');
@@ -60,7 +60,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
       await agreeCheckbox.check().catch(() => {});
       await slow(300);
     }
-
+    log('验证登录逻辑.....');
     log('3.2 点击登录按钮');
     const submit = page.locator('button:has-text("登录"), button:has-text("Sign in")').first();
     if ((await submit.count()) > 0) {
@@ -92,7 +92,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
     // 忽略
   }
   await slow(1500);
-
+  log('完成');
   log('5. 新建会话');
   const newConv = page.locator(
     'button[aria-label="New conversation"], button[aria-label="新建对话"]',
@@ -104,7 +104,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
       .catch(() => {});
     await slow(800);
   }
-
+  log('定位输入框.....');
   log('6. 发送问题');
   const input = page.locator('textarea').first();
   if (!((await input.count()) > 0)) throw new Error('未找到消息输入框');
@@ -142,7 +142,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
         !document.body.innerText.includes('思考中'),
       { timeout: 60000 },
     );
-    console.log('   思考状态消失，AI开始输出回复...');
+    console.log('   思考状态结束，AI开始输出回复...');
   } catch {
     console.warn('   等待思考状态消失超时');
   }
