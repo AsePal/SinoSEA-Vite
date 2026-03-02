@@ -315,6 +315,29 @@ async function run() {
   console.log(`${MAGENTA}Created${RESET} ${marker}`);
 
   console.log('\nBuild finished successfully.');
+
+  // wait for any key press before exiting so user can see output
+  async function waitForAnyKey(message = 'Press any key to exit...') {
+    return new Promise((resolve) => {
+      try {
+        if (!process.stdin || !process.stdin.setRawMode) return resolve();
+        console.log('\n' + message);
+        process.stdin.setRawMode(true);
+        process.stdin.resume();
+        process.stdin.once('data', () => {
+          try {
+            process.stdin.setRawMode(false);
+            process.stdin.pause();
+          } catch (e) {}
+          resolve();
+        });
+      } catch (e) {
+        resolve();
+      }
+    });
+  }
+
+  await waitForAnyKey();
 }
 
 run().catch((err) => {
