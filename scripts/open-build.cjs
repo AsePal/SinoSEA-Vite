@@ -4,9 +4,14 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
+// Time scale: multiply all sleep durations by this factor to control total runtime
+// Set to ~0.7 to reduce the demo to ~42s (original ~60s)
+const TIME_SCALE = 0.7;
 
 function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  // scale sleep durations so the whole demo runs faster or slower
+  const scaled = Math.max(1, Math.round(ms * TIME_SCALE));
+  return new Promise((resolve) => setTimeout(resolve, scaled));
 }
 
 async function run() {
@@ -18,6 +23,23 @@ async function run() {
   const YELLOW = '\x1b[33m';
   const MAGENTA = '\x1b[35m';
   const DIM = '\x1b[2m';
+
+  // print a small ASCII box at start with English content similar to screenshot
+  function printBox(text) {
+    const pad = 2;
+    const content = ` ${text} `;
+    const width = content.length + pad * 2;
+    const top = '┌' + '─'.repeat(width) + '┐';
+    const middle = '│' + ' '.repeat(pad) + content + ' '.repeat(pad) + '│';
+    const bottom = '└' + '─'.repeat(width) + '┘';
+    console.log('\n' + CYAN + top + RESET);
+    console.log(CYAN + middle + RESET);
+    console.log(CYAN + bottom + RESET + '\n');
+  }
+
+  // show the box at the very start of the run
+  printBox('Welcome to the automated build script');
+  await sleep(300);
 
   // collect some sample files from the project's src tree to list in output
   function collectSampleFiles(srcDir, maxFiles = 8) {
@@ -73,6 +95,9 @@ async function run() {
         type: 'line',
         extraPause: 250,
       },
+      { text: `${CYAN}> initializing token checker${RESET}`, type: 'line', extraPause: 120 },
+      { text: `${CYAN}> validating cache entries${RESET}`, type: 'line', extraPause: 120 },
+      { text: `${CYAN}> authorizing tokens${RESET}`, type: 'line', extraPause: 160 },
     ];
 
     const bundling = sampleFiles.map((f) => ({
